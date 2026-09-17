@@ -59,7 +59,7 @@ class DashboardController extends Controller
                 'kerjasama:id,client_id',
             ])
             ->whereNull('absensi_type_pulang')
-            ->where('created_at', '>=', $now->copy()->subHours(24))
+            ->where('created_at', '>=', $now->copy()->subHours(16))
             ->latest('id')
             ->first();
 
