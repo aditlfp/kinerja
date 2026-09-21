@@ -36,11 +36,7 @@ class DashboardController extends Controller
         }
 
         // Hitung news yang masih berlaku dan dipilih pada tanggal hari ini
-        $hitungNews = News::query()
-            ->where('tanggal_lihat', '<=', $today)
-            ->where('tanggal_tutup', '>=', $today)
-            ->whereJsonContains('tanggal_muncul', (int) $now->day)
-            ->get();
+        $hitungNews = News::query()->tampilPada($now)->get();
 
 
         // Ambil data lembur dengan sorting berdasarkan 'jam_selesai'
@@ -170,7 +166,7 @@ class DashboardController extends Controller
                     return (object) [
                         'id' => $items->first()->id,
                         'employee' => $items->first()->employee,
-                        'dates' => $items->map(fn ($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
+                        'dates' => $items->map(fn($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
                         'month' => $month,
                     ];
                 })->values();

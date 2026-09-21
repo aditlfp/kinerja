@@ -20,7 +20,7 @@
                         <label for="img" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Foto Berita</label>
                         <div id="newsPreviewWrap" class="mb-2 hidden"><img id="newsPreview" class="h-24 w-40 rounded-lg border border-gray-200 object-cover" src="" alt="Preview"></div>
                         <input id="img" class="file-input file-input-bordered w-full" type="file" name="image" accept="image/*"/>
-                        <x-input-error :messages="$errors->get('image1')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>

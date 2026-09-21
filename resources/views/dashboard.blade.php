@@ -890,7 +890,6 @@
                 </div>
 
                 @include('dashboard.partials.news-modal')
-
                 @include('dashboard.partials.checkpoint-reminder-modal')
                 @include('dashboard.partials.checkpoint-rejected-modal')
                 @include('dashboard.partials.checkpoint-pending-modal')

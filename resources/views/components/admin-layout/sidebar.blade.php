@@ -166,7 +166,7 @@
      agar drawer tetap tertutup di mobile walau JavaScript belum jalan. --}}
 <aside :class="{ 'translate-x-0': mobileSidebarOpen, '-translate-x-full': !mobileSidebarOpen }"
     :data-drawer-open="mobileSidebarOpen ? 'true' : null"
-    class="admin-drawer fixed inset-y-0 left-0 z-50 flex w-60 flex-col overflow-hidden border-r border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] lg:translate-x-0">
+    class="admin-drawer fixed inset-y-0 left-0 z-10 flex w-60 flex-col overflow-hidden border-r border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] lg:translate-x-0">
 
     {{-- Header --}}
     <div class="flex h-16 shrink-0 items-center gap-3 px-4">

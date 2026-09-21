@@ -29,7 +29,11 @@
     @close-modal-{{ $id }}.window="show = false"
     @set-confirm-{{ $id }}.window="onConfirm = $event.detail"
     @keydown.escape.window="show = false" role="alertdialog" aria-modal="true" aria-labelledby="{{ $id }}-title"
-    class="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto overscroll-contain px-4 py-6"
+    {{-- `m3-overlay`: margin dikunci 0 supaya `space-y-*` di halaman
+         pemanggil tidak menggeser overlay dari tengah viewport. Panel memakai
+         `m-auto` agar kalau lebih tinggi dari layar tetap bisa di-scroll dari
+         atas (flex centering biasa memotong bagian atas). --}}
+    class="m3-overlay fixed inset-0 z-[9999] flex overflow-y-auto overscroll-contain px-4 py-6"
     style="display: none;">
 
     <div x-show="show" x-transition:enter="m3-scrim-fade-enter" x-transition:enter-start="opacity-0"
@@ -42,7 +46,7 @@
         x-transition:enter-end="m3-dialog-enter-end" x-transition:leave="m3-dialog-leave"
         x-transition:leave-start="m3-dialog-leave-start"
         x-transition:leave-end="m3-dialog-leave-end"
-        class="relative w-full max-w-md overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)]">
+        class="m3-dialog-panel m-auto relative w-full max-w-md overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)]">
 
         <div class="p-6">
             <div class="flex items-start gap-4">

@@ -10,9 +10,9 @@
             rel="stylesheet">
         <style>
             /* Token warna, elevation, shape, dan motion kini hidup di SATU tempat:
-               :root pada components/admin-layout/head.blade.php. Blok token lokal
-               dashboard sengaja dihapus supaya palet turunan seed ikut berlaku di
-               halaman ini (kalau tidak, nilai lama di sini akan menang). */
+                   :root pada components/admin-layout/head.blade.php. Blok token lokal
+                   dashboard sengaja dihapus supaya palet turunan seed ikut berlaku di
+                   halaman ini (kalau tidak, nilai lama di sini akan menang). */
 
             /* ---- surfaces, color roles & elevation ---- */
             .md-dashboard .m3-surface {
@@ -93,8 +93,8 @@
             }
 
             /* ---- link styled as a Material 3 filled / tonal button ----
-               Navigation stays a real <a> (middle-click, keyboard, status bar);
-               md-ripple supplies the Material state layer. */
+                   Navigation stays a real <a> (middle-click, keyboard, status bar);
+                   md-ripple supplies the Material state layer. */
             .md-dashboard .m3-link-filled {
                 background: var(--md-sys-color-primary);
                 color: var(--md-sys-color-on-primary);
@@ -139,10 +139,6 @@
                 text-overflow: ellipsis;
             }
 
-            /* keep undelivered Material components out of the page until the CDN upgrades them */
-            md-dialog:not(:defined) {
-                display: none !important;
-            }
         </style>
     @endpush
 
@@ -183,7 +179,9 @@
     <script type="module">
         // Optional: Material 3 typescale styles. Isolated so a CDN hiccup can't break the components above.
         try {
-            const { styles } = await import('https://esm.run/@material/web@2.5.0/typography/md-typescale-styles.js');
+            const {
+                styles
+            } = await import('https://esm.run/@material/web@2.5.0/typography/md-typescale-styles.js');
             if (styles && styles.styleSheet) {
                 document.adoptedStyleSheets = [...(document.adoptedStyleSheets || []), styles.styleSheet];
             }
@@ -194,18 +192,24 @@
 
     <div class="md-dashboard pb-10 space-y-4" x-data="{
         // --- raw data from server ---
-        allUsers: @js($notActiveUsers->map(fn($u) => [
-            'id' => $u->id,
-            'name' => $u->name,
-            'nama_lengkap' => $u->nama_lengkap ?? '',
-            'last_attendance' => $u->last_attendance,
-        ])->values()),
-
+        allUsers: @js(
+    $notActiveUsers
+        ->map(
+            fn($u) => [
+                'id' => $u->id,
+                'name' => $u->name,
+                'nama_lengkap' => $u->nama_lengkap ?? '',
+                'last_attendance' => $u->last_attendance,
+            ],
+        )
+        ->values(),
+),
+    
         // --- search & pagination ---
         search: '',
         perPage: 10,
         page: 1,
-
+    
         get filtered() {
             const q = this.search.toLowerCase().trim();
             if (!q) return this.allUsers;
@@ -222,7 +226,7 @@
         prevPage() { if (this.page > 1) this.page--; },
         nextPage() { if (this.page < this.totalPages) this.page++; },
         resetPage() { this.page = 1; },
-
+    
         // --- checkbox ---
         selected: [],
         get allChecked() { return this.paginated.length > 0 && this.paginated.every(u => this.selected.includes(u.id)); },
@@ -235,18 +239,23 @@
             if (this.selected.includes(id)) this.selected = this.selected.filter(i => i !== id);
             else this.selected.push(id);
         },
-
+    
         // --- routes ---
         editRoute: '{{ route('admin.user.edit', '__ID__') }}',
         checkRoute: '{{ route('admin.user.check-relations', '__ID__') }}',
         deleteRoute: '{{ route('admin.user.hard-delete', '__ID__') }}',
-
+    
         // --- Material dialogs ---
         showDialog(ref) {
             const dialog = this.$refs[ref];
-            if (dialog && typeof dialog.show === 'function') dialog.show();
+            // showModal() menaruh dialog di TOP LAYER, jadi dialog dan
+            // ::backdrop-nya berada di atas seluruh chrome (sidebar z-10, topbar
+            // z-40) apa pun z-index-nya. md-dialog tidak bisa memberi itu: scrim
+            // internalnya hidup di shadow DOM dengan z-index 1, sehingga selalu
+            // kalah dari chrome dan backdrop-nya tidak menutupi sidebar.
+            if (dialog && typeof dialog.showModal === 'function') dialog.showModal();
         },
-
+    
         // --- single hard delete modal ---
         loading: false,
         deleting: false,
@@ -264,13 +273,15 @@
                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(r => r.json())
-                .then(data => { this.relations = data; this.loading = false; })
+                .then(data => { this.relations = data;
+                    this.loading = false; })
                 .catch(() => { this.loading = false; });
         },
-
+    
         // --- bulk delete modal ---
         bulkDeleting: false,
-
+        bulkDeleteRoute: '{{ route('admin.user.bulk-hard-delete') }}',
+    
         diffForHumans(dateStr) {
             if (!dateStr) return 'Belum pernah absen';
             const diff = Date.now() - new Date(dateStr).getTime();
@@ -341,7 +352,8 @@
                             <p class="m3-text-variant text-xs">Daftar kontrak prioritas</p>
                         </div>
                     </div>
-                    <span class="m3-tone-error rounded-full px-2.5 py-1 text-xs font-medium">{{ $expiringContracts }}</span>
+                    <span
+                        class="m3-tone-error rounded-full px-2.5 py-1 text-xs font-medium">{{ $expiringContracts }}</span>
                 </header>
 
                 @if ($expiringContracts > 0)
@@ -437,7 +449,7 @@
                                     <md-ripple></md-ripple>
                                     Update
                                 </a>
-                                <md-filled-tonal-icon-button class="m3-btn-danger"
+                                <md-filled-tonal-icon-button class="m3-btn-danger btnDelete"
                                     @click="openModal(user.id, user.name)">
                                     <md-icon>delete</md-icon>
                                 </md-filled-tonal-icon-button>
@@ -474,9 +486,9 @@
         </section>
 
         {{-- ==================== Dialog: single hard delete ==================== --}}
-        <md-dialog x-ref="deleteDialog" @closed="loading = false; deleting = false">
-            <div slot="headline">Hard Delete User</div>
-            <div slot="content" class="space-y-3">
+        <dialog class="m3-dialog" x-ref="deleteDialog" @close="loading = false; deleting = false">
+            <div class="m3-dialog__headline">Hapus Selamanya Karyawan Ini ?</div>
+            <div class="m3-dialog__content space-y-3">
                 <p class="m3-text-variant text-sm">
                     Hapus permanen: <strong x-text="userName"></strong>
                 </p>
@@ -486,7 +498,7 @@
                 </div>
 
                 <div x-show="!loading && relations !== null" class="space-y-3">
-                    <p class="m3-text-variant text-xs font-medium uppercase tracking-wide">Relasi data ditemukan</p>
+                    <p class="m3-text-variant text-xs font-medium uppercase tracking-wide">Data ditemukan</p>
                     <div class="m3-outline overflow-hidden rounded-2xl">
                         <div class="flex items-center justify-between px-4 py-2.5 text-sm">
                             <span class="m3-text-variant">Data Absensi</span>
@@ -495,14 +507,12 @@
                         </div>
                         <div class="flex items-center justify-between px-4 py-2.5 text-sm">
                             <span class="m3-text-variant">Data Karyawan (ID)</span>
-                            <span class="font-medium"
-                                :class="relations?.employes_user_id > 0 ? 'm3-text-error' : ''"
+                            <span class="font-medium" :class="relations?.employes_user_id > 0 ? 'm3-text-error' : ''"
                                 x-text="(relations?.employes_user_id ?? 0) + ' record'"></span>
                         </div>
                         <div class="flex items-center justify-between px-4 py-2.5 text-sm">
                             <span class="m3-text-variant">Data Karyawan (Nama)</span>
-                            <span class="font-medium"
-                                :class="relations?.employes_by_name > 0 ? 'm3-text-error' : ''"
+                            <span class="font-medium" :class="relations?.employes_by_name > 0 ? 'm3-text-error' : ''"
                                 x-text="(relations?.employes_by_name ?? 0) + ' record'"></span>
                         </div>
                         <div class="flex items-center justify-between px-4 py-2.5 text-sm">
@@ -521,7 +531,8 @@
                     </p>
                 </div>
             </div>
-            <form slot="actions" :action="deleteRoute.replace('__ID__', userId)" method="POST" @submit="deleting = true">
+            <form class="m3-dialog__actions" :action="deleteRoute.replace('__ID__', userId)" method="POST"
+                @submit="deleting = true">
                 @csrf
                 @method('DELETE')
                 <md-text-button type="button" @click="$refs.deleteDialog.close()">Batal</md-text-button>
@@ -530,12 +541,12 @@
                     <span x-text="deleting ? 'Menghapus...' : 'Hapus Permanen'"></span>
                 </md-filled-button>
             </form>
-        </md-dialog>
+        </dialog>
 
         {{-- ==================== Dialog: bulk hard delete ==================== --}}
-        <md-dialog x-ref="bulkDialog" @closed="bulkDeleting = false">
-            <div slot="headline">Bulk Hard Delete</div>
-            <div slot="content" class="space-y-3">
+        <dialog class="m3-dialog" x-ref="bulkDialog" @close="bulkDeleting = false">
+            <div class="m3-dialog__headline">Bulk Hard Delete</div>
+            <div class="m3-dialog__content space-y-3">
                 <p class="m3-text-variant text-sm">
                     Hapus permanen <strong x-text="selected.length"></strong> user yang dipilih.
                 </p>
@@ -552,27 +563,24 @@
                     Semua data terkait tiap user akan <strong>dihapus permanen</strong> dan tidak bisa dikembalikan.
                 </p>
             </div>
-            <div slot="actions">
+            <div class="m3-dialog__actions">
                 <md-text-button @click="$refs.bulkDialog.close()">Batal</md-text-button>
-                {{-- Submit satu per satu via hidden form --}}
-                <md-filled-button class="m3-btn-danger-filled" :disabled="bulkDeleting" @click="
+                <md-filled-button class="m3-btn-danger-filled" :disabled="bulkDeleting"
+                    @click="
                         bulkDeleting = true;
-                        (async () => {
-                            for (const id of selected) {
-                                const form = document.createElement('form');
-                                form.method = 'POST';
-                                form.action = deleteRoute.replace('__ID__', id);
-                                form.innerHTML = '<input name=_token value=\'{{ csrf_token() }}\'><input name=_method value=DELETE>';
-                                document.body.appendChild(form);
-                                form.submit();
-                                await new Promise(r => setTimeout(r, 300));
-                            }
-                        })();
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = bulkDeleteRoute;
+                        form.innerHTML = '<input name=_token value=\'{{ csrf_token() }}\'>' + selected.map(id => '<input name=ids[] value=\'' + id + '\'>').join('');
+                        document.body.appendChild(form);
+                        form.submit();
                     ">
                     <md-icon slot="icon">delete</md-icon>
                     <span x-text="bulkDeleting ? 'Menghapus...' : 'Hapus Semua'"></span>
                 </md-filled-button>
             </div>
-        </md-dialog>
+        </dialog>
     </div>
+
+
 </x-admin-layout>

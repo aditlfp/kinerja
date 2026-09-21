@@ -98,7 +98,12 @@
             --md-sys-color-inverse-surface: #303030;
             --md-sys-color-inverse-on-surface: #f2f2f2;
             --md-sys-color-inverse-primary: color-mix(in srgb, var(--md-seed) 32%, #ffffff);
-            --md-sys-color-scrim: rgb(31 31 31 / .42);
+            /* Scrim OPAQUE sesuai spec M3. md-dialog mengalikan token ini dengan
+               opacity 32% miliknya, jadi kalau tokennya sudah ber-alpha hasilnya
+               dikali dua kali (0.42 × 0.32 ≈ 13%) dan halaman di belakang dialog
+               nyaris tidak teredupkan. Alpha 32% ditambahkan di tempat pemakaian
+               via color-mix, bukan di token. */
+            --md-sys-color-scrim: #1f1f1f;
             --md-sys-color-shadow: #000000;
 
             /* ---- Gradient M3: tone-on-tone, hue tetap, hanya lightness bergeser ---- */
@@ -428,606 +433,603 @@
         /* Satu-satunya tempat pegas dipakai: indikator halaman aktif. Perpindahan
            antar-menu terasa seperti karet, sementara sisanya tetap standard M3. */
         .admin-drawer :is(a, button)[aria-current="page"] {
-            transition: background-color var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-spring),
+                transition: background-color var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-spring),
                 color var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-spring);
-        }
+            }
 
-        /* Filled — aksi utama. */
-        .m3-btn--filled {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-        }
+            /* Filled — aksi utama. */
+            .m3-btn--filled {
+                background: var(--md-sys-color-primary);
+                color: var(--md-sys-color-on-primary);
+            }
 
-        .m3-btn--filled:hover {
-            box-shadow: var(--md-elevation-1);
-        }
+            .m3-btn--filled:hover {
+                box-shadow: var(--md-elevation-1);
+            }
 
-        /* Filled tonal — aksi sekunder yang tetap terlihat. */
-        .m3-btn--tonal {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
+            /* Filled tonal — aksi sekunder yang tetap terlihat. */
+            .m3-btn--tonal {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+            }
 
-        .m3-btn--tonal:hover {
-            box-shadow: var(--md-elevation-1);
-        }
+            .m3-btn--tonal:hover {
+                box-shadow: var(--md-elevation-1);
+            }
 
-        /* Outlined — aksi tersier. */
-        .m3-btn--outlined {
-            background: transparent;
-            border-color: var(--md-sys-color-outline);
-            color: var(--md-sys-color-primary);
-        }
+            /* Outlined — aksi tersier. */
+            .m3-btn--outlined {
+                background: transparent;
+                border-color: var(--md-sys-color-outline);
+                color: var(--md-sys-color-primary);
+            }
 
-        .m3-btn--outlined:hover {
-            background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
-        }
+            .m3-btn--outlined:hover {
+                background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
+            }
 
-        /* Text — aksi paling ringan (batal, kembali). */
-        .m3-btn--text {
-            background: transparent;
-            color: var(--md-sys-color-primary);
-            padding-inline: 1rem;
-        }
+            /* Text — aksi paling ringan (batal, kembali). */
+            .m3-btn--text {
+                background: transparent;
+                color: var(--md-sys-color-primary);
+                padding-inline: 1rem;
+            }
 
-        .m3-btn--text:hover {
-            background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
-        }
+            .m3-btn--text:hover {
+                background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
+            }
 
-        /* Destruktif — pakai warna error semantik, bukan merah acak. */
-        .m3-btn--danger {
-            background: var(--md-sys-color-error);
-            color: var(--md-sys-color-on-error);
-        }
+            /* Destruktif — pakai warna error semantik, bukan merah acak. */
+            .m3-btn--danger {
+                background: var(--md-sys-color-error);
+                color: var(--md-sys-color-on-error);
+            }
 
-        .m3-btn--danger:hover {
-            box-shadow: var(--md-elevation-1);
-        }
+            .m3-btn--danger:hover {
+                box-shadow: var(--md-elevation-1);
+            }
 
-        .m3-btn--danger-tonal {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .m3-btn--danger-tonal {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        /* Peringatan — "butuh tindak lanjut". */
-        .m3-btn--warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            /* Peringatan — "butuh tindak lanjut". */
+            .m3-btn--warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .m3-btn--success {
-            background: var(--md-sys-color-tertiary-container);
-            color: var(--md-sys-color-on-tertiary-container);
-        }
+            .m3-btn--success {
+                background: var(--md-sys-color-tertiary-container);
+                color: var(--md-sys-color-on-tertiary-container);
+            }
 
-        /* Ukuran. */
-        .m3-btn--sm {
-            min-height: 2rem;
-            padding-inline: .875rem;
-            font-size: .8125rem;
-        }
+            /* Ukuran. */
+            .m3-btn--sm {
+                min-height: 2rem;
+                padding-inline: .875rem;
+                font-size: .8125rem;
+            }
 
-        .m3-btn--xs {
-            min-height: 1.75rem;
-            padding-inline: .75rem;
-            font-size: .75rem;
-        }
+            .m3-btn--xs {
+                min-height: 1.75rem;
+                padding-inline: .75rem;
+                font-size: .75rem;
+            }
 
-        .m3-btn--block {
-            width: 100%;
-        }
+            .m3-btn--block {
+                width: 100%;
+            }
 
-        /* Tombol ikon-saja: selalu sertakan aria-label di markup. */
-        .m3-icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: var(--md-shape-pill);
-            border: 1px solid transparent;
-            color: var(--md-sys-color-on-surface-variant);
-            background: transparent;
-            cursor: pointer;
-            transition:
-                background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+            /* Tombol ikon-saja: selalu sertakan aria-label di markup. */
+            .m3-icon-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: var(--md-shape-pill);
+                border: 1px solid transparent;
+                color: var(--md-sys-color-on-surface-variant);
+                background: transparent;
+                cursor: pointer;
+                transition: background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 transform var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-emphasized);
-        }
+            }
 
-        .m3-icon-btn:hover {
-            background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
-        }
+            .m3-icon-btn:hover {
+                background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+            }
 
-        .m3-icon-btn:active {
-            transform: scale(.94);
-            transition-duration: var(--md-sys-motion-duration-short1);
-        }
+            .m3-icon-btn:active {
+                transform: scale(.94);
+                transition-duration: var(--md-sys-motion-duration-short1);
+            }
 
-        .m3-icon-btn--sm {
-            width: 2rem;
-            height: 2rem;
-            font-size: 1.125rem;
-        }
+            .m3-icon-btn--sm {
+                width: 2rem;
+                height: 2rem;
+                font-size: 1.125rem;
+            }
 
-        .m3-icon-btn--danger {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .m3-icon-btn--danger {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        /* Chip aksi/segmented — pengganti grup tombol daisyUI. */
-        .m3-segmented {
-            display: inline-flex;
-            gap: .25rem;
-            padding: .25rem;
-            border-radius: var(--md-shape-pill);
-            background: var(--md-sys-color-surface-container);
-        }
+            /* Chip aksi/segmented — pengganti grup tombol daisyUI. */
+            .m3-segmented {
+                display: inline-flex;
+                gap: .25rem;
+                padding: .25rem;
+                border-radius: var(--md-shape-pill);
+                background: var(--md-sys-color-surface-container);
+            }
 
-        .m3-segmented>a,
-        .m3-segmented>button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .375rem;
-            min-height: 2rem;
-            padding-inline: .875rem;
-            border-radius: var(--md-shape-pill);
-            font-size: .8125rem;
-            font-weight: 600;
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            .m3-segmented>a,
+            .m3-segmented>button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: .375rem;
+                min-height: 2rem;
+                padding-inline: .875rem;
+                border-radius: var(--md-shape-pill);
+                font-size: .8125rem;
+                font-weight: 600;
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .m3-segmented>[aria-current="page"],
-        .m3-segmented>.is-active {
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-primary);
-            box-shadow: var(--md-elevation-1);
-        }
+            .m3-segmented>[aria-current="page"],
+            .m3-segmented>.is-active {
+                background: var(--md-sys-color-surface);
+                color: var(--md-sys-color-primary);
+                box-shadow: var(--md-elevation-1);
+            }
 
-        /* ===================== 4. Field & select ===================== */
+            /* ===================== 4. Field & select ===================== */
 
-        .m3-field,
-        .m3-select {
-            width: 100%;
-            min-height: 2.5rem;
-            padding: .5rem .875rem;
-            border: 1px solid var(--md-sys-color-outline-variant);
-            border-radius: var(--md-shape-field);
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
-            font-size: .875rem;
-            line-height: 1.25rem;
-            transition:
-                border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+            .m3-field,
+            .m3-select {
+                width: 100%;
+                min-height: 2.5rem;
+                padding: .5rem .875rem;
+                border: 1px solid var(--md-sys-color-outline-variant);
+                border-radius: var(--md-shape-field);
+                background: var(--md-sys-color-surface);
+                color: var(--md-sys-color-on-surface);
+                font-size: .875rem;
+                line-height: 1.25rem;
+                transition: border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
-        }
+            }
 
-        .m3-field::placeholder {
-            color: color-mix(in srgb, var(--md-sys-color-on-surface-variant) 70%, transparent);
-        }
+            .m3-field::placeholder {
+                color: color-mix(in srgb, var(--md-sys-color-on-surface-variant) 70%, transparent);
+            }
 
-        .m3-field:hover,
-        .m3-select:hover {
-            border-color: var(--md-sys-color-on-surface-variant);
-        }
+            .m3-field:hover,
+            .m3-select:hover {
+                border-color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .m3-field:focus,
-        .m3-select:focus {
-            border-color: var(--md-sys-color-primary);
-            outline: 2px solid var(--md-sys-color-primary);
-            outline-offset: -1px;
-        }
+            .m3-field:focus,
+            .m3-select:focus {
+                border-color: var(--md-sys-color-primary);
+                outline: 2px solid var(--md-sys-color-primary);
+                outline-offset: -1px;
+            }
 
-        .m3-field[aria-invalid="true"],
-        .m3-field.is-invalid {
-            border-color: var(--md-sys-color-error);
-        }
+            .m3-field[aria-invalid="true"],
+            .m3-field.is-invalid {
+                border-color: var(--md-sys-color-error);
+            }
 
-        .m3-field-help {
-            font-size: .75rem;
-            line-height: 1rem;
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            .m3-field-help {
+                font-size: .75rem;
+                line-height: 1rem;
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .m3-field-error {
-            font-size: .75rem;
-            line-height: 1rem;
-            color: var(--md-sys-color-error);
-        }
+            .m3-field-error {
+                font-size: .75rem;
+                line-height: 1rem;
+                color: var(--md-sys-color-error);
+            }
 
-        .m3-label {
-            display: block;
-            margin-bottom: .375rem;
-            font-size: .75rem;
-            font-weight: 600;
-            letter-spacing: .01em;
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            .m3-label {
+                display: block;
+                margin-bottom: .375rem;
+                font-size: .75rem;
+                font-weight: 600;
+                letter-spacing: .01em;
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        /* Field dengan ikon di dalamnya. */
-        .m3-input-group {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+            /* Field dengan ikon di dalamnya. */
+            .m3-input-group {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
 
-        .m3-input-group>.material-symbols-outlined:first-child {
-            position: absolute;
-            left: .75rem;
-            font-size: 1.125rem;
-            color: var(--md-sys-color-on-surface-variant);
-            pointer-events: none;
-        }
+            .m3-input-group>.material-symbols-outlined:first-child {
+                position: absolute;
+                left: .75rem;
+                font-size: 1.125rem;
+                color: var(--md-sys-color-on-surface-variant);
+                pointer-events: none;
+            }
 
-        .m3-input-group>.material-symbols-outlined:first-child~.m3-field {
-            padding-left: 2.5rem;
-        }
+            .m3-input-group>.material-symbols-outlined:first-child~.m3-field {
+                padding-left: 2.5rem;
+            }
 
-        /* ===================== 5. Tabel data ===================== */
+            /* ===================== 5. Tabel data ===================== */
 
-        .m3-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            font-size: .8125rem;
-            background: var(--md-sys-color-surface-container-low);
-        }
+            .m3-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                font-size: .8125rem;
+                background: var(--md-sys-color-surface-container-low);
+            }
 
-        .m3-table :where(thead th) {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            padding: .625rem .75rem;
-            background: var(--md-sys-color-surface-container-high);
-            color: var(--md-sys-color-on-surface-variant);
-            font-size: .6875rem;
-            font-weight: 700;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-            text-align: left;
-            white-space: nowrap;
-        }
+            .m3-table :where(thead th) {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                padding: .625rem .75rem;
+                background: var(--md-sys-color-surface-container-high);
+                color: var(--md-sys-color-on-surface-variant);
+                font-size: .6875rem;
+                font-weight: 700;
+                letter-spacing: .04em;
+                text-transform: uppercase;
+                text-align: left;
+                white-space: nowrap;
+            }
 
-        .m3-table :where(tbody td) {
-            padding: .625rem .75rem;
-            color: var(--md-sys-color-on-surface);
-            vertical-align: top;
-            border-top: 1px solid var(--md-sys-color-outline-variant);
-        }
+            .m3-table :where(tbody td) {
+                padding: .625rem .75rem;
+                color: var(--md-sys-color-on-surface);
+                vertical-align: top;
+                border-top: 1px solid var(--md-sys-color-outline-variant);
+            }
 
-        .m3-table :where(tbody tr:hover td) {
-            background: color-mix(in srgb, var(--md-sys-color-primary) 6%, transparent);
-        }
+            .m3-table :where(tbody tr:hover td) {
+                background: color-mix(in srgb, var(--md-sys-color-primary) 6%, transparent);
+            }
 
-        .m3-table :where(tbody tr:last-child td) {
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
-        }
+            .m3-table :where(tbody tr:last-child td) {
+                border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            }
 
-        /* ===================== 6. Chip, banner, skeleton ===================== */
+            /* ===================== 6. Chip, banner, skeleton ===================== */
 
-        .m3-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: .25rem;
-            padding: .1875rem .625rem;
-            border-radius: var(--md-shape-pill);
-            font-size: .6875rem;
-            font-weight: 600;
-            line-height: 1rem;
-            white-space: nowrap;
-        }
+            .m3-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: .25rem;
+                padding: .1875rem .625rem;
+                border-radius: var(--md-shape-pill);
+                font-size: .6875rem;
+                font-weight: 600;
+                line-height: 1rem;
+                white-space: nowrap;
+            }
 
-        .m3-chip .material-symbols-outlined {
-            font-size: .875rem;
-        }
+            .m3-chip .material-symbols-outlined {
+                font-size: .875rem;
+            }
 
-        .m3-chip--success {
-            background: var(--md-sys-color-tertiary-container);
-            color: var(--md-sys-color-on-tertiary-container);
-        }
+            .m3-chip--success {
+                background: var(--md-sys-color-tertiary-container);
+                color: var(--md-sys-color-on-tertiary-container);
+            }
 
-        .m3-chip--info {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
+            .m3-chip--info {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+            }
 
-        .m3-chip--warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            .m3-chip--warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .m3-chip--error {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .m3-chip--error {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        .m3-chip--neutral {
-            background: var(--md-sys-color-surface-container-high);
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            .m3-chip--neutral {
+                background: var(--md-sys-color-surface-container-high);
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .m3-banner {
-            display: flex;
-            align-items: flex-start;
-            gap: .625rem;
-            padding: .75rem 1rem;
-            border-radius: var(--md-shape-field);
-            font-size: .8125rem;
-            line-height: 1.25rem;
-        }
+            .m3-banner {
+                display: flex;
+                align-items: flex-start;
+                gap: .625rem;
+                padding: .75rem 1rem;
+                border-radius: var(--md-shape-field);
+                font-size: .8125rem;
+                line-height: 1.25rem;
+            }
 
-        .m3-banner--error {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .m3-banner--error {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        .m3-banner--warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            .m3-banner--warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .m3-banner--info {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
+            .m3-banner--info {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+            }
 
-        /* Skeleton menggantikan spinner berputar untuk pemuatan > 300ms. */
-        .m3-skeleton {
-            border-radius: var(--md-shape-field);
-            background: linear-gradient(90deg,
+            /* Skeleton menggantikan spinner berputar untuk pemuatan > 300ms. */
+            .m3-skeleton {
+                border-radius: var(--md-shape-field);
+                background: linear-gradient(90deg,
                     var(--md-sys-color-surface-container-high) 25%,
                     var(--md-sys-color-surface-container-highest) 37%,
                     var(--md-sys-color-surface-container-high) 63%);
-            background-size: 400% 100%;
-            animation: m3-skeleton-shimmer 1.4s var(--md-sys-motion-easing-linear) infinite;
-        }
-
-        .m3-skeleton--text {
-            height: .75rem;
-            border-radius: var(--md-shape-pill);
-        }
-
-        @keyframes m3-skeleton-shimmer {
-            0% {
-                background-position: 100% 50%;
+                background-size: 400% 100%;
+                animation: m3-skeleton-shimmer 1.4s var(--md-sys-motion-easing-linear) infinite;
             }
 
-            100% {
-                background-position: 0 50%;
+            .m3-skeleton--text {
+                height: .75rem;
+                border-radius: var(--md-shape-pill);
             }
-        }
 
-        /* Keadaan kosong yang terkomposisi, bukan tabel kosong. */
-        .m3-empty {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: .75rem;
-            padding: 2.5rem 1.25rem;
-            text-align: center;
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            @keyframes m3-skeleton-shimmer {
+                0% {
+                    background-position: 100% 50%;
+                }
 
-        .m3-empty>.material-symbols-outlined {
-            display: grid;
-            place-items: center;
-            width: 2.75rem;
-            height: 2.75rem;
-            border-radius: var(--md-shape-pill);
-            background: var(--md-sys-color-surface-container-high);
-            font-size: 1.5rem;
-        }
+                100% {
+                    background-position: 0 50%;
+                }
+            }
 
-        /* Tab yang bisa di-scroll horizontal di layar sempit. */
-        .m3-scroll-x {
-            overflow-x: auto;
-            overscroll-behavior-inline: contain;
-        }
+            /* Keadaan kosong yang terkomposisi, bukan tabel kosong. */
+            .m3-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: .75rem;
+                padding: 2.5rem 1.25rem;
+                text-align: center;
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
+            .m3-empty>.material-symbols-outlined {
+                display: grid;
+                place-items: center;
+                width: 2.75rem;
+                height: 2.75rem;
+                border-radius: var(--md-shape-pill);
+                background: var(--md-sys-color-surface-container-high);
+                font-size: 1.5rem;
+            }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: var(--md-sys-color-outline-variant);
-            border-radius: var(--md-shape-pill);
-        }
+            /* Tab yang bisa di-scroll horizontal di layar sempit. */
+            .m3-scroll-x {
+                overflow-x: auto;
+                overscroll-behavior-inline: contain;
+            }
 
-        /* ===================== 7. Shim legacy =====================
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 4px;
+                height: 4px;
+            }
+
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: var(--md-sys-color-outline-variant);
+                border-radius: var(--md-shape-pill);
+            }
+
+            /* ===================== 7. Shim legacy =====================
            Blok di bawah menormalkan halaman lama (daisyUI bumblebee + utility
            Tailwind yang tidak konsisten) ke nilai Material 3. Ini jembatan
            sementara: setiap kelas yang dimigrasikan ke komponen M3 di atas
            mengurangi kebutuhan shim ini sampai bisa dihapus. */
 
-        .legacy-admin .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .375rem;
-            height: auto;
-            min-height: 2.5rem;
-            padding: .5rem 1.125rem;
-            border: 1px solid transparent;
-            border-radius: var(--md-shape-pill);
-            font-size: .8125rem;
-            font-weight: 600;
-            text-transform: none;
-            animation: none;
-            box-shadow: none;
-            transition:
-                box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+            .legacy-admin .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: .375rem;
+                height: auto;
+                min-height: 2.5rem;
+                padding: .5rem 1.125rem;
+                border: 1px solid transparent;
+                border-radius: var(--md-shape-pill);
+                font-size: .8125rem;
+                font-weight: 600;
+                text-transform: none;
+                animation: none;
+                box-shadow: none;
+                transition: box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 transform var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-emphasized);
-        }
+            }
 
-        .legacy-admin .btn:active {
-            transform: scale(.98);
-        }
+            .legacy-admin .btn:active {
+                transform: scale(.98);
+            }
 
-        .legacy-admin .btn-primary {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-        }
+            .legacy-admin .btn-primary {
+                background: var(--md-sys-color-primary);
+                color: var(--md-sys-color-on-primary);
+            }
 
-        .legacy-admin .btn-error {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .legacy-admin .btn-error {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        .legacy-admin .btn-info {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
+            .legacy-admin .btn-info {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+            }
 
-        .legacy-admin .btn-success {
-            background: var(--md-sys-color-tertiary-container);
-            color: var(--md-sys-color-on-tertiary-container);
-        }
+            .legacy-admin .btn-success {
+                background: var(--md-sys-color-tertiary-container);
+                color: var(--md-sys-color-on-tertiary-container);
+            }
 
-        .legacy-admin .btn-warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            .legacy-admin .btn-warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .legacy-admin .btn-ghost {
-            background: transparent;
-            color: var(--md-sys-color-on-surface-variant);
-        }
+            .legacy-admin .btn-ghost {
+                background: transparent;
+                color: var(--md-sys-color-on-surface-variant);
+            }
 
-        .legacy-admin .btn-xs {
-            min-height: 1.75rem;
-            padding: .25rem .625rem;
-            font-size: .75rem;
-        }
+            .legacy-admin .btn-xs {
+                min-height: 1.75rem;
+                padding: .25rem .625rem;
+                font-size: .75rem;
+            }
 
-        .legacy-admin .btn-sm {
-            min-height: 2rem;
-            padding: .375rem .875rem;
-            font-size: .8125rem;
-        }
+            .legacy-admin .btn-sm {
+                min-height: 2rem;
+                padding: .375rem .875rem;
+                font-size: .8125rem;
+            }
 
-        .legacy-admin .input,
-        .legacy-admin .select,
-        .legacy-admin .file-input,
-        .legacy-admin textarea {
-            height: auto;
-            min-height: 2.5rem;
-            padding: .5rem .875rem;
-            border: 1px solid var(--md-sys-color-outline-variant);
-            border-radius: var(--md-shape-field);
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
-            font-size: .8125rem;
-            box-shadow: none;
-        }
+            .legacy-admin .input,
+            .legacy-admin .select,
+            .legacy-admin .file-input,
+            .legacy-admin textarea {
+                height: auto;
+                min-height: 2.5rem;
+                padding: .5rem .875rem;
+                border: 1px solid var(--md-sys-color-outline-variant);
+                border-radius: var(--md-shape-field);
+                background: var(--md-sys-color-surface);
+                color: var(--md-sys-color-on-surface);
+                font-size: .8125rem;
+                box-shadow: none;
+            }
 
-        .legacy-admin .input:focus,
-        .legacy-admin .select:focus,
-        .legacy-admin textarea:focus {
-            border-color: var(--md-sys-color-primary);
-            outline: 2px solid var(--md-sys-color-primary);
-            outline-offset: -1px;
-        }
+            .legacy-admin .input:focus,
+            .legacy-admin .select:focus,
+            .legacy-admin textarea:focus {
+                border-color: var(--md-sys-color-primary);
+                outline: 2px solid var(--md-sys-color-primary);
+                outline-offset: -1px;
+            }
 
-        .legacy-admin textarea {
-            min-height: 6rem;
-            padding: .625rem .875rem;
-        }
+            .legacy-admin textarea {
+                min-height: 6rem;
+                padding: .625rem .875rem;
+            }
 
-        .legacy-admin .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .25rem;
-            height: auto;
-            padding: .1875rem .625rem;
-            border: 0;
-            border-radius: var(--md-shape-pill);
-            font-size: .6875rem;
-            font-weight: 600;
-            color: var(--md-sys-color-on-secondary-container);
-            background: var(--md-sys-color-secondary-container);
-        }
+            .legacy-admin .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: .25rem;
+                height: auto;
+                padding: .1875rem .625rem;
+                border: 0;
+                border-radius: var(--md-shape-pill);
+                font-size: .6875rem;
+                font-weight: 600;
+                color: var(--md-sys-color-on-secondary-container);
+                background: var(--md-sys-color-secondary-container);
+            }
 
-        .legacy-admin .badge-success {
-            background: var(--md-sys-color-tertiary-container);
-            color: var(--md-sys-color-on-tertiary-container);
-        }
+            .legacy-admin .badge-success {
+                background: var(--md-sys-color-tertiary-container);
+                color: var(--md-sys-color-on-tertiary-container);
+            }
 
-        .legacy-admin .badge-warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            .legacy-admin .badge-warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .legacy-admin .badge-error {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .legacy-admin .badge-error {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        .legacy-admin .alert {
-            display: flex;
-            align-items: flex-start;
-            gap: .625rem;
-            padding: .75rem 1rem;
-            border: 0;
-            border-radius: var(--md-shape-field);
-            font-size: .8125rem;
-        }
+            .legacy-admin .alert {
+                display: flex;
+                align-items: flex-start;
+                gap: .625rem;
+                padding: .75rem 1rem;
+                border: 0;
+                border-radius: var(--md-shape-field);
+                font-size: .8125rem;
+            }
 
-        .legacy-admin .alert-error {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
+            .legacy-admin .alert-error {
+                background: var(--md-sys-color-error-container);
+                color: var(--md-sys-color-on-error-container);
+            }
 
-        .legacy-admin .alert-warning {
-            background: var(--md-sys-color-warning-container);
-            color: var(--md-sys-color-on-warning-container);
-        }
+            .legacy-admin .alert-warning {
+                background: var(--md-sys-color-warning-container);
+                color: var(--md-sys-color-on-warning-container);
+            }
 
-        .legacy-admin .alert-info {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
+            .legacy-admin .alert-info {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+            }
 
-        .legacy-admin .loading {
-            border-width: 2px;
-            color: var(--md-sys-color-primary);
-        }
+            .legacy-admin .loading {
+                border-width: 2px;
+                color: var(--md-sys-color-primary);
+            }
 
-        .legacy-admin .table {
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: var(--md-shape-card);
-            overflow: hidden;
-            border: 1px solid var(--md-sys-color-outline-variant);
-            background: var(--md-sys-color-surface-container-low);
-        }
+            .legacy-admin .table {
+                border-collapse: separate;
+                border-spacing: 0;
+                border-radius: var(--md-shape-card);
+                overflow: hidden;
+                border: 1px solid var(--md-sys-color-outline-variant);
+                background: var(--md-sys-color-surface-container-low);
+            }
 
-        .legacy-admin .table :where(thead th) {
-            background: var(--md-sys-color-surface-container-high) !important;
-            color: var(--md-sys-color-on-surface-variant);
-            font-size: .6875rem;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
+            .legacy-admin .table :where(thead th) {
+                background: var(--md-sys-color-surface-container-high) !important;
+                color: var(--md-sys-color-on-surface-variant);
+                font-size: .6875rem;
+                letter-spacing: .04em;
+                text-transform: uppercase;
+            }
 
-        .legacy-admin .table :where(tbody td) {
-            font-size: .8125rem;
-            color: var(--md-sys-color-on-surface);
-            vertical-align: top;
-        }
+            .legacy-admin .table :where(tbody td) {
+                font-size: .8125rem;
+                color: var(--md-sys-color-on-surface);
+                vertical-align: top;
+            }
 
-        .legacy-admin .table tr:hover td {
-            background: color-mix(in srgb, var(--md-sys-color-primary) 6%, transparent);
-        }
+            .legacy-admin .table tr:hover td {
+                background: color-mix(in srgb, var(--md-sys-color-primary) 6%, transparent);
+            }
 
-        .legacy-admin .shadow,
-        .legacy-admin .shadow-md {
-            box-shadow: var(--md-elevation-1) !important;
-        }
+            .legacy-admin .shadow,
+            .legacy-admin .shadow-md {
+                box-shadow: var(--md-elevation-1) !important;
+            }
 
-        /* ===================== 8. Jembatan palet =====================
+            /* ===================== 8. Jembatan palet =====================
            Halaman lama memakai belasan warna Tailwind sekaligus (biru, indigo,
            sky, emerald, amber, merah). Material 3 hanya punya SATU aksen, jadi
            kelas warna lama dipetakan ke peran M3 yang setara di dalam area admin.
@@ -1035,497 +1037,722 @@
            satu sistem, bukan tempelan. Hapus blok ini setelah migrasi markup
            ke komponen M3 selesai. */
 
-        /* Aksi utama -> primary */
-        .legacy-admin :is(.bg-blue-700, .bg-blue-600, .bg-blue-500) {
-            background-color: var(--md-sys-color-primary) !important;
-        }
+            /* Aksi utama -> primary */
+            .legacy-admin :is(.bg-blue-700, .bg-blue-600, .bg-blue-500) {
+                background-color: var(--md-sys-color-primary) !important;
+            }
 
-        /* Informasi sekunder -> secondary */
-        .legacy-admin :is(.bg-indigo-700, .bg-indigo-600, .bg-indigo-500, .bg-sky-600, .bg-sky-500) {
-            background-color: var(--md-sys-color-secondary) !important;
-        }
+            /* Informasi sekunder -> secondary */
+            .legacy-admin :is(.bg-indigo-700, .bg-indigo-600, .bg-indigo-500, .bg-sky-600, .bg-sky-500) {
+                background-color: var(--md-sys-color-secondary) !important;
+            }
 
-        /* Destruktif -> error */
-        .legacy-admin :is(.bg-red-700, .bg-red-600, .bg-red-500, .bg-rose-600, .bg-rose-500) {
-            background-color: var(--md-sys-color-error) !important;
-        }
+            /* Destruktif -> error */
+            .legacy-admin :is(.bg-red-700, .bg-red-600, .bg-red-500, .bg-rose-600, .bg-rose-500) {
+                background-color: var(--md-sys-color-error) !important;
+            }
 
-        /* Sukses -> tertiary */
-        .legacy-admin :is(.bg-emerald-700, .bg-emerald-600, .bg-emerald-500, .bg-green-700, .bg-green-600, .bg-green-500, .bg-teal-600) {
-            background-color: var(--md-sys-color-tertiary) !important;
-        }
+            /* Sukses -> tertiary */
+            .legacy-admin :is(.bg-emerald-700, .bg-emerald-600, .bg-emerald-500, .bg-green-700, .bg-green-600, .bg-green-500, .bg-teal-600) {
+                background-color: var(--md-sys-color-tertiary) !important;
+            }
 
-        /* Permukaan bertinta (50/100/200) -> container M3.
+            /* Permukaan bertinta (50/100/200) -> container M3.
            Hanya shade terang: shade gelap biasanya berpasangan dengan teks
            putih, jadi sengaja tidak diubah agar kontrasnya tetap aman. */
-        .legacy-admin :is(.bg-blue-50, .bg-blue-100, .bg-blue-200, .bg-indigo-50, .bg-indigo-100, .bg-sky-50, .bg-sky-100) {
-            background-color: var(--md-sys-color-primary-container) !important;
-        }
+            .legacy-admin :is(.bg-blue-50, .bg-blue-100, .bg-blue-200, .bg-indigo-50, .bg-indigo-100, .bg-sky-50, .bg-sky-100) {
+                background-color: var(--md-sys-color-primary-container) !important;
+            }
 
-        .legacy-admin :is(.bg-emerald-50, .bg-emerald-100, .bg-emerald-200, .bg-green-50, .bg-green-100, .bg-teal-50, .bg-teal-100) {
-            background-color: var(--md-sys-color-tertiary-container) !important;
-        }
+            .legacy-admin :is(.bg-emerald-50, .bg-emerald-100, .bg-emerald-200, .bg-green-50, .bg-green-100, .bg-teal-50, .bg-teal-100) {
+                background-color: var(--md-sys-color-tertiary-container) !important;
+            }
 
-        .legacy-admin :is(.bg-red-50, .bg-red-100, .bg-rose-50, .bg-rose-100, .bg-pink-50, .bg-pink-100) {
-            background-color: var(--md-sys-color-error-container) !important;
-        }
+            .legacy-admin :is(.bg-red-50, .bg-red-100, .bg-rose-50, .bg-rose-100, .bg-pink-50, .bg-pink-100) {
+                background-color: var(--md-sys-color-error-container) !important;
+            }
 
-        .legacy-admin :is(.bg-amber-50, .bg-amber-100, .bg-amber-200, .bg-yellow-50, .bg-yellow-100, .bg-yellow-200, .bg-orange-50, .bg-orange-100) {
-            background-color: var(--md-sys-color-warning-container) !important;
-        }
+            .legacy-admin :is(.bg-amber-50, .bg-amber-100, .bg-amber-200, .bg-yellow-50, .bg-yellow-100, .bg-yellow-200, .bg-orange-50, .bg-orange-100) {
+                background-color: var(--md-sys-color-warning-container) !important;
+            }
 
-        .legacy-admin :is(.bg-purple-50, .bg-purple-100, .bg-violet-50, .bg-violet-100, .bg-fuchsia-50, .bg-fuchsia-100) {
-            background-color: var(--md-sys-color-secondary-container) !important;
-        }
+            .legacy-admin :is(.bg-purple-50, .bg-purple-100, .bg-violet-50, .bg-violet-100, .bg-fuchsia-50, .bg-fuchsia-100) {
+                background-color: var(--md-sys-color-secondary-container) !important;
+            }
 
-        /* Permukaan netral -> surface container M3. */
-        .legacy-admin :is(.bg-gray-50, .bg-gray-100, .bg-slate-50, .bg-slate-100, .bg-zinc-50, .bg-zinc-100) {
-            background-color: var(--md-sys-color-surface-container) !important;
-        }
+            /* Permukaan netral -> surface container M3. */
+            .legacy-admin :is(.bg-gray-50, .bg-gray-100, .bg-slate-50, .bg-slate-100, .bg-zinc-50, .bg-zinc-100) {
+                background-color: var(--md-sys-color-surface-container) !important;
+            }
 
-        .legacy-admin :is(.bg-gray-200, .bg-slate-200, .bg-zinc-200) {
-            background-color: var(--md-sys-color-surface-container-high) !important;
-        }
+            .legacy-admin :is(.bg-gray-200, .bg-slate-200, .bg-zinc-200) {
+                background-color: var(--md-sys-color-surface-container-high) !important;
+            }
 
-        /* Abu gelap warisan (kerangka kartu, kepala tabel lama) -> permukaan M3. */
-        .legacy-admin :is(.bg-gray-300, .bg-slate-300, .bg-slate-400) {
-            background-color: var(--md-sys-color-surface-container-highest) !important;
-        }
+            /* Abu gelap warisan (kerangka kartu, kepala tabel lama) -> permukaan M3. */
+            .legacy-admin :is(.bg-gray-300, .bg-slate-300, .bg-slate-400) {
+                background-color: var(--md-sys-color-surface-container-highest) !important;
+            }
 
-        .legacy-admin .bg-slate-500 {
-            background-color: var(--md-sys-color-surface-container-high) !important;
-        }
+            .legacy-admin .bg-slate-500 {
+                background-color: var(--md-sys-color-surface-container-high) !important;
+            }
 
-        /* Hover: state layer M3 di atas warnanya sendiri, bukan warna baru. */
-        .legacy-admin :is(.hover\:bg-gray-50, .hover\:bg-gray-100, .hover\:bg-slate-50, .hover\:bg-slate-100):hover {
-            background-color: var(--app-state-hover) !important;
-        }
+            /* Hover: state layer M3 di atas warnanya sendiri, bukan warna baru. */
+            .legacy-admin :is(.hover\:bg-gray-50, .hover\:bg-gray-100, .hover\:bg-slate-50, .hover\:bg-slate-100):hover {
+                background-color: var(--app-state-hover) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-blue-700, .hover\:bg-blue-600, .hover\:bg-indigo-700, .hover\:bg-sky-600):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-primary) 88%, #ffffff) !important;
-        }
+            .legacy-admin :is(.hover\:bg-blue-700, .hover\:bg-blue-600, .hover\:bg-indigo-700, .hover\:bg-sky-600):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-primary) 88%, #ffffff) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-red-700, .hover\:bg-red-600, .hover\:bg-red-500):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-error) 88%, #ffffff) !important;
-        }
+            .legacy-admin :is(.hover\:bg-red-700, .hover\:bg-red-600, .hover\:bg-red-500):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-error) 88%, #ffffff) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-emerald-600, .hover\:bg-emerald-700, .hover\:bg-green-700, .hover\:bg-teal-600):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-tertiary) 88%, #ffffff) !important;
-        }
+            .legacy-admin :is(.hover\:bg-emerald-600, .hover\:bg-emerald-700, .hover\:bg-green-700, .hover\:bg-teal-600):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-tertiary) 88%, #ffffff) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-blue-50, .hover\:bg-blue-100, .hover\:bg-indigo-50, .hover\:bg-indigo-100):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-primary-container) 80%, var(--md-sys-color-primary)) !important;
-        }
+            .legacy-admin :is(.hover\:bg-blue-50, .hover\:bg-blue-100, .hover\:bg-indigo-50, .hover\:bg-indigo-100):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-primary-container) 80%, var(--md-sys-color-primary)) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-red-100, .hover\:bg-red-200, .hover\:bg-rose-100):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-error-container) 80%, var(--md-sys-color-error)) !important;
-        }
+            .legacy-admin :is(.hover\:bg-red-100, .hover\:bg-red-200, .hover\:bg-rose-100):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-error-container) 80%, var(--md-sys-color-error)) !important;
+            }
 
-        .legacy-admin :is(.hover\:bg-amber-100, .hover\:bg-amber-200, .hover\:bg-yellow-100, .hover\:bg-yellow-200):hover {
-            background-color: color-mix(in srgb, var(--md-sys-color-warning-container) 82%, var(--md-sys-color-on-warning-container)) !important;
-        }
+            .legacy-admin :is(.hover\:bg-amber-100, .hover\:bg-amber-200, .hover\:bg-yellow-100, .hover\:bg-yellow-200):hover {
+                background-color: color-mix(in srgb, var(--md-sys-color-warning-container) 82%, var(--md-sys-color-on-warning-container)) !important;
+            }
 
-        /* Teks netral -> on-surface / on-surface-variant (satu suhu netral). */
-        .legacy-admin :is(.text-gray-900, .text-gray-800, .text-slate-900, .text-slate-800) {
-            color: var(--md-sys-color-on-surface) !important;
-        }
+            /* Teks netral -> on-surface / on-surface-variant (satu suhu netral). */
+            .legacy-admin :is(.text-gray-900, .text-gray-800, .text-slate-900, .text-slate-800) {
+                color: var(--md-sys-color-on-surface) !important;
+            }
 
-        .legacy-admin :is(.text-gray-700, .text-gray-600, .text-gray-500, .text-slate-700, .text-slate-600, .text-slate-500) {
-            color: var(--md-sys-color-on-surface-variant) !important;
-        }
+            .legacy-admin :is(.text-gray-700, .text-gray-600, .text-gray-500, .text-slate-700, .text-slate-600, .text-slate-500) {
+                color: var(--md-sys-color-on-surface-variant) !important;
+            }
 
-        .legacy-admin :is(.text-blue-800, .text-blue-700, .text-blue-600, .text-blue-500, .text-indigo-600, .text-indigo-700, .text-sky-600, .text-sky-700) {
-            color: var(--md-sys-color-primary) !important;
-        }
+            .legacy-admin :is(.text-blue-800, .text-blue-700, .text-blue-600, .text-blue-500, .text-indigo-600, .text-indigo-700, .text-sky-600, .text-sky-700) {
+                color: var(--md-sys-color-primary) !important;
+            }
 
-        .legacy-admin :is(.text-red-800, .text-red-700, .text-red-600, .text-red-500, .text-rose-600) {
-            color: var(--md-sys-color-error) !important;
-        }
+            .legacy-admin :is(.text-red-800, .text-red-700, .text-red-600, .text-red-500, .text-rose-600) {
+                color: var(--md-sys-color-error) !important;
+            }
 
-        .legacy-admin :is(.text-emerald-800, .text-emerald-700, .text-emerald-600, .text-green-700, .text-green-600, .text-teal-700, .text-teal-600) {
-            color: var(--md-sys-color-tertiary) !important;
-        }
+            .legacy-admin :is(.text-emerald-800, .text-emerald-700, .text-emerald-600, .text-green-700, .text-green-600, .text-teal-700, .text-teal-600) {
+                color: var(--md-sys-color-tertiary) !important;
+            }
 
-        .legacy-admin :is(.text-amber-800, .text-amber-700, .text-amber-600, .text-yellow-800, .text-yellow-700, .text-yellow-600) {
-            color: var(--md-sys-color-on-warning-container) !important;
-        }
+            .legacy-admin :is(.text-amber-800, .text-amber-700, .text-amber-600, .text-yellow-800, .text-yellow-700, .text-yellow-600) {
+                color: var(--md-sys-color-on-warning-container) !important;
+            }
 
-        /* Bentuk tombol: Material 3 memakai pil penuh untuk aksi. Tombol lama
+            /* Bentuk tombol: Material 3 memakai pil penuh untuk aksi. Tombol lama
            memakai rounded-md/lg/xl (8-12px), sehingga satu halaman bisa punya
            tiga radius berbeda. Aturan ini hanya menyentuh elemen aksi
            (a/button dengan inline-flex/inline-block), bukan kartu atau tile. */
-        .legacy-admin :is(a, button):is(.inline-flex, .inline-block):is(.rounded-md, .rounded-lg, .rounded-xl) {
-            border-radius: var(--md-shape-pill);
-        }
+            .legacy-admin :is(a, button):is(.inline-flex, .inline-block):is(.rounded-md, .rounded-lg, .rounded-xl) {
+                border-radius: var(--md-shape-pill);
+            }
 
-        /* Label field lama dicetak huruf kapital semua. Material 3 memakai
+            /* Label field lama dicetak huruf kapital semua. Material 3 memakai
            sentence case, dan teksnya sudah ditulis normal di markup, jadi
            hanya tampilannya yang perlu dinormalkan. */
-        .legacy-admin label.uppercase {
-            text-transform: none;
-            letter-spacing: .01em;
-        }
+            .legacy-admin label.uppercase {
+                text-transform: none;
+                letter-spacing: .01em;
+            }
 
-        /* gray-400 ke bawah gagal kontras AA untuk teks; outline M3 lolos. */
-        .legacy-admin :is(.text-gray-400, .text-slate-400, .text-zinc-400) {
-            color: var(--md-sys-color-outline) !important;
-        }
+            /* gray-400 ke bawah gagal kontras AA untuk teks; outline M3 lolos. */
+            .legacy-admin :is(.text-gray-400, .text-slate-400, .text-zinc-400) {
+                color: var(--md-sys-color-outline) !important;
+            }
 
-        .legacy-admin :is(input, textarea)::placeholder {
-            color: var(--md-sys-color-outline);
-            opacity: 1;
-        }
+            .legacy-admin :is(input, textarea)::placeholder {
+                color: var(--md-sys-color-outline);
+                opacity: 1;
+            }
 
-        .legacy-admin .rounded-md {
-            border-radius: var(--md-shape-field) !important;
-        }
+            .legacy-admin .rounded-md {
+                border-radius: var(--md-shape-field) !important;
+            }
 
-        .legacy-admin .rounded {
-            border-radius: var(--md-shape-field) !important;
-        }
+            .legacy-admin .rounded {
+                border-radius: var(--md-shape-field) !important;
+            }
 
-        /* --- Kontrol pilihan (checkbox/radio/toggle) ---
+            /* --- Kontrol pilihan (checkbox/radio/toggle) ---
            Tema daisyUI "bumblebee" mewarnai kontrol dengan kuning-amber, yang
            bertabrakan dengan aksen biru M3. Kontrol di normalkan ke spesifikasi
            Material 3: kotak 18px radius 2px, tercentang = primary + tanda centang putih. */
-        /* `:not(.toggle)` penting: daisyUI memakai <input type=checkbox class=toggle>,
+            /* `:not(.toggle)` penting: daisyUI memakai <input type=checkbox class=toggle>,
            dan tanpa pengecualian ini aturan checkbox (spesifisitas menang) akan
            menimpa bentuk switch-nya sehingga toggle tampil sebagai kotak 18px. */
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle) {
-            appearance: none;
-            -webkit-appearance: none;
-            flex-shrink: 0;
-            width: 1.125rem;
-            height: 1.125rem;
-            margin: 0;
-            border: 2px solid var(--md-sys-color-on-surface-variant);
-            border-radius: 2px;
-            background-color: transparent;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Tanda centang tumbuh dari 0 -> 100%: background-size animatable,
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle) {
+                appearance: none;
+                -webkit-appearance: none;
+                flex-shrink: 0;
+                width: 1.125rem;
+                height: 1.125rem;
+                margin: 0;
+                border: 2px solid var(--md-sys-color-on-surface-variant);
+                border-radius: 2px;
+                background-color: transparent;
+                background-position: center;
+                background-repeat: no-repeat;
+                /* Tanda centang tumbuh dari 0 -> 100%: background-size animatable,
                berbeda dari background-image yang tidak bisa ditransisikan. */
-            background-size: 0 0;
-            cursor: pointer;
-            transition:
-                background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+                background-size: 0 0;
+                cursor: pointer;
+                transition: background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 background-size var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized-decelerate);
-        }
+            }
 
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):hover {
-            border-color: var(--md-sys-color-on-surface);
-        }
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):hover {
+                border-color: var(--md-sys-color-on-surface);
+            }
 
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):checked,
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):indeterminate {
-            border-color: var(--md-sys-color-primary);
-            background-color: var(--md-sys-color-primary);
-        }
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):checked,
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):indeterminate {
+                border-color: var(--md-sys-color-primary);
+                background-color: var(--md-sys-color-primary);
+            }
 
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):checked {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M9.55 17.6 4 12.05l1.4-1.4 4.15 4.15L18.6 5.75 20 7.15z'/%3E%3C/svg%3E");
-            background-size: 100% 100%;
-        }
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):checked {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M9.55 17.6 4 12.05l1.4-1.4 4.15 4.15L18.6 5.75 20 7.15z'/%3E%3C/svg%3E");
+                background-size: 100% 100%;
+            }
 
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):indeterminate {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Crect x='5' y='10.75' width='14' height='2.5'/%3E%3C/svg%3E");
-            background-size: 100% 100%;
-        }
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):indeterminate {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Crect x='5' y='10.75' width='14' height='2.5'/%3E%3C/svg%3E");
+                background-size: 100% 100%;
+            }
 
-        .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):disabled {
-            border-color: var(--md-sys-color-outline-variant);
-            cursor: not-allowed;
-        }
+            .legacy-admin :is(.checkbox, input[type="checkbox"]):not(.sr-only):not(.toggle):disabled {
+                border-color: var(--md-sys-color-outline-variant);
+                cursor: not-allowed;
+            }
 
-        .legacy-admin .checkbox-sm,
-        .legacy-admin input[type="checkbox"].checkbox-sm {
-            width: 1rem;
-            height: 1rem;
-            border-width: 2px;
-        }
+            .legacy-admin .checkbox-sm,
+            .legacy-admin input[type="checkbox"].checkbox-sm {
+                width: 1rem;
+                height: 1rem;
+                border-width: 2px;
+            }
 
-        .legacy-admin .checkbox-xs,
-        .legacy-admin input[type="checkbox"].checkbox-xs {
-            width: .875rem;
-            height: .875rem;
-            border-width: 1.5px;
-        }
+            .legacy-admin .checkbox-xs,
+            .legacy-admin input[type="checkbox"].checkbox-xs {
+                width: .875rem;
+                height: .875rem;
+                border-width: 1.5px;
+            }
 
-        .legacy-admin :is(.radio, input[type="radio"]):not(.sr-only) {
-            appearance: none;
-            -webkit-appearance: none;
-            flex-shrink: 0;
-            width: 1.125rem;
-            height: 1.125rem;
-            margin: 0;
-            border: 2px solid var(--md-sys-color-on-surface-variant);
-            border-radius: var(--md-shape-pill);
-            background-color: transparent;
-            cursor: pointer;
-            transition:
-                border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+            .legacy-admin :is(.radio, input[type="radio"]):not(.sr-only) {
+                appearance: none;
+                -webkit-appearance: none;
+                flex-shrink: 0;
+                width: 1.125rem;
+                height: 1.125rem;
+                margin: 0;
+                border: 2px solid var(--md-sys-color-on-surface-variant);
+                border-radius: var(--md-shape-pill);
+                background-color: transparent;
+                cursor: pointer;
+                transition: border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
                 box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
-        }
+            }
 
-        .legacy-admin :is(.radio, input[type="radio"]):not(.sr-only):checked {
-            border-color: var(--md-sys-color-primary);
-            box-shadow: inset 0 0 0 .3rem var(--md-sys-color-primary);
-        }
+            .legacy-admin :is(.radio, input[type="radio"]):not(.sr-only):checked {
+                border-color: var(--md-sys-color-primary);
+                box-shadow: inset 0 0 0 .3rem var(--md-sys-color-primary);
+            }
 
-        /* Toggle: thumb digambar dengan background agar tetap tampil di <input>.
+            /* Toggle: thumb digambar dengan background agar tetap tampil di <input>.
            Thumb digeser lewat background-position dan warnanya lewat custom
            property terdaftar — dua-duanya animatable, sedangkan menukar
            background-image seperti sebelumnya tidak bisa dianimasikan. */
-        @property --md-toggle-thumb {
-            syntax: "<color>";
-            inherits: false;
-            initial-value: transparent;
-        }
+            @property --md-toggle-thumb {
+                syntax: "<color>";
+                inherits: false;
+                initial-value: transparent;
+            }
 
-        .legacy-admin .toggle {
-            appearance: none;
-            -webkit-appearance: none;
-            flex-shrink: 0;
-            width: 3rem;
-            height: 1.75rem;
-            --md-toggle-thumb: var(--md-sys-color-outline);
-            border: 2px solid var(--md-sys-color-outline);
-            border-radius: var(--md-shape-pill);
-            background-color: var(--md-sys-color-surface-container-highest);
-            background-image: radial-gradient(circle, var(--md-toggle-thumb) 0 0.45rem, transparent 0.5rem);
-            background-position: 0.5rem 50%;
-            background-repeat: no-repeat;
-            background-size: 1.5rem 1.5rem;
-            cursor: pointer;
-            transition:
-                --md-toggle-thumb var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+            .legacy-admin .toggle {
+                appearance: none;
+                -webkit-appearance: none;
+                flex-shrink: 0;
+                width: 3rem;
+                height: 1.75rem;
+                --md-toggle-thumb: var(--md-sys-color-outline);
+                border: 2px solid var(--md-sys-color-outline);
+                border-radius: var(--md-shape-pill);
+                background-color: var(--md-sys-color-surface-container-highest);
+                background-image: radial-gradient(circle, var(--md-toggle-thumb) 0 0.45rem, transparent 0.5rem);
+                background-position: 0.5rem 50%;
+                background-repeat: no-repeat;
+                background-size: 1.5rem 1.5rem;
+                cursor: pointer;
+                transition: --md-toggle-thumb var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
                 background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized),
                 background-position var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized),
                 border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
-        }
-
-        .legacy-admin .toggle:checked {
-            --md-toggle-thumb: #ffffff;
-            border-color: var(--md-sys-color-primary);
-            background-color: var(--md-sys-color-primary);
-            background-position: calc(100% - 0.5rem) 50%;
-        }
-
-
-        .legacy-admin .toggle-sm {
-            width: 2.5rem;
-            height: 1.5rem;
-        }
-
-        /* --- Dialog daisyUI --- */
-        .legacy-admin .modal-backdrop,
-        .legacy-admin .modal::backdrop {
-            background: var(--md-sys-color-scrim);
-            backdrop-filter: blur(2px);
-        }
-
-        .legacy-admin .modal-box {
-            border-radius: var(--md-shape-dialog);
-            background: var(--md-sys-color-surface-container-high);
-            color: var(--md-sys-color-on-surface);
-            box-shadow: var(--md-elevation-3);
-            scrollbar-width: thin;
-        }
-
-        /* --- Menu, dropdown, link, kartu, progress, tooltip --- */
-        .legacy-admin :is(.menu, .dropdown-content) :where(li > a, li > button, a, button) {
-            border-radius: var(--md-shape-pill);
-            font-weight: 500;
-            color: var(--md-sys-color-on-surface-variant);
-        }
-
-        .legacy-admin :is(.menu, .dropdown-content) :where(li > a:hover, li > button:hover) {
-            background: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
-            color: var(--md-sys-color-primary);
-        }
-
-        .legacy-admin :is(.menu, .dropdown-content) {
-            border: 1px solid var(--md-sys-color-outline-variant);
-            border-radius: var(--md-shape-card);
-            background: var(--md-sys-color-surface);
-            box-shadow: var(--md-elevation-2);
-        }
-
-        .legacy-admin .link {
-            color: var(--md-sys-color-primary);
-            text-underline-offset: .2em;
-        }
-
-        .legacy-admin :is(.card, .card-side) {
-            border-radius: var(--md-shape-card);
-            background: var(--md-sys-color-surface);
-            box-shadow: var(--md-elevation-1);
-        }
-
-        .legacy-admin .progress {
-            border-radius: var(--md-shape-pill);
-            background-color: var(--md-sys-color-surface-container-high);
-            color: var(--md-sys-color-primary);
-        }
-
-        .legacy-admin .progress::-webkit-progress-value {
-            background-color: var(--md-sys-color-primary);
-        }
-
-        .legacy-admin .progress::-moz-progress-bar {
-            background-color: var(--md-sys-color-primary);
-        }
-
-        .legacy-admin .tooltip::before,
-        .legacy-admin .tooltip::after {
-            background-color: var(--md-sys-color-inverse-surface);
-            color: var(--md-sys-color-inverse-on-surface);
-        }
-
-        /* Zebra table daisyUI memakai warna cream tema; diganti tint permukaan M3. */
-        .legacy-admin .table-zebra :where(tbody tr:nth-child(even) td) {
-            background-color: color-mix(in srgb, var(--md-sys-color-primary) 4%, transparent);
-        }
-
-        .legacy-admin .table-zebra :where(tbody tr:hover td) {
-            background-color: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
-        }
-
-        /* Material Web: jangan tampilkan komponen sebelum CDN menaikkannya. */
-        md-dialog:not(:defined) {
-            display: none !important;
-        }
-
-        /* ===================== 9. Transisi masuk halaman & dialog =====================
-           Fade-through M3: konten masuk sambil naik 8px, bertahap 40ms, tetapi
-           langkah-nya dibatasi sampai anak keempat — halaman yang punya 12 blok
-           tidak boleh membuat pembaca menunggu lebih dari ~450ms. Semua properti
-           yang dianimasikan transform/opacity, jadi tidak menggeser layout (CLS 0). */
-
-        @keyframes m3-fade-through {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
             }
 
-            /* `none`, bukan translateY(0): transform non-none apa pun membuat
-               elemen jadi containing block untuk keturunan position:fixed. */
-            to {
+            .legacy-admin .toggle:checked {
+                --md-toggle-thumb: #ffffff;
+                border-color: var(--md-sys-color-primary);
+                background-color: var(--md-sys-color-primary);
+                background-position: calc(100% - 0.5rem) 50%;
+            }
+
+
+            .legacy-admin .toggle-sm {
+                width: 2.5rem;
+                height: 1.5rem;
+            }
+
+            /* --- Dialog daisyUI --- */
+            .legacy-admin .modal-backdrop,
+            .legacy-admin .modal::backdrop {
+                /* Token opaque → alpha 32% ditambahkan di sini. */
+                background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+                backdrop-filter: blur(8px);
+            }
+
+            .legacy-admin .modal-box {
+                border-radius: var(--md-shape-dialog);
+                background: var(--md-sys-color-surface-container-high);
+                color: var(--md-sys-color-on-surface);
+                box-shadow: var(--md-elevation-3);
+                scrollbar-width: thin;
+            }
+
+            /* --- Menu, dropdown, link, kartu, progress, tooltip --- */
+            .legacy-admin :is(.menu, .dropdown-content) :where(li > a, li > button, a, button) {
+                border-radius: var(--md-shape-pill);
+                font-weight: 500;
+                color: var(--md-sys-color-on-surface-variant);
+            }
+
+            .legacy-admin :is(.menu, .dropdown-content) :where(li > a:hover, li > button:hover) {
+                background: color-mix(in srgb, var(--md-sys-color-primary) 10%, transparent);
+                color: var(--md-sys-color-primary);
+            }
+
+            .legacy-admin :is(.menu, .dropdown-content) {
+                border: 1px solid var(--md-sys-color-outline-variant);
+                border-radius: var(--md-shape-card);
+                background: var(--md-sys-color-surface);
+                box-shadow: var(--md-elevation-2);
+            }
+
+            .legacy-admin .link {
+                color: var(--md-sys-color-primary);
+                text-underline-offset: .2em;
+            }
+
+            .legacy-admin :is(.card, .card-side) {
+                border-radius: var(--md-shape-card);
+                background: var(--md-sys-color-surface);
+                box-shadow: var(--md-elevation-1);
+            }
+
+            .legacy-admin .progress {
+                border-radius: var(--md-shape-pill);
+                background-color: var(--md-sys-color-surface-container-high);
+                color: var(--md-sys-color-primary);
+            }
+
+            .legacy-admin .progress::-webkit-progress-value {
+                background-color: var(--md-sys-color-primary);
+            }
+
+            .legacy-admin .progress::-moz-progress-bar {
+                background-color: var(--md-sys-color-primary);
+            }
+
+            .legacy-admin .tooltip::before,
+            .legacy-admin .tooltip::after {
+                background-color: var(--md-sys-color-inverse-surface);
+                color: var(--md-sys-color-inverse-on-surface);
+            }
+
+            /* Zebra table daisyUI memakai warna cream tema; diganti tint permukaan M3. */
+            .legacy-admin .table-zebra :where(tbody tr:nth-child(even) td) {
+                background-color: color-mix(in srgb, var(--md-sys-color-primary) 4%, transparent);
+            }
+
+            .legacy-admin .table-zebra :where(tbody tr:hover td) {
+                background-color: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
+            }
+
+            /* ---- Dialog M3: <dialog> native ----
+           Dialog native dipakai, bukan md-dialog (Material Web), karena hanya
+           TOP LAYER yang bisa menjamin modal berada di atas seluruh chrome.
+           md-dialog tidak bisa: host-nya `display: contents`, sehingga
+           position/z-index di host tidak menghasilkan box sama sekali, sedangkan
+           scrim internalnya hidup di shadow DOM dengan `z-index: 1`. Akibatnya
+           sidebar (z-10) dan topbar (z-40) selalu menang dan backdrop-nya tidak
+           pernah menutupi keduanya — persis gejala di screenshot.
+
+           Bonus yang didapat dari top layer: `::backdrop` bisa diblur, dan ia
+           menutupi seluruh viewport apa pun z-index halaman di belakangnya. */
+            .m3-dialog {
+                width: min(560px, calc(100vw - 32px));
+                /* UA membatasi max-width/max-height; kita tentukan sendiri. */
+                max-width: none;
+                max-height: calc(100dvh - 32px);
+                /* Pemusatan: UA memakai `margin: auto`, tapi utility parent seperti
+               `space-y-*` menaruh margin-top 16px di sini dan merusaknya — dialog
+               menempel 16px dari atas. `!important` diperlukan karena `space-y-*`
+               menang spesifisitas. */
+                margin: auto !important;
+                padding: 0;
+                border: 0;
+                border-radius: var(--md-shape-dialog);
+                background: var(--md-sys-color-surface-container-high);
+                color: var(--md-sys-color-on-surface);
+                box-shadow: var(--md-elevation-3);
+                overflow: hidden;
+            }
+
+            /* Scrim dialog di top layer: menutupi sidebar, topbar, dan apa pun,
+           sekaligus memblur halaman di belakangnya. Alpha 32% ditulis di sini
+           karena token scrim sengaja opaque (spec M3). */
+            .m3-dialog::backdrop {
+                background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+                backdrop-filter: blur(8px);
+            }
+
+            /* Bagian isi dialog. Dipakai lewat kelas, bukan `slot=` milik
+           md-dialog, supaya dialog native tetap bisa ditata penuh. */
+            .m3-dialog__headline {
+                padding: 24px 24px 16px;
+                font-size: 24px;
+                line-height: 32px;
+                font-weight: 500;
+            }
+
+            .m3-dialog__content {
+                max-height: calc(100dvh - 180px);
+                overflow-y: auto;
+                padding: 0 24px 24px;
+            }
+
+            .m3-dialog__actions {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 24px 24px;
+            }
+
+            /* Motion M3 untuk dialog native: masuk 200 ms emphasized-decelerate,
+           keluar 150 ms emphasized-accelerate. `allow-discrete` membuat `display`
+           dan `overlay` ikut bertransisi, sehingga dialog yang sedang menutup
+           tetap terlihat sampai animasinya selesai, bukan langsung menghilang. */
+            .m3-dialog {
+                opacity: 1;
+                transform: none;
+                transition:
+                    opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate),
+                    transform var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate),
+                    display var(--md-sys-motion-duration-short3) allow-discrete,
+                    overlay var(--md-sys-motion-duration-short3) allow-discrete;
+            }
+
+            .m3-dialog:not([open]) {
+                opacity: 0;
+                transform: scale(.96) translateY(12px);
+            }
+
+            @starting-style {
+                .m3-dialog[open] {
+                    opacity: 0;
+                    transform: scale(.96) translateY(12px);
+                }
+            }
+
+            .m3-dialog::backdrop {
+                transition:
+                    opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate),
+                    display var(--md-sys-motion-duration-short3) allow-discrete,
+                    overlay var(--md-sys-motion-duration-short3) allow-discrete;
+            }
+
+            @starting-style {
+                .m3-dialog[open]::backdrop {
+                    opacity: 0;
+                }
+            }
+
+            /* ---- Akar overlay modal ----
+           Semua modal admin memakai pola `fixed inset-0`, dan hampir semua halaman
+           menaruh utility jarak (`space-y-*`) di container induknya. Tailwind
+           menambahkan `margin-top` ke SEMUA anak, termasuk overlay ber-`inset: 0`,
+           sehingga seluruh overlay bergeser 16px ke bawah. Dampaknya dua sekaligus:
+             1. panel jatuh 8px dari titik tengah (terukur: t=350 padahal 342 pada
+                viewport 756);
+             2. scrim di dalamnya (`absolute inset-0`) ikut menyusut, jadi ada pita
+                16px di tepi yang tidak tertutup — backdrop terlihat "tidak full se
+                layar".
+           Margin pada elemen ber-inset tidak pernah diinginkan, jadi dikunci.
+
+           Selektor memakai token kelas (`[class~=…]`), bukan daftar id: overlay
+           legacy sebagian besar tidak punya id sama sekali (mis. panel hapus di
+           client/devisi/kerjasama/shift). Sudah diaudit: tidak ada elemen
+           `fixed inset-0` di seluruh views yang mengandalkan margin — termasuk trik
+           `inset: 0` + `margin: auto`, yang di sini tidak dipakai. */
+            .m3-overlay,
+            .legacy-admin :is([class~="fixed"][class~="inset-0"]) {
+                margin: 0 !important;
+            }
+
+            /* ---- Panel di dalam overlay modal ----
+           `margin: auto` melakukan dua hal sekaligus: menengahkan panel di dalam
+           flex overlay, dan menjaga bagian atas panel tetap bisa di-scroll kalau
+           panelnya lebih tinggi dari layar (flex `items-center` biasa memotongnya).
+           Ditulis sebagai aturan layer, bukan utility Tailwind, supaya perbaikan
+           ini tidak bergantung pada hasil `npm run build` — utility `m-auto`
+           ternyata belum ada di public/build saat bug ini diperbaiki. */
+            .m3-overlay > .m3-dialog-panel {
+                margin: auto;
+            }
+
+            /* ---- Kunci scroll selama modal terbuka ----
+           Selama modal terbuka, halaman di belakangnya WAJIB tidak bisa
+           di-scroll. Kalau bisa, konten ikut bergerak sementara scrim dan dialog
+           diam di tempat — modalnya terasa lepas dari halaman, dan di layar
+           sentuh latar belakang bisa tergeser tanpa sengaja.
+
+           Penanda `data-modal-open` dihitung di satu tempat oleh skrip di bawah,
+           karena modal di aplikasi ini dibuka lewat tiga cara berbeda:
+           `showModal()` pada dialog native, Alpine `x-show`, dan melepas class
+           `hidden`. Menambal setiap pembuka berarti belasan tempat yang bisa lupa.
+           Aturan `:has(dialog[open])` tetap ada sebagai jaring pengaman tanpa JS.
+
+           `padding-right` menutup ruang bekas scrollbar, supaya isi halaman tidak
+           meloncat ke kanan saat modal dibuka. Lebarnya diukur skrip tepat sebelum
+           penguncian, karena scrollbar hilang begitu `overflow: hidden` aktif.
+
+           Jaring pengaman `:has(dialog[open])` sengaja hanya berlaku SEBELUM skrip
+           siap. Kalau ia aktif bersamaan, aturan itu menyembunyikan scrollbar lebih
+           dulu, dan pengukuran lebar scrollbar di skrip akan selalu membaca 0 —
+           kompensasinya jadi hilang. */
+            html:not([data-m3-lock-ready]):has(dialog[open]),
+            html[data-modal-open] {
+                overflow: hidden;
+                padding-right: var(--m3-scrollbar, 0px);
+            }
+
+            /* ===================== 9. Transisi masuk halaman & dialog =====================
+           Fade-through M3: konten masuk bertahap 40ms, tetapi langkah-nya dibatasi
+           sampai anak keempat — halaman yang punya 12 blok tidak boleh membuat
+           pembaca menunggu lebih dari ~450ms.
+
+           Hanya `opacity` yang dianimasikan, tanpa `transform`. Dua alasan:
+             1. transform apa pun pada ancestor menjadikan dirinya containing block
+                untuk keturunan `position: fixed`, sehingga scrim modal terkurung di
+                kotak ancestor itu, bukan menutupi viewport;
+             2. properti ini tetap tidak menggeser layout (CLS 0).
+           Sisa yang tak terhindarkan: selama animasi berjalan, opacity < 1 membuat
+           ancestor jadi stacking context, jadi chrome (sidebar z-50) sempat berada
+           di atas overlay. Jendelanya ~300ms sejak halaman dimuat dan modal dibuka
+           oleh klik, bukan otomatis. */
+
+            @keyframes m3-fade-through {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .legacy-admin>* {
+                /* fill-mode `backwards`: delay stagger tetap menghasilkan opacity 0
+               sebelum giliran animasinya, lalu tidak ada sisa animasi setelah
+               selesai. */
+                animation: m3-fade-through var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) backwards;
+            }
+
+            .legacy-admin>*:nth-child(2) {
+                animation-delay: 40ms;
+            }
+
+            .legacy-admin>*:nth-child(3) {
+                animation-delay: 80ms;
+            }
+
+            .legacy-admin>*:nth-child(4) {
+                animation-delay: 120ms;
+            }
+
+            .legacy-admin>*:nth-child(n+5) {
+                animation-delay: 140ms;
+            }
+
+            /* Scrim bertoken — dipakai dialog M3, backdrop daisyUI, dan panel apa pun
+           yang perlu meredupkan halaman di belakangnya. Token opaque + 32% via
+           color-mix: satu sumber kebenaran, alpha konsisten antar modal. */
+            .m3-scrim {
+                background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+                /* Blur disamakan dengan ::backdrop dialog M3 supaya semua modal
+               terasa satu keluarga gerakan dan satu kedalaman. */
+                backdrop-filter: blur(8px);
+            }
+
+            /* Dialog M3: masuk 200 ms emphasized-decelerate, keluar 150 ms
+           emphasized-accelerate. Kelas enter/leave membawa kurva + durasinya,
+           kelas -start/-end membawa keadaannya. */
+            .m3-dialog-enter {
+                transition-property: opacity, transform;
+                transition-duration: var(--md-sys-motion-duration-short4);
+                transition-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
+            }
+
+            .m3-dialog-enter-start {
+                opacity: 0;
+                transform: scale(.96) translateY(12px);
+            }
+
+            .m3-dialog-enter-end {
                 opacity: 1;
                 transform: none;
             }
-        }
 
-        .legacy-admin>* {
-            animation: m3-fade-through var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate) both;
-        }
-
-        .legacy-admin>*:nth-child(2) {
-            animation-delay: 40ms;
-        }
-
-        .legacy-admin>*:nth-child(3) {
-            animation-delay: 80ms;
-        }
-
-        .legacy-admin>*:nth-child(4) {
-            animation-delay: 120ms;
-        }
-
-        .legacy-admin>*:nth-child(n+5) {
-            animation-delay: 140ms;
-        }
-
-        /* Scrim bertoken — dipakai dialog M3, backdrop daisyUI, dan panel apa pun
-           yang perlu meredupkan halaman di belakangnya. */
-        .m3-scrim {
-            background: var(--md-sys-color-scrim);
-            backdrop-filter: blur(2px);
-        }
-
-        /* Dialog M3: masuk 200 ms emphasized-decelerate, keluar 150 ms
-           emphasized-accelerate. Kelas enter/leave membawa kurva + durasinya,
-           kelas -start/-end membawa keadaannya. */
-        .m3-dialog-enter {
-            transition-property: opacity, transform;
-            transition-duration: var(--md-sys-motion-duration-short4);
-            transition-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
-        }
-
-        .m3-dialog-enter-start {
-            opacity: 0;
-            transform: scale(.96) translateY(12px);
-        }
-
-        .m3-dialog-enter-end {
-            opacity: 1;
-            transform: none;
-        }
-
-        .m3-dialog-leave {
-            transition-property: opacity, transform;
-            transition-duration: var(--md-sys-motion-duration-short3);
-            transition-timing-function: var(--md-sys-motion-easing-emphasized-accelerate);
-        }
-
-        .m3-dialog-leave-start {
-            opacity: 1;
-            transform: none;
-        }
-
-        .m3-dialog-leave-end {
-            opacity: 0;
-            transform: scale(.96) translateY(12px);
-        }
-
-        /* Fade polos untuk scrim: 200 ms masuk, 150 ms keluar. */
-        .m3-scrim-fade-enter {
-            transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
-        }
-
-        .m3-scrim-fade-leave {
-            transition: opacity var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized-accelerate);
-        }
-
-        /* ===================== 10. Reduced motion ===================== */
-
-        @media (prefers-reduced-motion: reduce) {
-
-            .m3-skeleton {
-                animation: none;
+            .m3-dialog-leave {
+                transition-property: opacity, transform;
+                transition-duration: var(--md-sys-motion-duration-short3);
+                transition-timing-function: var(--md-sys-motion-easing-emphasized-accelerate);
             }
 
-            .legacy-admin .btn,
-            .m3-btn,
-            .m3-icon-btn,
-            .m3-skip-link,
-            .m3-dialog-enter,
-            .m3-dialog-leave,
-            .m3-scrim-fade-enter,
-            .m3-scrim-fade-leave {
-                transition: none;
-            }
-
-            .legacy-admin .btn:active,
-            .m3-btn:active,
-            .m3-icon-btn:active {
+            .m3-dialog-leave-start {
+                opacity: 1;
                 transform: none;
             }
 
-            /* Masuk halaman dimatikan sepenuhnya: konten langsung terlihat. */
-            .legacy-admin>* {
-                animation: none;
-            }
-
-            /* Dorongan 8px tetap dihapus walau transisi warna dimatikan. */
-            .m3-dialog-enter-start,
             .m3-dialog-leave-end {
-                transform: none;
+                opacity: 0;
+                transform: scale(.96) translateY(12px);
             }
-        }
+
+            /* Fade polos untuk scrim: 200 ms masuk, 150 ms keluar. */
+            .m3-scrim-fade-enter {
+                transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized-decelerate);
+            }
+
+            .m3-scrim-fade-leave {
+                transition: opacity var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized-accelerate);
+            }
+
+            /* ===================== 10. Reduced motion ===================== */
+
+            @media (prefers-reduced-motion: reduce) {
+
+                .m3-skeleton {
+                    animation: none;
+                }
+
+                .legacy-admin .btn,
+                .m3-btn,
+                .m3-icon-btn,
+                .m3-skip-link,
+                .m3-dialog-enter,
+                .m3-dialog-leave,
+                .m3-scrim-fade-enter,
+                .m3-scrim-fade-leave {
+                    transition: none;
+                }
+
+                .legacy-admin .btn:active,
+                .m3-btn:active,
+                .m3-icon-btn:active {
+                    transform: none;
+                }
+
+                /* Masuk halaman dimatikan sepenuhnya: konten langsung terlihat. */
+                .legacy-admin>* {
+                    animation: none;
+                }
+
+                /* Dorongan 8px tetap dihapus walau transisi warna dimatikan. */
+                .m3-dialog-enter-start,
+                .m3-dialog-leave-end {
+                    transform: none;
+                }
+            }
     </style>
 
     @stack('styles')
+
+    <script>
+        // ---- Kunci scroll halaman saat ada modal terbuka ----
+        // Modal di aplikasi ini dibuka lewat tiga cara berbeda: `showModal()` pada
+        // <dialog> native, Alpine `x-show`, dan melepas class `hidden`. Karena itu
+        // keadaan "ada modal terbuka?" dihitung dari DOM, bukan ditambal di setiap
+        // pembuka.
+        (function () {
+            // Hanya elemen yang memang lapisan overlay modal. Scrim di dalam modal
+            // tidak perlu didaftarkan: visibilitasnya mengikuti induknya.
+            // `[class~="modal"]` menangkap modal daisyUI yang mengandalkan CSS-nya
+            // sendiri, bukan utility `fixed inset-0`.
+            const OVERLAY = 'dialog[open], .m3-overlay, [role="dialog"], [role="alertdialog"],' +
+                ' [class~="fixed"][class~="inset-0"], [class~="modal"]';
+
+            const terlihat = (el) => {
+                const gaya = getComputedStyle(el);
+                if (gaya.display === 'none' || gaya.visibility === 'hidden') return false;
+                // getClientRects kosong berarti elemen tidak punya kotak sama sekali
+                // (mis. induknya display:none) — bukan modal yang terbuka.
+                return el.getClientRects().length > 0;
+            };
+
+            let terakhir = null;
+            const perbarui = () => {
+                const terbuka = Array.from(document.querySelectorAll(OVERLAY)).some(terlihat);
+                if (terbuka === terakhir) return;
+                terakhir = terbuka;
+
+                const akar = document.documentElement;
+                if (terbuka) {
+                    // Ukur lebar scrollbar SEBELUM dikunci: setelah `overflow: hidden`
+                    // berlaku, scrollbar sudah hilang dan ukurannya jadi 0.
+                    akar.style.setProperty('--m3-scrollbar', (window.innerWidth - akar.clientWidth) + 'px');
+                }
+                akar.toggleAttribute('data-modal-open', terbuka);
+            };
+
+            new MutationObserver(perbarui).observe(document.documentElement, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ['class', 'style', 'open', 'aria-hidden'],
+            });
+            window.addEventListener('resize', perbarui);
+
+            // Menandai bahwa jalur skrip sudah aktif. Jaring pengaman CSS
+            // `html:not([data-m3-lock-ready]):has(dialog[open])` hanya berlaku
+            // sebelum tanda ini ada, supaya pengukuran lebar scrollbar tidak
+            // didahului oleh aturan CSS itu sendiri.
+            const mulai = () => {
+                document.documentElement.setAttribute('data-m3-lock-ready', '');
+                perbarui();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', mulai);
+            } else {
+                mulai();
+            }
+        })();
+    </script>
 
 </head>

@@ -997,10 +997,27 @@ class AdminController extends Controller
             return redirect()->back();
         }
 
+        Cache::forget('admin.dashboard.inactive-users');
         Cache::forget('not_active_users');
         Cache::forget('admin.dashboard.inactive-users-count');
 
         toastr()->warning('User ' . $userName . ' dan semua data terkait berhasil dihapus.', [], 'Dihapus');
+        return redirect()->route('admin.index');
+    }
+
+    public function bulkHardDeleteUsers(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'distinct', 'exists:users,id'],
+        ])['ids'];
+
+        foreach ($ids as $id) {
+            $this->hardDeleteUser((int) $id);
+        }
+
+        Cache::forget('admin.dashboard.inactive-users');
+        toastr()->warning(count($ids) . ' user berhasil dihapus.', [], 'Dihapus');
         return redirect()->route('admin.index');
     }
 

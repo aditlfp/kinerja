@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NewsRequest;
+use App\Http\Requests\NewsUpdateRequest;
 use App\Models\News;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
@@ -57,32 +57,36 @@ class NewsController extends Controller
         return redirect()->back();
     }
     
-    public function update(Request $request, $id)
+    public function update(NewsUpdateRequest $request, $id)
     {
-        $news = [
-            'image' => $request->image,
+        $news = News::findOrFail($id);
+
+        // Tanpa gambar baru, kolom image tidak ikut diubah. Sebelumnya nilai ini
+        // diambil dari input `oldimage` yang tidak pernah dikirim form edit,
+        // sehingga simpan berita selalu gagal karena image menjadi null.
+        $data = [
             'tanggal_lihat' => $request->tanggal_lihat,
             'tanggal_tutup' => $request->tanggal_tutup,
             'tanggal_muncul' => $request->tanggal_muncul,
         ];
-        
-        if($request->hasFile('image'))
-        {
-            if($request->oldimage)
-            {
-                Storage::disk('public')->delete('images/' . $request->oldimage);
+
+        if ($request->hasFile('image')) {
+            // Nama file lama diambil dari baris database milik berita ini,
+            // bukan dari input form, supaya yang terhapus selalu file yang benar.
+            if ($news->image) {
+                Storage::disk('public')->delete('images/' . $news->image);
             }
 
-            $news['image'] = UploadImage($request, 'image');
-        }else{
-            $news['image'] = $request->oldimage;
+            $data['image'] = UploadImage($request, 'image');
         }
-         try {
-            News::findOrFail($id)->update($news);
-        } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Tidak Tersimpan', [], 'error');
-           return redirect()->back();
+
+        try {
+            $news->update($data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            toastr()->error('Data Tidak Tersimpan', [], 'error');
+            return redirect()->back();
         }
+
         toastr()->success('Data berhasil diedit', [], 'success');
         return redirect()->to(route('admin.news.index'));
     }
@@ -90,26 +94,24 @@ class NewsController extends Controller
     public function destroy($id)
     {
         $news = News::find($id);
-        if ($news != null) {
-            if ($news->image == null) {
-                toastr()->error('Logo Tidak Ditemukan', [], 'error');
-            }
-                if ($news->image) {
-                    Storage::disk('public')->delete('images/'.$news->image);
-                }
+
+        if ($news === null) {
+            toastr()->error('Data Tidak Ditemukan', [], 'error');
+            return redirect()->back();
         }
+
+        if ($news->image) {
+            Storage::disk('public')->delete('images/' . $news->image);
+        }
+
         $news->delete();
-        toastr()->error('Data Tidak Ditemukan', [], 'error');
+        toastr()->success('Berita berhasil dihapus', [], 'success');
         return redirect()->back();
     }
     
     public function NewsBefore()
     {
-        $today = now()->toDateString();
-        $newsId = News::whereDate('tanggal_lihat', '<=', $today)
-            ->whereDate('tanggal_tutup', '>=', $today)
-            ->whereJsonContains('tanggal_muncul', (int) now()->day)
-            ->get();
+        $newsId = News::query()->tampilPada()->get();
 
         return view('tes.index', compact('newsId'));
     }

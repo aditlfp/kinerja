@@ -31,12 +31,12 @@ $maxWidth = [
         nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
         prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) -1 },
     }"
+    {{-- Penguncian scroll TIDAK dilakukan di sini: halaman dikunci oleh skrip
+         terpusat di head (menandai <html data-modal-open>), supaya modal native,
+         Alpine, dan overlay legacy memakai satu mekanisme yang sama. --}}
     x-init="$watch('show', value => {
         if (value) {
-            document.body.classList.add('overflow-y-hidden');
             {{ $attributes->has('focusable') ? 'setTimeout(() => firstFocusable().focus(), 100)' : '' }}
-        } else {
-            document.body.classList.remove('overflow-y-hidden');
         }
     })"
     x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
@@ -45,9 +45,14 @@ $maxWidth = [
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 z-50 overflow-y-auto overscroll-contain px-4 py-6 sm:px-0"
+    {{-- Flex + m-auto di panel: modal benar-benar di tengah viewport, dan
+         kalau tingginya melebihi layar tetap bisa di-scroll dari atas
+         (margin auto pada flex item, bukan absolute centering).
+         `m3-overlay` mengunci margin overlay ke 0 supaya utility `space-y-*`
+         pada halaman pemanggil tidak menggesernya dari tengah. --}}
+    class="m3-overlay fixed inset-0 z-50 flex overflow-y-auto overscroll-contain px-4 py-6 sm:px-6"
     role="dialog" aria-modal="true"
-    style="display: {{ $show ? 'block' : 'none' }};"
+    style="display: {{ $show ? 'flex' : 'none' }};"
 >
     <div
         x-show="show"
@@ -65,7 +70,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="mb-6 overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)] sm:mx-auto sm:w-full {{ $maxWidth }}"
+        class="m3-dialog-panel m-auto w-full overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)] {{ $maxWidth }}"
         x-transition:enter="m3-dialog-enter"
         x-transition:enter-start="m3-dialog-enter-start"
         x-transition:enter-end="m3-dialog-enter-end"

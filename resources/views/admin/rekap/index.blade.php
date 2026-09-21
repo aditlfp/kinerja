@@ -62,7 +62,10 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: var(--md-sys-color-scrim);
+                /* Token scrim opaque (spec M3) — alpha 32% di sini, bukan
+                   di token: overlay polos tidak punya faktor pengali
+                   seperti opacity internal md-dialog. */
+                background: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
                 z-index: 9998;
                 opacity: 0;
                 transition: opacity var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);

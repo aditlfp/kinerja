@@ -15,13 +15,15 @@
         <form method="POST" action="{{ route('admin.news.update', $newsId->id) }}" class="space-y-4" id="form" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
+            {{-- Gambar boleh tidak diganti: nama foto lama dibaca controller dari
+                 baris database, jadi tidak perlu input tersembunyi oldimage. --}}
             <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
                 <div class="space-y-4">
                     <div>
                         <label for="img" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Foto Berita</label>
                         <div class="mb-2"><img id="newsPreview" class="h-24 w-40 rounded-lg border border-gray-200 object-cover" src="{{ asset('storage/images/' . $newsId->image) }}" alt="Preview"></div>
                         <input id="img" class="file-input file-input-bordered w-full" type="file" name="image" accept="image/*"/>
-                        <x-input-error :messages="$errors->get('image1')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>

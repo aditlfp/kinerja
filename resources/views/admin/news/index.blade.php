@@ -59,7 +59,7 @@
                                             <i class="ri-edit-line text-xs"></i>
                                             Edit
                                         </a>
-                                        <form action="{{ url('news/' . $n->id) }}" method="POST">
+                                        <form action="{{ route('admin.news.destroy', $n->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button
