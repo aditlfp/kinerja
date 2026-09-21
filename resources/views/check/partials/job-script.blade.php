@@ -132,4 +132,28 @@
         });
         $('#form-cp').on('submit', function () { $('#submit-job').prop('disabled', true).text('Menyimpan...'); });
     });
+
+    const dropdown = document.querySelector('.job-dropdown');
+    const searchInput = dropdown.querySelector('.job-search');
+    const options = dropdown.querySelectorAll('.job-option');
+    const noResult = dropdown.querySelector('.job-no-result');
+
+    searchInput?.addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        let found = false;
+
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+
+            const match = text.includes(keyword);
+
+            option.classList.toggle('hidden', !match);
+
+            if (match) {
+                found = true;
+            }
+        });
+
+        noResult?.classList.toggle('hidden', found);
+    });
 </script>

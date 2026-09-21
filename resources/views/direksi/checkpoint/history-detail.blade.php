@@ -8,7 +8,10 @@
                     {{ strtolower($checkpoint->user->nama_lengkap ?? '-') }} &middot;
                     {{ Carbon\Carbon::parse($checkpoint->tanggal[0])->locale('id')->translatedFormat('d F Y') }}</p>
             </div>
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('direksi.cp.calendar', [
+                        'user' => $checkpoint->user_id,
+                        'month' => \Carbon\Carbon::parse($checkpoint->tanggal[0])->format('Y-m'),
+                    ]) }}"
                 class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-sky-300 hover:text-sky-600"
                 aria-label="Kembali"><i class="ri-arrow-left-line text-xl"></i></a>
         </div>

@@ -7,7 +7,7 @@
     </div>
         <label class="label py-0"><span class="label-text font-semibold">Nama pekerjaan</span></label>
         <div class="job-dropdown relative mt-2">
-
+        
         <button type="button"
             class="job-trigger flex h-11 w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 text-left text-sm text-slate-700 outline-none transition duration-300 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-100">
 
@@ -20,7 +20,18 @@
 
         <div
             class="job-menu fixed z-[9999] hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(15,23,42,.28)]">
+            {{-- Search --}}
+            <div class="sticky top-0 z-10 bg-white pb-1.5">
+                <div class="relative">
+                    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
+                    <input
+                        type="text"
+                        class="job-search h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:bg-white focus:ring-2 focus:ring-sky-100"
+                        placeholder="Cari pekerjaan..."
+                        autocomplete="off">
+                </div>
+            </div>
             <button type="button"
                 class="job-option w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-600 hover:bg-sky-50 hover:text-sky-700"
                 data-value="">

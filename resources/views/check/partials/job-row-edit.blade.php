@@ -63,8 +63,19 @@
     </button>
 
     <div
-            class="job-menu fixed z-[9999] hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(15,23,42,.28)]">
+        class="job-menu fixed z-[9999] hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(15,23,42,.28)]">
+        {{-- Search --}}
+        <div class="sticky top-0 z-10 bg-white pb-1.5">
+            <div class="relative">
+                <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
+                <input
+                    type="text"
+                    class="job-search h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:bg-white focus:ring-2 focus:ring-sky-100"
+                    placeholder="Cari pekerjaan..."
+                    autocomplete="off">
+            </div>
+        </div>
 
         <button
             type="button"
