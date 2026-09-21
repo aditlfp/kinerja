@@ -2,12 +2,11 @@
     @section('title', 'Data Checkpoint')
 
     <div class="w-full px-2 mx-auto space-y-4 max-w-screen-2xl sm:px-3 lg:px-4">
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Checkpoint Management</p>
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Index Rencana Kerja</h1>
-                    <p class="mt-1 text-sm text-gray-600">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Index Rencana Kerja</h1>
+                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
                 </div>
                 {{-- <div class="flex items-center gap-2">
                     <a href="{{ Auth::user()->role_id == 2 ? route('admin.index') : route('dashboard.index') }}" class="inline-flex items-center h-10 px-4 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">Kembali</a>

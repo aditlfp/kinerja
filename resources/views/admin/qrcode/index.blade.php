@@ -1,6 +1,6 @@
 <x-admin-layout :fullWidth="true">
 		<div class="py-10 px-5">
-			<p class="text-center text-2xl font-bold  uppercase">Data QR Code</p>
+			<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data QR Code</h1>
 			<div class="flex justify-end ">
 				<div class="input flex items-center w-fit input-bordered my-10">
 					<i class="ri-search-2-line"></i>

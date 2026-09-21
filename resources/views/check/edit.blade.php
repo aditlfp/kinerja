@@ -21,6 +21,7 @@
                 $rows++;
             }
             $selectedDate = request('tanggal', $dates[0] ?? optional($cex->created_at)->format('Y-m-d'));
+            $approveStatuses = array_values((array) $cex->approve_status);
         @endphp
         <div class="mx-auto w-full max-w-4xl px-4 py-6">
             <div class="card overflow-visible border border-white/70 bg-white shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:shadow-[0_16px_36px_-18px_rgba(15,23,42,.18)]">
@@ -37,7 +38,7 @@
                                     $manual = filled($manuals[$i] ?? null) ? $manuals[$i] : null;
                                     $rowImages = is_array($images[$i] ?? null) ? $images[$i] : (($images[$i] ?? null) ? [$images[$i]] : []);
                                 @endphp
-                                @include('check.partials.job-row-edit', compact('i', 'jobId', 'manual', 'rowImages', 'pcp', 'selectedDate', 'descriptions'))
+                                @include('check.partials.job-row-edit', compact('i', 'jobId', 'manual', 'rowImages', 'pcp', 'selectedDate', 'descriptions', 'approveStatuses'))
                             @endfor
                         </div>
                         <button id="add-job" type="button" class="btn mt-4 w-full border-2 border-dashed border-sky-300 bg-sky-50 text-sky-700 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100">+ Tambah pekerjaan</button><button id="submit-job" type="submit" class="btn mt-5 w-full border-0 bg-sky-500 font-bold text-white shadow-lg transition duration-200 hover:-translate-y-0.5 hover:shadow-lg">Simpan perubahan</button>

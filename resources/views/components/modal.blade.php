@@ -45,32 +45,33 @@ $maxWidth = [
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    class="fixed inset-0 z-50 overflow-y-auto overscroll-contain px-4 py-6 sm:px-0"
+    role="dialog" aria-modal="true"
     style="display: {{ $show ? 'block' : 'none' }};"
 >
     <div
         x-show="show"
-        class="fixed inset-0 transform transition-all"
+        class="fixed inset-0"
         x-on:click="show = false"
-        x-transition:enter="ease-out duration-300"
+        x-transition:enter="m3-scrim-fade-enter"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
-        x-transition:leave="ease-in duration-200"
+        x-transition:leave="m3-scrim-fade-leave"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div class="m3-scrim absolute inset-0"></div>
     </div>
 
     <div
         x-show="show"
-        class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
-        x-transition:enter="ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        class="mb-6 overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)] sm:mx-auto sm:w-full {{ $maxWidth }}"
+        x-transition:enter="m3-dialog-enter"
+        x-transition:enter-start="m3-dialog-enter-start"
+        x-transition:enter-end="m3-dialog-enter-end"
+        x-transition:leave="m3-dialog-leave"
+        x-transition:leave-start="m3-dialog-leave-start"
+        x-transition:leave-end="m3-dialog-leave-end"
     >
         {{ $slot }}
     </div>

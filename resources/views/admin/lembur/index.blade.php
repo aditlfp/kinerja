@@ -1,8 +1,8 @@
 <x-admin-layout :fullWidth="true">
 		@if (Auth::user()->divisi->jabatan->code_jabatan == "SPV-P")
-		<p class="text-center text-2xl font-bold py-10 uppercase">List Lembur {{ Auth::user()->kerjasama->client->name }}</p>
+		<h1 class="py-6 text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">List Lembur {{ Auth::user()->kerjasama->client->name }}</h1>
 		@else
-		<p class="text-center text-2xl font-bold py-10 uppercase">List Lembur</p>
+		<h1 class="py-6 text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">List Lembur</h1>
 		@endif
 		<div class="overflow-x-auto mx-10 flex justify-center">
 			<table class="table table-zebra w-full mb-10 bg-slate-50">

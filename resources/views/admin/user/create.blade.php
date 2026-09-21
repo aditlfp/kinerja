@@ -33,9 +33,10 @@
         >
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="font-semibold uppercase tracking-[0.12em] text-blue-600" :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-xs'">User Management</p>
-                    <h2 class="mt-1 font-bold text-gray-900" :class="density === 'ultra_compact' ? 'text-lg' : 'text-3xl'">Tambah User</h2>
-                    <p class="mt-1 text-gray-600" :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-sm'">
+                    <h1 class="font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]"
+                        :class="density === 'ultra_compact' ? 'text-lg' : 'text-2xl'">Tambah User</h1>
+                    <p class="mt-1 text-[var(--md-sys-color-on-surface-variant)]"
+                        :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-sm'">
                         Mode `Normal` untuk kenyamanan visual, mode `Ultra Compact` untuk input cepat.
                     </p>
                 </div>

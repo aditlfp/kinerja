@@ -10,31 +10,43 @@
         const jobs = $('#jobs');
         const isEdit = @json($isEdit ?? false);
         let rowIndex = jobs.find('.job-row').length;
+        jobs.find('.job-row').each(function () {
+            const row = $(this);
+            const existing = row.find('.original-index').val();
+            const stable = existing !== undefined && existing !== '' ? existing : rowIndex++;
+            row.attr('data-stable-index', stable);
+        });
 
-        function applyIndex(row, index) {
-            row.attr('data-index', index);
-            row.find('.job-number').text(index + 1);
-            row.find('.photo-input').attr('name', `img[${index}][]`);
-            row.find('.existing-images').attr('name', `existing_img[${index}][]`);
-            row.find('.deskripsi-input').attr('name', `deskripsi[${index}]`);
-            row.find('.tanggal-input').attr('name', `tanggal[${index}]`);
-            row.find('.approve-input').attr('name', `approve_status[${index}]`);
-            row.find('.job-value').attr('name', `pekerjaan_id[${index}]`);
-            row.find('.manual-name').attr('name', `input_manual[${index}]`);
+        function applyIndex(row, visualIndex) {
+            let stableIndex = row.attr('data-stable-index');
+            if (stableIndex === undefined) {
+                stableIndex = row.find('.original-index').val() || rowIndex++;
+                row.attr('data-stable-index', stableIndex);
+            }
+            row.attr('data-index', stableIndex);
+            row.find('.job-number').text(visualIndex + 1);
+            row.find('.original-index').attr('name', `original_index[${stableIndex}]`).val(stableIndex);
+            row.find('.photo-input').attr('name', `img[${stableIndex}][]`);
+            row.find('.existing-images').attr('name', `existing_img[${stableIndex}][]`);
+            row.find('.deskripsi-input').attr('name', `deskripsi[${stableIndex}]`);
+            row.find('.tanggal-input').attr('name', `tanggal[${stableIndex}]`);
+            row.find('.approve-input').attr('name', `approve_status[${stableIndex}]`);
+            row.find('.job-value').attr('name', `pekerjaan_id[${stableIndex}]`);
+            row.find('.manual-name').attr('name', `input_manual[${stableIndex}]`);
         }
         function renumber() {
             jobs.find('.job-row').each(function (i) { applyIndex($(this), i); });
-            rowIndex = jobs.find('.job-row').length;
         }
         function syncRow(row) {
             const manual = row.find('.job-select').val() === 'manual';
             const selected = row.find('.job-select option:selected');
-            const label = manual ? row.find('.manual-name').val() || 'Ketik manual' : (selected.text() || 'Pilih dari daftar pekerjaan');
+            const label = manual ? row.find('.manual-name').val() || 'Pilih Untuk Ketik manual' : (selected.text() || 'Pilih dari daftar pekerjaan');
             row.find('.job-label').text(label).toggleClass('text-slate-400', !row.find('.job-select').val()).toggleClass('text-slate-700', !!row.find('.job-select').val());
         }
         function closeDropdowns() {
             $('.job-menu').addClass('hidden');
             $('.job-chevron').removeClass('rotate-180');
+            $('.job-row').css('z-index', '');
         }
 
         function bindDropdown(row) {
@@ -50,8 +62,16 @@
                 closeDropdowns();
 
                 if (isClosed) {
+                    const rect = trigger[0].getBoundingClientRect();
+                    const menuHeight = Math.min(menu[0].scrollHeight, 240);
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    const top = spaceBelow < menuHeight + 12 ? Math.max(8, rect.top - menuHeight - 8) : rect.bottom + 8;
+                    menu.css({ top: `${top}px`, left: `${rect.left}px`, width: `${rect.width}px` });
+                    row.css('z-index', '60');
                     menu.removeClass('hidden');
                     trigger.find('.job-chevron').addClass('rotate-180');
+                } else {
+                    row.css('z-index', '');
                 }
             });
 
@@ -100,10 +120,12 @@
         jobs.find('.job-row').each(function () { bind($(this)); });
         renumber();
         $(document).on('click', function (event) {
-            if (!$(event.target).closest('.job-dropdown').length) closeDropdowns();
+            if (!$(event.target).closest('.job-dropdown, .job-menu').length) closeDropdowns();
         });
+        $(window).on('resize scroll', closeDropdowns);
         $('#add-job').on('click', function () {
             const row = $($('#job-template').html());
+            row.attr('data-stable-index', rowIndex++);
             jobs.append(row);
             bind(row);
             renumber();

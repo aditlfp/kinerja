@@ -2,10 +2,9 @@
     @section('title', 'Edit Poin')
 
     <div class="mx-auto w-full max-w-screen-md space-y-4 px-2 sm:px-3 lg:px-4">
-        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-yellow-600">Point Management</p>
-            <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Edit Data Poin</h1>
-            <p class="mt-1 text-sm text-gray-600">Perbarui nilai poin untuk client {{ $point->client?->name ?? '-' }}.</p>
+        <section class="px-0.5">
+            <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Edit Data Poin</h1>
+            <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Perbarui nilai poin untuk client {{ $point->client?->name ?? '-' }}.</p>
         </section>
 
         <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">

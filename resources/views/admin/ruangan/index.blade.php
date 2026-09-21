@@ -2,12 +2,11 @@
     @section('title', 'Data Ruangan')
 
     <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
-        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Ruangan Management</p>
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Data Ruangan</h1>
-                    <p class="mt-1 text-sm text-gray-600">Kelola daftar ruangan berdasarkan mitra/client.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Ruangan</h1>
+                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola daftar ruangan berdasarkan mitra/client.</p>
                 </div>
                 <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex h-10 w-full items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 sm:w-72">

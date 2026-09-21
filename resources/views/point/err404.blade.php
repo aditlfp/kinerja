@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
-        <section class="rounded-2xl border border-red-100 bg-white p-6 shadow-sm">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-red-600">Point Summary</p>
-            <h1 class="mt-1 text-xl font-bold tracking-tight text-gray-900">Point Saya</h1>
+        <section class="px-0.5">
+            <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Point Saya</h1>
             <p class="mt-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                 Kamu belum mempunyai point.
             </p>

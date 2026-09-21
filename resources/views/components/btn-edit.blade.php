@@ -1,1 +1,4 @@
-<a href="{{ $slot }}" class="text-white bg-yellow-600 hover:bg-yellow-800 hover:shadow-none hover:text-slate-500 text-md px-2 py-[6.5px] rounded-full shadow-md transition-all ease-in-out .2s"><i class="ri-edit-2-line"></i></a>
+<a href="{{ $slot }}" aria-label="Edit" title="Edit"
+    class="m3-icon-btn m3-icon-btn--sm bg-[var(--md-sys-color-warning-container)] text-[var(--md-sys-color-on-warning-container)] hover:brightness-[1.03]">
+    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+</a>

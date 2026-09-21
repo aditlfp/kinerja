@@ -2,11 +2,10 @@
     @section('title', 'Pengaturan Rekap')
 
     <div class="w-full px-2 py-6 mx-auto space-y-4 max-w-screen-xl sm:px-3 lg:px-4">
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Rekap Management</p>
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Pengaturan Batas Waktu Rekap</h1>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Pengaturan Batas Waktu Rekap</h1>
                     <p class="mt-1 text-sm text-gray-600">
                         Atur tanggal (1–31) + jam. Berlaku tiap bulan: setelah lewat, pengajuan rekap Leader/SPVW dikunci sampai bulan berikutnya. Belum diisi = tetap terbuka.
                     </p>

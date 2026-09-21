@@ -19,6 +19,43 @@ use Intervention\Image\ImageManagerStatic as Images;
 
 class CheckPointController extends Controller
 {
+    public function history(Request $request)
+    {
+        $now = $request->filled('month') ? Carbon::createFromFormat('Y-m', $request->month) : Carbon::now();
+        $start = $now->copy()->startOfMonth();
+        $end = $now->copy()->endOfMonth();
+        $records = CheckPoint::where('user_id', Auth::id())->get();
+        $recordsByDate = $records->flatMap(function (CheckPoint $checkpoint): array {
+            $dates = collect((array) $checkpoint->tanggal)->filter();
+            if ($dates->isEmpty()) $dates = collect([$checkpoint->created_at]);
+            return $dates->mapWithKeys(fn ($date) => [Carbon::parse($date)->toDateString() => $checkpoint->id])->all();
+        });
+        $rejectedByDate = $records->flatMap(function (CheckPoint $checkpoint): array {
+            $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
+            if (!is_array($statuses) || !collect($statuses)->contains('denied')) return [];
+            $dates = collect((array) $checkpoint->tanggal)->filter();
+            if ($dates->isEmpty()) $dates = collect([$checkpoint->created_at]);
+            return $dates->mapWithKeys(fn ($date) => [Carbon::parse($date)->toDateString() => true])->all();
+        });
+        $calendar = collect();
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            $calendar->push(['date' => $date->copy(), 'hasData' => $recordsByDate->has($date->toDateString()), 'recordId' => $recordsByDate->get($date->toDateString()), 'rejected' => $rejectedByDate->has($date->toDateString())]);
+        }
+        return view('check.history', [
+            'calendar' => $calendar,
+            'previousMonth' => $start->copy()->subMonth()->format('Y-m'),
+            'nextMonth' => $start->copy()->addMonth()->format('Y-m'),
+            'start' => $start,
+        ]);
+    }
+
+    public function historyShow($id)
+    {
+        $checkpoint = CheckPoint::where('user_id', Auth::id())->findOrFail($id);
+        $jobs = PekerjaanCp::whereIn('id', array_filter((array) $checkpoint->pekerjaan_cp_id))->get()->keyBy('id');
+        return view('check.history-detail', compact('checkpoint', 'jobs'));
+    }
+
     public function index(Request $request)
     {
         $now = $request->filled('month') ? Carbon::createFromFormat('Y-m', $request->month) : Carbon::now();
@@ -49,9 +86,23 @@ class CheckPointController extends Controller
                     return $dates->mapWithKeys(fn ($date) => [Carbon::parse($date)->toDateString() => $checkpoint->id])->all();
                 })
         );
+        $rejectedDates = Cache::remember(
+            "checkpoint-calendar-rejected:" . Auth::id(),
+            now()->addSeconds(30),
+            fn () => CheckPoint::where('user_id', Auth::id())
+                ->select(['id', 'tanggal', 'created_at', 'approve_status'])
+                ->get()
+                ->flatMap(function (CheckPoint $checkpoint): array {
+                    $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
+                    if (!is_array($statuses) || !collect($statuses)->contains('denied')) return [];
+                    $dates = collect(is_array($checkpoint->tanggal) ? $checkpoint->tanggal : [$checkpoint->tanggal])->filter();
+                    if ($dates->isEmpty()) $dates = collect([$checkpoint->created_at]);
+                    return $dates->mapWithKeys(fn ($date) => [Carbon::parse($date)->toDateString() => true])->all();
+                })
+        );
         $calendar = collect();
         for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
-            $calendar->push(['date' => $date->copy(), 'hasData' => $recordsByDate->has($date->format('Y-m-d')), 'recordId' => $recordsByDate->get($date->format('Y-m-d'))]);
+            $calendar->push(['date' => $date->copy(), 'hasData' => $recordsByDate->has($date->format('Y-m-d')), 'recordId' => $recordsByDate->get($date->format('Y-m-d')), 'rejected' => $rejectedDates->has($date->format('Y-m-d'))]);
         }
         $previousMonth = $start->copy()->subMonth()->format('Y-m');
         $nextMonth = $start->copy()->addMonth()->format('Y-m');
@@ -145,6 +196,11 @@ class CheckPointController extends Controller
         $approve = $request->input('approve_status', []);
         $existing = $request->input('existing_img', []);
         $files = $request->file('img', []);
+        $originalIndexes = $request->input('original_index', []);
+        $originalStatuses = is_array($cex2->approve_status) ? $cex2->approve_status : json_decode($cex2->approve_status ?: '[]', true);
+        $originalStatuses = is_array($originalStatuses) ? $originalStatuses : [];
+        $originalNotes = is_array($cex2->note) ? $cex2->note : json_decode($cex2->note ?: '[]', true);
+        $originalNotes = is_array($originalNotes) ? $originalNotes : [];
 
         $indexes = array_keys($jobs);
         sort($indexes);
@@ -157,14 +213,18 @@ class CheckPointController extends Controller
         $images = [];
 
         foreach ($indexes as $i) {
+            $originalIndex = array_key_exists($i, $originalIndexes) && $originalIndexes[$i] !== '' ? (int) $originalIndexes[$i] : $i;
             $job = $jobs[$i] ?? null;
             $isManual = $job === 'manual' || $job === '' || $job === null;
 
             $pekerjaanCpId[] = $isManual ? null : $job;
-            $inputManual[] = $isManual ? ($manual[$i] ?? null) : null;
+            $inputManual[] = $isManual ? trim((string) ($manual[$i] ?? '')) : null;
             $deskripsiOut[] = $deskripsi[$i] ?? null;
             $tanggalOut[] = $tanggal[$i] ?? null;
-            $approveOut[] = $approve[$i] ?? 'proccess';
+            $originalStatus = strtolower(trim((string) ($originalStatuses[$originalIndex] ?? '')));
+            $submittedStatus = strtolower(trim((string) ($approve[$i] ?? 'proccess')));
+            // Any edited rejected row must return to Direksi review.
+            $approveOut[] = $originalStatus === 'denied' ? 'proccess' : ($submittedStatus ?: 'proccess');
 
             $paths = [];
             foreach ((array) ($files[$i] ?? []) as $file) {
@@ -184,7 +244,7 @@ class CheckPointController extends Controller
         $cex2->input_manual = $inputManual;
         $cex2->deskripsi = $deskripsiOut;
         $cex2->tanggal = $tanggalOut;
-        $cex2->approve_status = $approveOut;
+        $cex2->note = array_map(fn ($status, $i) => $status === 'proccess' ? null : ($originalNotes[$originalIndexes[$i] ?? $i] ?? null), $approveOut, array_keys($approveOut));
         $cex2->img = $images;
         $cex2->latitude = $request->input('latitude', $cex2->latitude);
         $cex2->longtitude = $request->input('longtitude', $cex2->longtitude);
@@ -193,6 +253,7 @@ class CheckPointController extends Controller
         try {
             $cex2->save();
             Cache::forget('checkpoint-calendar:' . $cex2->user_id);
+            Cache::forget('checkpoint-calendar-rejected:' . $cex2->user_id);
             toastr()->success('Data berhasil diedit', [], 'success');
             return to_route('checkpoint-user.index');
         } catch (\Illuminate\Database\QueryException $e) {

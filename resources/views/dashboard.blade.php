@@ -577,10 +577,10 @@
                                     </button>
                                 </div>
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="isiIndex">
-                                    <a href="/checkpoint-user" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-add-line text-emerald-600 transition group-hover:rotate-90"></i>Rencana Kerja</a>
+                                    <a href="/checkpoint-user" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-add-line text-emerald-600 transition group-hover:rotate-90"></i>Bukti Kerja</a>
                                 </div>
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <a href="/checkpoint-user" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat Rencana Kerja</a>
+                                    <a href="{{ route('checkpoint-user.history')}}" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat Bukti Kerja</a>
                                 </div>
                                 {{-- <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
                                     <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? '' : 'disabled' }}>Tambah Planning (sabtu - minggu )</a>-->
@@ -859,6 +859,10 @@
                 </div>
 
                 @include('dashboard.partials.news-modal')
+
+                @include('dashboard.partials.checkpoint-reminder-modal')
+                @include('dashboard.partials.checkpoint-rejected-modal')
+                @include('dashboard.partials.checkpoint-pending-modal')
 
                 <div class="pointer-events-none fixed inset-x-0 bottom-0 z-[999] flex justify-center px-3 pb-3">
                     <div class="pointer-events-auto w-full max-w-md">

@@ -3,7 +3,7 @@
         @method('put')
         @csrf
         <div>
-		<p class="text-center text-2xl font-bold my-10">Edit Pekerjaan</p>
+		<h1 class="my-6 text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Edit Pekerjaan</h1>
         <div class="bg-slate-100 mx-10 my-10 px-10 py-5 rounded shadow">
             <!-- user -->
 				<div class="flex flex-col">

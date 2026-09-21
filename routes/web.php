@@ -14,6 +14,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CheckPointController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DireksiCheckpointController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\IzinController;
@@ -161,6 +162,8 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::get('/mypoint/{id}', [PointController::class, 'myPoint'])->name('mypoint');
 
     Route::resource('checkpoint-user', CheckPointController::class);
+    Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
+    Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
     Route::get('editBukti-checkpoint-user', [CheckPointController::class, 'editBukti'])->name('editBukti-checkpoint-user');
     Route::post('uploadBukti-checkpoint-user', [CheckPointController::class, 'uploadBukti'])->name('uploadBukti-checkpoint-user');
 
@@ -203,7 +206,11 @@ Route::middleware(['auth', 'direksi'])->group(function () {
     Route::get('/direksi-absensi', [LeaderController::class, 'indexAbsen'])->name('direksi_absensi');
     Route::get('/direksi-jadwal', [JadwalUserController::class, 'index'])->name('direksi_jadwal');
     Route::get('/direksi-user', [LeaderController::class, 'indexUser'])->name('direksi_user');
-    Route::get('/direksi-checkpoint', [AdminController::class, 'checkPoint'])->name('direksi.cp.index');
+    Route::get('/direksi-checkpoint', [DireksiCheckpointController::class, 'index'])->name('direksi.cp.index');
+    Route::get('/direksi-checkpoint/{user}/calendar', [DireksiCheckpointController::class, 'calendar'])->name('direksi.cp.calendar');
+    Route::get('/direksi-checkpoint-history', [DireksiCheckpointController::class, 'history'])->name('direksi.cp.history');
+    Route::get('/direksi-checkpoint-history/{id}', [DireksiCheckpointController::class, 'historyDetail'])->name('direksi.cp.history.show');
+    Route::patch('/direksi-checkpoint-history/{id}/approve', [DireksiCheckpointController::class, 'updateApproval'])->name('direksi.cp.history.approve');
     Route::get('/direksi-lihat-check/{id}', [AdminController::class, 'lihatCheck'])->name('direksi.cp.show');
     Route::put('/direksi-nilai-cp/{id}', [CheckPointController::class, 'uploadNilai'])->name('direksi.uploadNilai');
     Route::delete('/direksi-delete-rk/{id}', [CheckPointController::class, 'deleteRencana'])->name('direksi.deleteRencana');

@@ -2,12 +2,11 @@
     @section('title', 'Edit Divisi')
 
     <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
-        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Divisi Management</p>
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Edit Divisi</h1>
-                    <p class="mt-1 text-sm text-gray-600">Perbarui data utama dan atur perlengkapan yang digunakan oleh divisi.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Edit Divisi</h1>
+                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Perbarui data utama dan atur perlengkapan yang digunakan oleh divisi.</p>
                 </div>
                 <a href="{{ route('admin.divisi.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
                     Kembali
@@ -41,7 +40,7 @@
 
             <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
                 <div class="mb-3">
-                    <h3 class="text-xs font-semibold uppercase tracking-[0.14em] text-gray-700">Perlengkapan</h3>
+                    <h2 class="text-sm font-semibold text-[var(--md-sys-color-on-surface)]">Perlengkapan</h2>
                     <p class="mt-1 text-xs text-gray-500">Item yang sudah terpasang bisa ditandai untuk dihapus dari divisi.</p>
                 </div>
                 <div class="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">

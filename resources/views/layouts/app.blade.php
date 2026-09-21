@@ -42,6 +42,8 @@
     <div class="min-h-screen">
         @if (request()->routeIs('checkpoint-user.*'))
             @include('check.partials.sidebar')
+        @elseif (request()->routeIs('direksi.cp.*'))
+            @include('direksi.checkpoint.partials.direksi-sidebar')
         @else
             @include('layouts.navbar')
         @endif
@@ -56,18 +58,18 @@
         @endif
 
         <!-- Page Content -->
-        <main class="{{ request()->routeIs('checkpoint-user.*') ? 'lg:pl-[17.5rem] pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
-            <div class="{{ request()->routeIs('checkpoint-user.*') ? 'motion-safe:animate-[fadeSlide_.5s_cubic-bezier(.22,1,.36,1)]' : '' }}">
+        <main class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*')) ? 'lg:pl-[17.5rem] pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
+            <div class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*')) ? 'motion-safe:animate-[fadeSlide_.5s_cubic-bezier(.22,1,.36,1)]' : '' }}">
                 {{ $slot }}
             </div>
         </main>
 
     </div>
-    <div class="flex justify-center">
+    {{-- <div class="flex justify-center">
         <div class="fixed bottom-0 z-[999]">
             <x-menu-mobile />
         </div>
-    </div>
+    </div> --}}
     <div id="global-confirm-modal" class="fixed inset-0 z-[99999] hidden items-center justify-center px-4 py-6">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-confirm-overlay></div>
         <div class="relative w-full max-w-md overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-slate-900/5">

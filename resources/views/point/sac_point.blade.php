@@ -1,9 +1,8 @@
 <x-app-layout>
     <div class="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
-        <section class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+        <section class="px-0.5">
             <div class="mb-4">
-                <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Point Summary</p>
-                <h1 class="mt-1 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">Ringkasan Poin Saya</h1>
+                <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Ringkasan Poin Saya</h1>
             </div>
 
             <div class="overflow-x-auto rounded-xl border border-gray-100">

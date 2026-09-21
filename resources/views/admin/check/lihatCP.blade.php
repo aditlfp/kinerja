@@ -2,11 +2,10 @@
     @section('title', 'Detail Checkpoint')
 
     <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
-        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Checkpoint Detail</p>
-                    <h1 class="mt-1 text-xl font-bold tracking-tight text-gray-900">{{ ($type == 'rencana' ? 'Rencana Kerja' : 'Pekerjaan') . ' ' . $user->nama_lengkap }}</h1>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">{{ ($type == 'rencana' ? 'Rencana Kerja' : 'Pekerjaan') . ' ' . $user->nama_lengkap }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     @foreach (['rencana' => 'Rencana', 'dikerjakan' => 'Dikerjakan'] as $filterType => $label)

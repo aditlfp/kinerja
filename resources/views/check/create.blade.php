@@ -3,7 +3,7 @@
             $selectedDate = $selectedDate ?? now()->format('Y-m-d');
         @endphp
 
-        <div class="mx-auto w-full max-w-4xl px-4 py-6">
+        <div class="mx-auto w-full max-w-4xl px-4 py-6 mt-10">
             <div class="card overflow-visible border border-white/70 bg-white shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:shadow-[0_16px_36px_-18px_rgba(15,23,42,.18)]">
                 <div class="card-body overflow-visible gap-5 p-5 sm:p-7">
                     <div class="flex items-start justify-between gap-4 border-b border-slate-200 pb-5">

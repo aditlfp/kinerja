@@ -8,10 +8,9 @@
 		@section('title', 'Data Absen Sholat')
 
 		<div class="w-full px-2 py-6 mx-auto space-y-4 max-w-screen-2xl sm:px-3 lg:px-4">
-			<section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
-				<p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Sholat Report</p>
-				<h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Data Absen Sholat</h1>
-				<p class="mt-1 text-sm text-gray-600">Filter data absensi sholat, lalu unduh report berdasarkan mitra, divisi, dan rentang tanggal.</p>
+			<section class="px-0.5">
+				<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Absen Sholat</h1>
+				<p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Filter data absensi sholat, lalu unduh report berdasarkan mitra, divisi, dan rentang tanggal.</p>
 			</section>
 
 			<section class="grid gap-4 lg:grid-cols-12">
@@ -223,12 +222,11 @@
 			class="fixed inset-0 z-[9999] hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-md px-0 sm:px-4">
 			<div class="relative w-full sm:max-w-6xl max-h-[95dvh] overflow-hidden rounded-t-[28px] sm:rounded-3xl bg-white shadow-2xl ring-1 ring-white/80 flex flex-col">
 
-				<div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500"></div>
+				<div class="absolute inset-x-0 top-0 h-1.5 bg-[var(--md-sys-color-primary)]"></div>
 
 				<div class="flex items-start justify-between gap-3 border-b border-slate-100 px-4 sm:px-6 py-4">
 					<div class="min-w-0">
-						<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-600">Detail Absen Sholat</p>
-						<h3 id="detailTitle" class="mt-1 text-lg sm:text-2xl font-black text-slate-900 truncate">
+						<h3 id="detailTitle" class="truncate text-lg font-normal leading-7 text-[var(--md-sys-color-on-surface)] sm:text-2xl">
 							Nama User
 						</h3>
 						<p id="detailSubtitle" class="mt-1 text-sm text-slate-500">

@@ -2,12 +2,11 @@
     @section('title', 'Data Divisi')
 
     <div x-data="{ delOpen: false, deleteId: null, deleteName: '' }" class="w-full max-w-screen-xl px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Divisi Management</p>
-                    <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Data Divisi</h1>
-                    <p class="mt-1 text-sm text-gray-600">Kelola relasi divisi, jabatan, dan perlengkapan operasional dalam satu halaman.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Divisi</h1>
+                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola relasi divisi, jabatan, dan perlengkapan operasional dalam satu halaman.</p>
                 </div>
                 <div class="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex items-center w-full h-10 gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50 sm:w-72">

@@ -6,9 +6,11 @@
         <section class="p-4 border shadow-sm rounded-xl border-gray-100/80 bg-white/80 backdrop-blur-sm sm:p-4">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.12em] text-blue-600">User Management</p>
-                    <h2 class="mt-0.5 text-xl font-bold text-gray-900">Data All User</h2>
-                    <p class="mt-0.5 text-xs text-gray-600">Kelola akun user, export data, dan tindak lanjut status user.
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">
+                        Data All User
+                    </h1>
+                    <p class="mt-0.5 text-xs text-[var(--md-sys-color-on-surface-variant)]">Kelola akun user, export data,
+                        dan tindak lanjut status user.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-2">

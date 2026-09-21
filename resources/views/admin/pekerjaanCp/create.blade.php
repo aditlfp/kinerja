@@ -2,10 +2,9 @@
     @section('title', 'Tambah Pekerjaan')
 
     <div class="w-full px-2 py-6 mx-auto max-w-screen-xl sm:px-3 lg:px-4">
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Checkpoint Management</p>
-            <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Tambah Pekerjaan CP</h1>
-            <p class="mt-1 text-sm text-gray-600">Lengkapi data pekerjaan untuk menentukan rencana kerja berdasarkan user, divisi, dan kerjasama.</p>
+        <section class="px-0.5">
+            <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Pekerjaan CP</h1>
+            <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Lengkapi data pekerjaan untuk menentukan rencana kerja berdasarkan user, divisi, dan kerjasama.</p>
         </section>
 
         <section class="p-4 mt-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-6">

@@ -6,7 +6,7 @@
             Hapus</button>
     </div>
         <label class="label py-0"><span class="label-text font-semibold">Nama pekerjaan</span></label>
-        <div class="job-dropdown mt-2">
+        <div class="job-dropdown relative mt-2">
 
         <button type="button"
             class="job-trigger flex h-11 w-full items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 text-left text-sm text-slate-700 outline-none transition duration-300 hover:border-sky-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-100">
@@ -19,12 +19,18 @@
         </button>
 
         <div
-            class="job-menu absolute left-0 mx-5 right-0 top-[7.5rem] z-50 mt-2 hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(15,23,42,.28)]">
+            class="job-menu fixed z-[9999] hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(15,23,42,.28)]">
 
             <button type="button"
                 class="job-option w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-600 hover:bg-sky-50 hover:text-sky-700"
                 data-value="">
                 Pilih dari daftar pekerjaan
+            </button>
+
+            <button type="button"
+                class="job-option w-full text-slate-600 rounded-lg px-3 py-2.5 text-left text-sm capitalize hover:bg-sky-50 hover:text-sky-700"
+                data-value="manual">
+                Pilih Untuk Ketik manual
             </button>
 
             @foreach ($pcp as $p)
@@ -38,12 +44,6 @@
                 </button>
             @endforeach
 
-            <button type="button"
-                class="job-option w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-600 hover:bg-sky-50 hover:text-sky-700"
-                data-value="manual">
-                Ketik manual
-            </button>
-
         </div>
 
         <select class="job-select hidden" tabindex="-1" aria-hidden="true">
@@ -55,11 +55,11 @@
                 </option>
             @endforeach
 
-            <option value="manual">Ketik manual</option>
+            <option value="manual">Pilih Untuk Ketik manual</option>
         </select>
 
     </div>
-    <input class="manual-name input input-bordered mt-2 hidden w-full" type="text" name="input_manual[]" placeholder="Ketik nama pekerjaan">
+    <input class="manual-name input input-bordered border-slate-200 mt-2 hidden w-full" type="text" name="input_manual[]" placeholder="Ketik nama pekerjaan">
     <input class="job-value" type="hidden" name="pekerjaan_id[]">
     <label class="label mt-4 py-0"><span class="label-text font-semibold">Foto pekerjaan</span></label>
     <label class="dropzone mt-2 flex min-h-28 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 text-center transition duration-200 hover:border-sky-400 hover:bg-sky-50">

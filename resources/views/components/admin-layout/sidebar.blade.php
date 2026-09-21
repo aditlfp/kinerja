@@ -15,361 +15,248 @@
     'isGajiMenuActive' => false,
 ])
 
-<!-- SIDEBAR -->
-<aside :class="sidebarOpen ? 'w-60' : 'w-24'"
-    @mouseenter="if (!isDashboardActive) sidebarOpen = true"
-    @mouseleave="if (!isDashboardActive) sidebarOpen = false"
-    class="fixed inset-y-0 left-0 z-50 overflow-hidden transition-all duration-300 bg-white border-r shadow-xl border-gray-200/50 backdrop-blur-xl bg-white/80">
-    <div class="flex flex-col h-full">
-        <!-- Sidebar Header -->
-        <div class="flex items-center h-16 px-4 border-b border-gray-100">
-            <div class="shrink-0">
-                <img src="{{ asset('logo/logo_admin.png') }}" alt="Logo" class="w-10 h-10 object-contain">
-            </div>
-            <span x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="ml-3 text-lg font-bold text-gray-800 whitespace-nowrap">KINERJA APP</span>
-        </div>
+@php
+    /**
+     * Satu sumber kebenaran untuk navigasi admin.
+     * Urutan, label, dan URL sengaja dipertahankan identik dengan menu sebelumnya.
+     */
+    $menus = [
+        [
+            'key' => 'user',
+            'label' => 'User',
+            'icon' => 'manage_accounts',
+            'active' => $isUserMenuActive,
+            'items' => [
+                ['label' => 'Data User', 'icon' => 'group', 'url' => route('admin.user.index'), 'patterns' => ['admin.user.index']],
+                ['label' => 'Tambah User', 'icon' => 'person_add', 'url' => route('admin.user.create'), 'patterns' => ['admin.user.create']],
+            ],
+        ],
+        [
+            'key' => 'divisi',
+            'label' => 'Divisi & Jabatan',
+            'icon' => 'account_tree',
+            'active' => $isDivisiMenuActive,
+            'items' => [
+                ['label' => 'Data Divisi', 'icon' => 'account_tree', 'url' => route('admin.divisi.index'), 'patterns' => ['admin.divisi.index']],
+                ['label' => 'Tambah Divisi', 'icon' => 'domain_add', 'url' => route('admin.divisi.create'), 'patterns' => ['admin.divisi.create']],
+                ['label' => 'Data Jabatan', 'icon' => 'military_tech', 'url' => route('admin.jabatan.index'), 'patterns' => ['admin.jabatan.index']],
+            ],
+        ],
+        [
+            'key' => 'klien',
+            'label' => 'Klien & Lokasi',
+            'icon' => 'handshake',
+            'active' => $isKlienMenuActive,
+            'items' => [
+                ['label' => 'Data Client', 'icon' => 'business_center', 'url' => route('admin.client.index'), 'patterns' => ['admin.client.index']],
+                ['label' => 'Tambah Client', 'icon' => 'domain_add', 'url' => route('admin.client.create'), 'patterns' => ['admin.client.create']],
+                ['label' => 'Data Kerjasama', 'icon' => 'description', 'url' => route('admin.kerjasama.index'), 'patterns' => ['admin.kerjasama.index']],
+                ['label' => 'Data Lokasi', 'icon' => 'location_on', 'url' => route('admin.lokasi.index'), 'patterns' => ['admin.lokasi.index']],
+            ],
+        ],
+        [
+            'key' => 'shift',
+            'label' => 'Shift & Jadwal',
+            'icon' => 'calendar_month',
+            'active' => $isShiftMenuActive,
+            'items' => [
+                ['label' => 'Data Shift', 'icon' => 'schedule', 'url' => route('admin.shift.index'), 'patterns' => ['admin.shift.index']],
+                ['label' => 'Jadwal User', 'icon' => 'event_available', 'url' => route('admin.jadwal.index'), 'patterns' => ['admin.jadwal.index']],
+            ],
+        ],
+        [
+            'key' => 'absensi',
+            'label' => 'Absensi',
+            'icon' => 'checklist',
+            'active' => $isAbsensiMenuActive,
+            'items' => [
+                ['label' => 'Data Absensi', 'icon' => 'fact_check', 'url' => route('admin.absen'), 'patterns' => ['admin.absen']],
+                ['label' => 'Data Izin', 'icon' => 'event_busy', 'url' => route('admin.izin.index'), 'patterns' => ['admin.izin.index']],
+                ['label' => 'Data Lembur', 'icon' => 'more_time', 'url' => route('lemburList'), 'patterns' => ['lemburList']],
+                ['label' => 'Data Sholat', 'icon' => 'mosque', 'url' => route('admin.report-sholat.index'), 'patterns' => ['admin.report-sholat.index']],
+            ],
+        ],
+        [
+            'key' => 'poin',
+            'label' => 'Poin',
+            'icon' => 'stars',
+            'active' => $isPoinMenuActive,
+            'items' => [
+                ['label' => 'Data Poin', 'icon' => 'star', 'url' => route('admin.point.index'), 'patterns' => ['admin.point.index']],
+                ['label' => 'Tambah Poin', 'icon' => 'add_circle', 'url' => route('admin.point.create'), 'patterns' => ['admin.point.create']],
+            ],
+        ],
+        [
+            'key' => 'perlengkapan',
+            'label' => 'Perlengkapan',
+            'icon' => 'handyman',
+            'active' => $isPerlengkapanMenuActive,
+            'items' => [
+                ['label' => 'Data Perlengkapan', 'icon' => 'handyman', 'url' => route('admin.perlengkapan.index'), 'patterns' => ['admin.perlengkapan.index']],
+                ['label' => 'Tambah Perlengkapan', 'icon' => 'add_circle', 'url' => route('admin.perlengkapan.create'), 'patterns' => ['admin.perlengkapan.create']],
+            ],
+        ],
+        [
+            'key' => 'laporan',
+            'label' => 'Laporan',
+            'icon' => 'assignment',
+            'active' => $isLaporanMenuActive,
+            'items' => [
+                ['label' => 'Laporan Mitra', 'icon' => 'description', 'url' => route('laporanMitra.index'), 'patterns' => ['laporanMitra.index']],
+            ],
+        ],
+        [
+            'key' => 'checkpoint',
+            'label' => 'Checkpoint',
+            'icon' => 'task_alt',
+            'active' => $isCheckpointMenuActive,
+            'items' => [
+                ['label' => 'Data Checkpoint', 'icon' => 'task_alt', 'url' => route('admin.cp.index'), 'patterns' => ['admin.cp.index']],
+                ['label' => 'Data Pekerjaan CP', 'icon' => 'checklist', 'url' => route('admin.pekerjaan-cp.index'), 'patterns' => ['admin.pekerjaan-cp.index']],
+            ],
+        ],
+        [
+            'key' => 'berita',
+            'label' => 'Berita',
+            'icon' => 'newspaper',
+            'active' => $isBeritaMenuActive,
+            'items' => [
+                ['label' => 'Data Berita', 'icon' => 'newspaper', 'url' => route('admin.news.index'), 'patterns' => ['admin.news.index']],
+            ],
+        ],
+        [
+            'key' => 'rekap',
+            'label' => 'Rekapitulasi',
+            'icon' => 'monitoring',
+            'active' => $isRekapMenuActive,
+            'items' => [
+                [
+                    'label' => 'Dashboard Rekap',
+                    'icon' => 'insights',
+                    'url' => route('admin.rekap.index'),
+                    'patterns' => [
+                        'admin.rekap.index',
+                        'admin.rekap.overtimes',
+                        'admin.rekap.person-out',
+                        'admin.rekap.person-in',
+                        'admin.rekap.cutting',
+                        'admin.rekap.finished-training',
+                    ],
+                ],
+                ['label' => 'Pengaturan Rekap', 'icon' => 'settings', 'url' => route('admin.rekap.settings'), 'patterns' => ['admin.rekap.settings']],
+            ],
+        ],
+        [
+            'key' => 'gaji',
+            'label' => 'Slip Gaji',
+            'icon' => 'payments',
+            'active' => $isGajiMenuActive,
+            'items' => [
+                ['label' => 'Data Slip Gaji', 'icon' => 'receipt_long', 'url' => route('admin.slip.index'), 'patterns' => ['admin.slip.index']],
+            ],
+        ],
+    ];
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
-            <!-- Dashboard Link (Tetap) -->
-            <a href="{{ route('admin.index') }}"
-                class="flex items-center p-3 transition rounded-xl group {{ $isDashboardActive ? 'bg-blue-50 text-blue-600 border border-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
-                <i class="text-xl ri-dashboard-3-line"></i>
-                <span x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="ml-3 text-sm font-medium whitespace-nowrap">Dashboard</span>
-            </a>
+    $isActiveRoutes = fn(array $patterns): bool => request()->routeIs(...$patterns);
+@endphp
 
-            <!-- Menu User (Blue) -->
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'user' ? null : 'user')"
-                    :class="(openMenu === 'user' || {{ $isUserMenuActive ? 'true' : 'false' }}) ?
-                    'bg-blue-50 border-blue-200 text-blue-600' : 'text-gray-600 hover:bg-blue-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
+<!-- NAVIGATION DRAWER (Material 3) -->
+{{-- Lebar: rail (6rem) hanya berlaku di desktop; di mobile drawer selalu
+     selebar penuh supaya label tetap terbaca. `data-drawer-open` dipakai CSS
+     agar drawer tetap tertutup di mobile walau JavaScript belum jalan. --}}
+<aside :class="{ 'translate-x-0': mobileSidebarOpen, '-translate-x-full': !mobileSidebarOpen }"
+    :data-drawer-open="mobileSidebarOpen ? 'true' : null"
+    class="admin-drawer fixed inset-y-0 left-0 z-50 flex w-60 flex-col overflow-hidden border-r border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] lg:translate-x-0">
 
-                    <div :class="(openMenu === 'user' || {{ $isUserMenuActive ? 'true' : 'false' }}) ?
-                    'bg-blue-100 text-blue-600' : 'bg-gray-100 group-hover:bg-blue-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-folder-user-line"></i>
-                    </div>
+    {{-- Header --}}
+    <div class="flex h-16 shrink-0 items-center gap-3 px-4">
+        <span class="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-xl">
+            <img src="{{ asset('logo/logo_admin.png') }}" alt="Logo Kinerja App" width="36" height="36"
+                class="h-9 w-9 object-contain">
+        </span>
+        <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms
+            class="truncate text-sm font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">
+            KINERJA APP
+        </span>
+        {{-- <button type="button" @click="mobileSidebarOpen = false"
+            class="m3-icon-btn m3-icon-btn--sm ml-auto lg:hidden" aria-label="Tutup menu navigasi">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button> --}}
+    </div>
 
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">User</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'user' ? 'rotate-180' : ''"></i>
-                    </div>
+    {{-- Navigation --}}
+    <nav class="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-3 pb-3" aria-label="Navigasi admin">
+
+        {{-- Dashboard --}}
+        <a href="{{ route('admin.index') }}" @if ($isDashboardActive) aria-current="page" @endif
+            title="Dashboard"
+            class="flex items-center gap-3 rounded-full p-2 {{ $isDashboardActive
+                ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
+                : 'text-[var(--md-sys-color-on-surface-variant)]' }}">
+            <md-ripple></md-ripple>
+            <span class="grid h-8 w-8 shrink-0 place-items-center">
+                <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+            </span>
+            <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms
+                class="truncate text-sm font-semibold">Dashboard</span>
+        </a>
+
+        {{-- Groups --}}
+        @foreach ($menus as $menu)
+            @php $isOpen = $activeMenu === $menu['key']; @endphp
+
+            <div>
+                <button type="button"
+                    @click="if (!sidebarOpen) { sidebarOpen = true; openMenu = '{{ $menu['key'] }}' } else { openMenu = openMenu === '{{ $menu['key'] }}' ? null : '{{ $menu['key'] }}' }"
+                    aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
+                    :aria-expanded="openMenu === '{{ $menu['key'] }}' ? 'true' : 'false'"
+                    aria-controls="nav-panel-{{ $menu['key'] }}"
+                    title="{{ $menu['label'] }}"
+                    class="flex w-full items-center gap-3 rounded-full p-2 {{ $menu['active'] || $isOpen
+                        ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
+                        : 'text-[var(--md-sys-color-on-surface-variant)]' }}">
+                    <md-ripple></md-ripple>
+                    <span
+                        class="grid h-8 w-8 shrink-0 place-items-center rounded-lg {{ $menu['active'] || $isOpen
+                            ? 'bg-[color-mix(in_srgb,var(--md-sys-color-primary)_14%,transparent)] text-[var(--md-sys-color-primary)]'
+                            : 'bg-[var(--md-sys-color-surface-container-high)]' }}">
+                        <span class="material-symbols-outlined" aria-hidden="true">{{ $menu['icon'] }}</span>
+                    </span>
+                    <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms
+                        class="flex min-w-0 flex-1 items-center justify-between gap-2">
+                        <span class="truncate text-sm font-semibold">{{ $menu['label'] }}</span>
+                        <span class="material-symbols-outlined text-[1.125rem] transition-transform duration-200"
+                            :class="openMenu === '{{ $menu['key'] }}' ? 'rotate-180' : ''" aria-hidden="true">expand_more</span>
+                    </span>
                 </button>
-                <div x-show="openMenu === 'user' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.user.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.user.index') ? 'text-blue-700 bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}"><i
-                            class="mr-3 ri-user-line"></i>Data User</a>
-                    <a href="{{ route('admin.user.create') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.user.create') ? 'text-blue-700 bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}"><i
-                            class="mr-3 ri-add-line"></i>Tambah User</a>
+
+                <div id="nav-panel-{{ $menu['key'] }}" x-show="openMenu === '{{ $menu['key'] }}' && sidebarOpen" x-collapse.duration.200ms
+                    class="mt-1 space-y-0.5 pl-3">
+                    @foreach ($menu['items'] as $item)
+                        @php $itemActive = $isActiveRoutes($item['patterns']); @endphp
+                        <a href="{{ $item['url'] }}" @if ($itemActive) aria-current="page" @endif
+                            class="flex items-center gap-2 rounded-full py-2 pl-3 pr-2 text-xs font-medium {{ $itemActive
+                                ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
+                                : 'text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-on-surface)]' }}">
+                            <md-ripple></md-ripple>
+                            <span class="material-symbols-outlined text-[1.125rem]" aria-hidden="true">{{ $item['icon'] }}</span>
+                            <span class="truncate">{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
                 </div>
             </div>
+        @endforeach
+    </nav>
 
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'divisi' ? null : 'divisi')"
-                    :class="(openMenu === 'divisi' || {{ $isDivisiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-purple-50 border-purple-200 text-purple-600' : 'text-gray-600 hover:bg-purple-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'divisi' || {{ $isDivisiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-purple-100 text-purple-600' : 'bg-gray-100 group-hover:bg-purple-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-organization-chart"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Divisi & Jabatan</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'divisi' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'divisi' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.divisi.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.divisi.index') ? 'text-purple-700 bg-purple-50' : 'text-gray-500 hover:text-purple-600 hover:bg-purple-50' }}"><i
-                            class="mr-3 ri-building-4-line"></i>Data Divisi</a>
-                    <a href="{{ route('admin.divisi.create') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.divisi.create') ? 'text-purple-700 bg-purple-50' : 'text-gray-500 hover:text-purple-600 hover:bg-purple-50' }}"><i
-                            class="mr-3 ri-add-line"></i>Tambah Divisi</a>
-                    <a href="{{ route('admin.jabatan.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.jabatan.index') ? 'text-purple-700 bg-purple-50' : 'text-gray-500 hover:text-purple-600 hover:bg-purple-50' }}"><i
-                            class="mr-3 ri-award-line"></i>Data Jabatan</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'klien' ? null : 'klien')"
-                    :class="(openMenu === 'klien' || {{ $isKlienMenuActive ? 'true' : 'false' }}) ?
-                    'bg-green-50 border-green-200 text-green-600' : 'text-gray-600 hover:bg-green-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'klien' || {{ $isKlienMenuActive ? 'true' : 'false' }}) ?
-                    'bg-green-100 text-green-600' : 'bg-gray-100 group-hover:bg-green-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-briefcase-4-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Klien & Lokasi</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'klien' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'klien' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.client.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.client.index') ? 'text-green-700 bg-green-50' : 'text-gray-500 hover:text-green-600 hover:bg-green-50' }}"><i
-                            class="mr-3 ri-briefcase-line"></i>Data Client</a>
-                    <a href="{{ route('admin.client.create') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.client.create') ? 'text-green-700 bg-green-50' : 'text-gray-500 hover:text-green-600 hover:bg-green-50' }}"><i
-                            class="mr-3 ri-add-line"></i>Tambah Client</a>
-                    <a href="{{ route('admin.kerjasama.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.kerjasama.index') ? 'text-green-700 bg-green-50' : 'text-gray-500 hover:text-green-600 hover:bg-green-50' }}"><i
-                            class="mr-3 ri-file-list-3-line"></i>Data Kerjasama</a>
-                    <a href="{{ route('admin.lokasi.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.lokasi.index') ? 'text-green-700 bg-green-50' : 'text-gray-500 hover:text-green-600 hover:bg-green-50' }}"><i
-                            class="mr-3 ri-pin-distance-line"></i>Data Lokasi</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'shift' ? null : 'shift')"
-                    :class="(openMenu === 'shift' || {{ $isShiftMenuActive ? 'true' : 'false' }}) ?
-                    'bg-indigo-50 border-indigo-200 text-indigo-600' : 'text-gray-600 hover:bg-indigo-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'shift' || {{ $isShiftMenuActive ? 'true' : 'false' }}) ?
-                    'bg-indigo-100 text-indigo-600' : 'bg-gray-100 group-hover:bg-indigo-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-calendar-event-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Shift & Jadwal</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'shift' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'shift' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.shift.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.shift.index') ? 'text-indigo-700 bg-indigo-50' : 'text-gray-500 hover:text-indigo-600 hover:bg-indigo-50' }}"><i
-                            class="mr-3 ri-calendar-2-line"></i>Data Shift</a>
-                    <a href="{{ route('admin.jadwal.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.jadwal.index') ? 'text-indigo-700 bg-indigo-50' : 'text-gray-500 hover:text-indigo-600 hover:bg-indigo-50' }}"><i
-                            class="mr-3 ri-calendar-event-line"></i>Jadwal User</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'absensi' ? null : 'absensi')"
-                    :class="(openMenu === 'absensi' || {{ $isAbsensiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-gray-100 border-gray-300 text-gray-900' : 'text-gray-600 hover:bg-gray-100'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'absensi' || {{ $isAbsensiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-gray-200 text-gray-800' : 'bg-gray-100 group-hover:bg-gray-200'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-list-check-3"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Absensi</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'absensi' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'absensi' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.absen') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.absen') ? 'text-gray-900 bg-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100' }}"><i
-                            class="mr-3 ri-list-check-3"></i>Data Absensi</a>
-                    <a href="{{ route('admin.izin.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.izin.index') ? 'text-gray-900 bg-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100' }}"><i
-                            class="mr-3 ri-shield-user-line"></i>Data Izin</a>
-                    <a href="{{ route('lemburList') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('lemburList') ? 'text-gray-900 bg-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100' }}"><i
-                            class="mr-3 ri-hourglass-2-line"></i>Data Lembur</a>
-                    <a href="{{ route('admin.report-sholat.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.report-sholat.index') ? 'text-gray-900 bg-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100' }}"><i
-                            class="mr-3 ri-shield-check-line"></i>Data Sholat</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'poin' ? null : 'poin')"
-                    :class="(openMenu === 'poin' || {{ $isPoinMenuActive ? 'true' : 'false' }}) ?
-                    'bg-yellow-50 border-yellow-200 text-yellow-600' : 'text-gray-600 hover:bg-yellow-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'poin' || {{ $isPoinMenuActive ? 'true' : 'false' }}) ?
-                    'bg-yellow-100 text-yellow-600' : 'bg-gray-100 group-hover:bg-yellow-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-star-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Poin</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'poin' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'poin' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.point.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.point.index') ? 'text-yellow-700 bg-yellow-50' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}"><i
-                            class="mr-3 ri-star-line"></i>Data Poin</a>
-                    <a href="{{ route('admin.point.create') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.point.create') ? 'text-yellow-700 bg-yellow-50' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}"><i
-                            class="mr-3 ri-add-line"></i>Tambah Poin</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'perlengkapan' ? null : 'perlengkapan')"
-                    :class="(openMenu === 'perlengkapan' || {{ $isPerlengkapanMenuActive ? 'true' : 'false' }}) ?
-                    'bg-teal-50 border-teal-200 text-teal-600' : 'text-gray-600 hover:bg-teal-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'perlengkapan' || {{ $isPerlengkapanMenuActive ? 'true' : 'false' }}) ?
-                    'bg-teal-100 text-teal-600' : 'bg-gray-100 group-hover:bg-teal-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-tools-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Perlengkapan</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'perlengkapan' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'perlengkapan' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.perlengkapan.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.perlengkapan.index') ? 'text-teal-700 bg-teal-50' : 'text-gray-500 hover:text-teal-600 hover:bg-teal-50' }}"><i
-                            class="mr-3 ri-hammer-line"></i>Data Perlengkapan</a>
-                    <a href="{{ route('admin.perlengkapan.create') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.perlengkapan.create') ? 'text-teal-700 bg-teal-50' : 'text-gray-500 hover:text-teal-600 hover:bg-teal-50' }}"><i
-                            class="mr-3 ri-add-line"></i>Tambah Perlengkapan</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'laporan' ? null : 'laporan')"
-                    :class="(openMenu === 'laporan' || {{ $isLaporanMenuActive ? 'true' : 'false' }}) ?
-                    'bg-red-50 border-red-200 text-red-600' : 'text-gray-600 hover:bg-red-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'laporan' || {{ $isLaporanMenuActive ? 'true' : 'false' }}) ?
-                    'bg-red-100 text-red-600' : 'bg-gray-100 group-hover:bg-red-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-task-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Laporan</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'laporan' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'laporan' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('laporanMitra.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('laporanMitra.index') ? 'text-red-700 bg-red-50' : 'text-gray-500 hover:text-red-600 hover:bg-red-50' }}"><i
-                            class="mr-3 ri-file-text-line"></i>Laporan Mitra</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'checkpoint' ? null : 'checkpoint')"
-                    :class="(openMenu === 'checkpoint' || {{ $isCheckpointMenuActive ? 'true' : 'false' }}) ?
-                    'bg-purple-50 border-purple-200 text-purple-600' : 'text-gray-600 hover:bg-purple-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'checkpoint' || {{ $isCheckpointMenuActive ? 'true' : 'false' }}) ?
-                    'bg-purple-100 text-purple-600' : 'bg-gray-100 group-hover:bg-purple-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-check-double-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Checkpoint</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'checkpoint' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'checkpoint' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.cp.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.cp.index') ? 'text-purple-700 bg-purple-50' : 'text-gray-500 hover:text-purple-600 hover:bg-purple-50' }}"><i
-                            class="mr-3 ri-check-double-line"></i>Data Checkpoint</a>
-                    <a href="{{ route('admin.pekerjaan-cp.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.pekerjaan-cp.index') ? 'text-purple-700 bg-purple-50' : 'text-gray-500 hover:text-purple-600 hover:bg-purple-50' }}"><i
-                            class="mr-3 ri-file-list-line"></i>Data Pekerjaan CP</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'berita' ? null : 'berita')"
-                    :class="(openMenu === 'berita' || {{ $isBeritaMenuActive ? 'true' : 'false' }}) ?
-                    'bg-indigo-50 border-indigo-200 text-indigo-600' : 'text-gray-600 hover:bg-indigo-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'berita' || {{ $isBeritaMenuActive ? 'true' : 'false' }}) ?
-                    'bg-indigo-100 text-indigo-600' : 'bg-gray-100 group-hover:bg-indigo-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-newspaper-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Berita</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'berita' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'berita' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.news.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.news.index') ? 'text-indigo-700 bg-indigo-50' : 'text-gray-500 hover:text-indigo-600 hover:bg-indigo-50' }}"><i
-                            class="mr-3 ri-news-line"></i>Data Berita</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'rekap' ? null : 'rekap')"
-                    :class="(openMenu === 'rekap' || {{ $isRekapMenuActive ? 'true' : 'false' }}) ?
-                    'bg-sky-50 border-sky-200 text-sky-700' : 'text-gray-600 hover:bg-sky-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2">
-                    <div :class="(openMenu === 'rekap' || {{ $isRekapMenuActive ? 'true' : 'false' }}) ?
-                    'bg-sky-100 text-sky-700' : 'bg-gray-100 group-hover:bg-sky-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-file-chart-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Rekapitulasi</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'rekap' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'rekap' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.rekap.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 {{ request()->routeIs('admin.rekap.index') || request()->routeIs('admin.rekap.overtimes') || request()->routeIs('admin.rekap.person-out') || request()->routeIs('admin.rekap.person-in') || request()->routeIs('admin.rekap.cutting') || request()->routeIs('admin.rekap.finished-training') ? 'text-sky-700 bg-sky-50' : 'text-gray-500 hover:text-sky-600 hover:bg-sky-50' }}"><i
-                            class="mr-3 ri-dashboard-line"></i>Dashboard Rekap</a>
-                    <a href="{{ route('admin.rekap.settings') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 {{ request()->routeIs('admin.rekap.settings') ? 'text-sky-700 bg-sky-50' : 'text-gray-500 hover:text-sky-600 hover:bg-sky-50' }}"><i
-                            class="mr-3 ri-settings-line"></i>Pengaturan Rekap</a>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <button @click="openMenu = (openMenu === 'gaji' ? null : 'gaji')"
-                    :class="(openMenu === 'gaji' || {{ $isGajiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-blue-50 border-blue-200 text-blue-600' : 'text-gray-600 hover:bg-blue-50'"
-                    class="flex items-center w-full p-1 transition border border-transparent rounded-xl group">
-                    <div :class="(openMenu === 'gaji' || {{ $isGajiMenuActive ? 'true' : 'false' }}) ?
-                    'bg-blue-100 text-blue-600' : 'bg-gray-100 group-hover:bg-blue-100'"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
-                        <i class="text-lg ri-file-text-line"></i>
-                    </div>
-                    <div x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="flex items-center justify-between flex-1 min-w-0 ml-3 overflow-hidden">
-                        <span class="text-sm font-semibold whitespace-nowrap">Slip Gaji</span>
-                        <i class="transition-transform duration-200 ri-arrow-down-s-line"
-                            :class="openMenu === 'gaji' ? 'rotate-180' : ''"></i>
-                    </div>
-                </button>
-                <div x-show="openMenu === 'gaji' && sidebarOpen" x-collapse class="pl-4 mt-1 space-y-1">
-                    <a href="{{ route('admin.slip.index') }}"
-                        class="flex items-center p-2 text-xs font-medium rounded-lg {{ request()->routeIs('admin.slip.index') ? 'text-blue-700 bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}"><i
-                            class="mr-3 ri-file-list-line"></i>Data Slip Gaji</a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Sidebar Footer (Logout) -->
-        <div class="p-4 border-t border-gray-100">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit"
-                    class="flex items-center w-full p-3 text-red-500 transition hover:bg-red-50 rounded-xl">
-                    <i class="text-xl ri-logout-box-r-line"></i>
-                    <span x-show="sidebarOpen" x-transition:enter.opacity.duration.150ms x-transition:leave.opacity.duration.75ms class="ml-3 text-sm font-medium whitespace-nowrap">Logout</span>
-                </button>
-            </form>
-        </div>
+    {{-- Footer --}}
+    <div class="shrink-0 border-t border-[var(--md-sys-color-outline-variant)] p-3">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" title="Logout"
+                class="m3-btn m3-btn--text m3-btn--block justify-start gap-3 text-[var(--md-sys-color-error)] hover:bg-[color-mix(in_srgb,var(--md-sys-color-error)_8%,transparent)]">
+                <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+                <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms class="text-sm">Logout</span>
+            </button>
+        </form>
     </div>
 </aside>

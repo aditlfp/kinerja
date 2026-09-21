@@ -131,6 +131,71 @@ class DashboardController extends Controller
         $startOfMonth = $now->copy()->subMonth()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
 
+        $missingCheckpointDates = collect();
+        if ($user->kerjasama_id == 1 && $now->isFriday()) {
+            $weekStart = $now->copy()->startOfWeek();
+            $dates = collect();
+            for ($date = $weekStart->copy(); $date->lte($now); $date->addDay()) {
+                if ($date->isWeekday()) $dates->push($date->copy());
+            }
+            $filledDates = CheckPoint::where('user_id', $user->id)
+                ->where(function ($query) use ($weekStart, $now) {
+                    $query->whereBetween('created_at', [$weekStart, $now])
+                        ->orWhereJsonContains('tanggal', $weekStart->toDateString());
+                })
+                ->get(['tanggal', 'created_at'])
+                ->flatMap(fn($checkpoint) => collect((array) $checkpoint->tanggal)->map(fn($date) => Carbon::parse($date)->toDateString()))
+                ->merge(CheckPoint::where('user_id', $user->id)->whereBetween('created_at', [$weekStart, $now])->pluck('created_at')->map->toDateString())
+                ->unique();
+            $missingCheckpointDates = $dates->reject(fn($date) => $filledDates->contains($date->toDateString()));
+        }
+
+        $pendingDireksiCheckpoints = collect();
+        if (($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'DIREKSI') {
+            $pendingDireksiCheckpoints = CheckPoint::with('user:id,nama_lengkap')
+                ->where('type_check', 'dikerjakan')
+                ->whereYear('created_at', $now->year)
+                ->latest('id')->get()
+                ->flatMap(function (CheckPoint $checkpoint) {
+                    $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
+                    if (!is_array($statuses)) return [];
+                    $jobs = is_array($checkpoint->pekerjaan_cp_id) ? $checkpoint->pekerjaan_cp_id : [];
+                    $manual = is_array($checkpoint->input_manual) ? $checkpoint->input_manual : [];
+                    return collect($statuses)->map(function ($status, $index) use ($checkpoint, $jobs, $manual) {
+                        if ($status !== 'proccess') return null;
+                        return (object) ['id' => $checkpoint->id, 'employee' => $checkpoint->user->nama_lengkap ?? '-', 'date' => data_get((array) $checkpoint->tanggal, $index, optional($checkpoint->created_at)->format('Y-m-d')), 'job' => $jobs[$index] ?? ($manual[$index] ?? 'Pekerjaan')];
+                    })->filter();
+                })->groupBy('employee')->map(function ($items) {
+                    $month = Carbon::parse($items->first()->date)->translatedFormat('F Y');
+                    return (object) [
+                        'id' => $items->first()->id,
+                        'employee' => $items->first()->employee,
+                        'dates' => $items->map(fn ($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
+                        'month' => $month,
+                    ];
+                })->values();
+        }
+
+        $rejectedCheckpoints = CheckPoint::where('user_id', $user->id)
+            ->latest('id')
+            ->get(['id', 'tanggal', 'created_at', 'approve_status', 'note', 'pekerjaan_cp_id', 'input_manual'])
+            ->flatMap(function (CheckPoint $checkpoint) {
+                $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
+                if (!is_array($statuses)) return [];
+                $notes = is_array($checkpoint->note) ? $checkpoint->note : json_decode($checkpoint->note ?: '[]', true);
+                $notes = is_array($notes) ? $notes : [];
+                $jobs = is_array($checkpoint->pekerjaan_cp_id) ? $checkpoint->pekerjaan_cp_id : [];
+                return collect($statuses)->map(function ($status, $index) use ($checkpoint, $notes, $jobs) {
+                    if ($status !== 'denied') return null;
+                    return (object) [
+                        'id' => $checkpoint->id,
+                        'date' => data_get((array) $checkpoint->tanggal, $index, optional($checkpoint->created_at)->format('Y-m-d')),
+                        'reason' => $notes[$index] ?? 'Bukti pekerjaan perlu diperbaiki.',
+                        'job' => $jobs[$index] ?? null,
+                    ];
+                })->filter();
+            });
+
         $totcex = CheckPoint::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->where('type_check', 'dikerjakan')
             ->count();
@@ -184,7 +249,10 @@ class DashboardController extends Controller
                 'shouldTrackPulang',
                 'statusClass',
                 'statusMessage',
-                'kontrak'
+                'kontrak',
+                'missingCheckpointDates',
+                'rejectedCheckpoints',
+                'pendingDireksiCheckpoints'
             ));
         }
     }

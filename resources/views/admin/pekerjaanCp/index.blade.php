@@ -1,9 +1,8 @@
 <x-admin-layout :fullWidth="true">
 		<div class="px-5 py-10">
 			<div class="mb-4 mx-10">
-				<p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-600">Checkpoint Management</p>
-				<h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Index Rencana Kerja</h1>
-				<p class="mt-1 text-sm text-gray-600">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
+				<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Index Rencana Kerja</h1>
+				<p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
 			</div>
 			<div class="flex flex-col justify-end ">
 				<div class="flex flex-col items-end justify-end ">

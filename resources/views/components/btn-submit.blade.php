@@ -1,2 +1,6 @@
-@props(['id', 'data', 'type'])
-<button type="{{ $type ?? "submit" }}" id="{{ $id ?? '' }}" data-data="{{ $data ?? '' }}" {{ $attributes->merge(['class' => 'text-white bg-red-600 hover:bg-red-800 hover:shadow-none hover:text-slate-500 text-md px-2 py-1 rounded-full shadow-md transition-all ease-in-out .2s']) }} class="text-white bg-red-600 hover:bg-red-800 hover:shadow-none hover:text-slate-500 text-md px-2 py-1 rounded-full shadow-md transition-all ease-in-out .2s"><i class="ri-delete-bin-fill"></i></button>
+@props(['id' => null, 'data' => null, 'type' => 'submit', 'label' => 'Hapus'])
+
+<button type="{{ $type }}" id="{{ $id ?? '' }}" data-data="{{ $data ?? '' }}" aria-label="{{ $label }}"
+    title="{{ $label }}" {{ $attributes->merge(['class' => 'm3-icon-btn m3-icon-btn--danger']) }}>
+    <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+</button>

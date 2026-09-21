@@ -49,38 +49,31 @@ class AdminController extends Controller
             ->count();
 
         $inactiveUsersQuery = function () use ($oneMonthAgo) {
-            $latestAbsensi = DB::table('absensis')
-                ->select('user_id', DB::raw('MAX(created_at) as last_attendance'))
-                ->groupBy('user_id');
-
             return User::query()
                 ->select([
                     'users.id',
                     'users.nama_lengkap',
                     'users.name',
                     'users.devisi_id',
-                    'latest_absensi.last_attendance'
                 ])
-                ->leftJoinSub($latestAbsensi, 'latest_absensi', function ($join) {
-                    $join->on('users.id', '=', 'latest_absensi.user_id');
-                })
                 ->where('users.kerjasama_id', '!=', 1)
                 ->whereNotIn('users.devisi_id', [8, 18])
-                ->where(function ($q) use ($oneMonthAgo) {
-                    $q->whereNull('latest_absensi.last_attendance')
-                        ->orWhere('latest_absensi.last_attendance', '<', $oneMonthAgo);
+                ->whereNotExists(function ($query) use ($oneMonthAgo) {
+                    $query->selectRaw('1')
+                        ->from('absensis')
+                        ->whereColumn('absensis.user_id', 'users.id')
+                        ->where('absensis.created_at', '>=', $oneMonthAgo);
                 });
         };
 
-        $inactiveUsersCount = Cache::remember('admin.dashboard.inactive-users-count', 60, function () use ($inactiveUsersQuery) {
-            return $inactiveUsersQuery()->count();
-        });
+        $notActiveUsers = Cache::remember(
+            'admin.dashboard.inactive-users',
+            60,
+            fn() => $inactiveUsersQuery()
+                ->get()
+        );
 
-        $notActiveUsers = Cache::remember('not_active_users', 60, function () use ($inactiveUsersQuery) {
-            return $inactiveUsersQuery()
-                ->orderBy('latest_absensi.last_attendance')
-                ->get();
-        });
+        $inactiveUsersCount = $notActiveUsers->count();
 
         $user   = User::count();
         $client = Client::count();
@@ -181,8 +174,9 @@ class AdminController extends Controller
                 ->get();
         });
 
-        return view('admin.check.index', compact('cex2', 'pcp', 'type', 'kerjasama', 'filter'));
+        return view('admin.old-check.index', compact('cex2', 'pcp', 'type', 'kerjasama', 'filter'));
     }
+
     public function lihatCheck(Request $request, $id)
     {
         $type = $request->type;
