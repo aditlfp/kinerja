@@ -31,7 +31,7 @@
 
 </head>
 
-<body class="bg-slate-50 font-sans antialiased text-slate-800">
+<body class="bg-slate-50 font-sans antialiased text-slate-800 max-w-full">
     @php
         $user = Auth::user();
         $jabatan = $user?->divisi?->jabatan?->code_jabatan;
@@ -47,14 +47,17 @@
             <div class="flex items-center justify-between">
                 <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" srcset="" class="w-32 h-auto">
                 <div class="flex items-center justify-center gap-2">
-                    <a href="#" class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-3xl">
+                    <a href="#"
+                        class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-3xl">
                         <i class="ri-wallet-3-line text-xl"></i>
                         <span class="font-medium">Slip</span>
                     </a>
-                    <form action="{{ route('logout') }}" method="post" class="min-w-0 bg-neutral-500/10 border border-neutral-500/15 py-1 px-3 rounded-2xl">
+                    <form action="{{ route('logout') }}" method="post"
+                        class="min-w-0 bg-neutral-500/10 border border-neutral-500/15 py-1 px-3 rounded-2xl">
                         @csrf
                         @method('POST')
-                        <button type="submit" class="flex w-full flex-col items-center gap-1 rounded-lg text-slate-500 transition hover:bg-red-50">
+                        <button type="submit"
+                            class="flex w-full flex-col items-center gap-1 rounded-lg text-slate-500 transition hover:bg-red-50">
                             <i class="ri-logout-box-r-line text-lg"></i>
                         </button>
                     </form>
@@ -70,64 +73,17 @@
             </div>
         </div>
 
-        {{-- toggle --}}
-        <div
-            id="mainToggle"
-            class="relative flex items-center justify-evenly
-                text-base gap-2 py-2 my-5 mx-5
-                rounded-full bg-white overflow-hidden"
-        >
-            {{-- Sliding background --}}
-            <div
-                id="toggleIndicator"
-                class="absolute h-[40px] w-[100px]
-                    rounded-3xl bg-sky-500
-                    transition-all duration-300 ease-in-out"
-            ></div>
-
-            {{-- Info --}}
-            <button
-                type="button"
-                data-index="0"
-                class="toggle-btn relative z-10
-                    min-h-[40px] w-[100px]
-                    transition-all duration-300"
-            >
-                Info
-            </button>
-
-            {{-- Utama --}}
-            <button
-                type="button"
-                data-index="1"
-                class="toggle-btn relative z-10
-                    min-h-[40px] w-[100px]
-                    font-extrabold text-white
-                    transition-all duration-300"
-            >
-                Utama
-            </button>
-
-            {{-- Riwayat --}}
-            <button
-                type="button"
-                data-index="2"
-                class="toggle-btn relative z-10
-                    min-h-[40px] w-[100px]
-                    transition-all duration-300"
-            >
-                Riwayat
-            </button>
-        </div>
-
         {{-- status card --}}
         <div class="flex flex-col items-center justify-center w-full gap-2 px-4 py-2 font-semibold text-center">
-            @if(!$absenP)
-            <span class="flex items-center gap-2 bg-rose-500 text-white px-4 py-2 rounded-lg"><i class="ri-information-line text-xl"></i> Kamu belum melakukan presensi hari ini</span>
+            @if (!$absenP)
+                <span class="flex items-center gap-2 bg-rose-500 text-white px-4 py-2 rounded-lg"><i
+                        class="ri-information-line text-xl"></i> Kamu belum melakukan presensi hari ini</span>
             @elseif($absenP->shift && $absenP->shift->is_overnight)
-            <span class="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg"><i class="ri-time-line text-xl"></i> Kamu sedang dalam shift</span>
+                <span class="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg"><i
+                        class="ri-time-line text-xl"></i> Kamu sedang dalam shift</span>
             @else
-            <span class="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg"><i class="ri-check-double-line text-xl"></i> Kamu sudah melakukan presensi hari ini</span>
+                <span class="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg"><i
+                        class="ri-check-double-line text-xl"></i> Kamu sudah melakukan presensi hari ini</span>
             @endif
         </div>
 
@@ -154,16 +110,15 @@
                         min-h-[130px] w-[45%]
                         rounded-xl p-3
                         text-white
-                        flex flex-col justify-between"
-                >
+                        flex flex-col justify-between">
 
                     {{-- Dekorasi lingkaran --}}
                     <div
                         class="absolute -right-10 -bottom-10
                             w-28 h-28
                             rounded-full
-                            bg-white/10"
-                    ></div>
+                            bg-white/10">
+                    </div>
 
                     {{-- Tombol / Arrow --}}
                     <div
@@ -171,21 +126,10 @@
                             w-7 h-7
                             rounded-full
                             bg-white/10
-                            flex items-center justify-center"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 5l7 7-7 7"
-                            />
+                            flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                     </div>
 
@@ -193,25 +137,10 @@
                     <div class="relative z-10 flex items-center gap-2">
 
                         {{-- Calendar --}}
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="w-7 h-7 shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        >
-                            <rect
-                                x="3"
-                                y="4"
-                                width="18"
-                                height="17"
-                                rx="2"
-                            />
-                            <path
-                                stroke-linecap="round"
-                                d="M16 2v4M8 2v4M3 9h18"
-                            />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 shrink-0" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="4" width="18" height="17" rx="2" />
+                            <path stroke-linecap="round" d="M16 2v4M8 2v4M3 9h18" />
                         </svg>
 
                         <div class="leading-tight">
@@ -230,19 +159,15 @@
                     {{-- Jam --}}
                     <div class="relative z-10">
 
-                        <span
-                            id="heroClock"
+                        <span id="heroClock"
                             class="block text-[30px] leading-none
-                                font-black tracking-tight"
-                        >
+                                font-black tracking-tight">
                             --:--
                         </span>
 
                         <div class="flex items-center gap-1 mt-1">
                             <i class="fas fa-globe"></i>
-                            <span id="heroTimezone"
-                                class="block text-[9px] opacity-90 font-medium"
-                            >
+                            <span id="heroTimezone" class="block text-[9px] opacity-90 font-medium">
                                 ---
                             </span>
 
@@ -262,8 +187,7 @@
                         min-h-[130px] w-[55%]
                         rounded-xl p-3
                         text-slate-800
-                        flex flex-col justify-between"
-                >
+                        flex flex-col justify-between">
 
                     {{-- Dekorasi bawah --}}
                     <div
@@ -271,8 +195,8 @@
                             -right-8 -bottom-12
                             w-32 h-32
                             rounded-full
-                            bg-white/10"
-                    ></div>
+                            bg-white/10">
+                    </div>
 
                     {{-- Icon matahari --}}
                     <div
@@ -280,29 +204,19 @@
                             w-7 h-7
                             rounded-full
                             bg-white/40
-                            flex items-center justify-center"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
+                            flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3" />
 
-                            <path
-                                stroke-linecap="round"
-                                d="M12 2v2
+                            <path stroke-linecap="round" d="M12 2v2
                                 M12 20v2
                                 M4.93 4.93l1.41 1.41
                                 M17.66 17.66l1.41 1.41
                                 M2 12h2
                                 M20 12h2
                                 M4.93 19.07l1.41-1.41
-                                M17.66 6.34l1.41-1.41"
-                            />
+                                M17.66 6.34l1.41-1.41" />
                         </svg>
                     </div>
 
@@ -314,8 +228,7 @@
                             class="block
                                 text-[15px]
                                 leading-[1.05]
-                                font-black"
-                        >
+                                font-black">
                             Ayo tingkatkan
                             kinerjamu hari ini!
                         </span>
@@ -326,8 +239,7 @@
                                 text-[9px]
                                 leading-tight
                                 font-medium
-                                opacity-80"
-                        >
+                                opacity-80">
                             Disiplin, konsisten, hasil lebih baik.
                         </span>
 
@@ -335,41 +247,21 @@
 
 
                     {{-- Grafik --}}
-                    <div
-                        class="relative z-10
+                    <div class="relative z-10
                             self-end
-                            mt-2"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="w-10 h-10 opacity-60"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        >
+                            mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 opacity-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             {{-- Bar --}}
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M4 19v-4
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 19v-4
                                 M9 19v-7
-                                M14 19v-10"
-                            />
+                                M14 19v-10" />
 
                             {{-- Grafik naik --}}
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M3 14l5-4 4 2 7-7"
-                            />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 14l5-4 4 2 7-7" />
 
                             {{-- Arrow --}}
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15 5h4v4"
-                            />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5h4v4" />
                         </svg>
                     </div>
 
@@ -378,45 +270,146 @@
             </div>
         </div>
 
-        {{-- menu utama --}}
-        <div class="px-6 py-2 space-y-2">
-            <div class="flex items-center gap-2">
-                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
-                <span class="font-black text-lg">Menu Utama</span>
+
+        {{-- toggle --}}
+        <div id="mainToggle"
+            class="relative flex items-center justify-evenly
+                text-base gap-2 py-2 my-5 mx-5
+                rounded-full bg-white overflow-hidden">
+            {{-- Sliding background --}}
+            <div id="toggleIndicator"
+                class="absolute h-[40px] w-[100px]
+                    rounded-3xl bg-sky-500
+                    transition-all duration-300 ease-in-out">
             </div>
-            <div class="grid grid-cols-4 gap-1 items-start text-center">
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-calendar-line text-3xl font-bold text-emerald-700 bg-emerald-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Kehadiran</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-file-line text-3xl font-bold text-blue-700 bg-blue-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Izin</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-bar-chart-line text-3xl font-bold text-amber-700 bg-amber-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Kinerja</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-star-line text-3xl font-bold text-indigo-700 bg-indigo-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Rating</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-file-text-line text-3xl font-bold text-sky-700 bg-sky-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Laporan</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-file-add-line text-3xl font-bold text-green-700 bg-green-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Pengajuan Kontrak</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-book-line text-3xl font-bold text-blue-700 bg-blue-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">Al Qur'an</span>
-                </a>
-                <a href="" class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
-                    <i class="ri-road-map-line text-3xl font-bold text-sky-700 bg-sky-300 py-3 px-4 rounded-2xl"></i>
-                    <span class="font-extrabold text-sm">SPPD</span>
-                </a>
+
+            {{-- Info --}}
+            <button type="button" data-index="0"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    transition-all duration-300">
+                Info
+            </button>
+
+            {{-- Utama --}}
+            <button type="button" data-index="1"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    font-extrabold text-white
+                    transition-all duration-300">
+                Utama
+            </button>
+
+            {{-- Riwayat --}}
+            <button type="button" data-index="2"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    transition-all duration-300">
+                Riwayat
+            </button>
+        </div>
+
+        <div id="dashboardPanels" class="overflow-hidden">
+            <div id="dashboardPanelTrack" class="flex w-[300%] transition-transform duration-300 ease-in-out">
+                {{-- menu informasi --}}
+                <section class="w-1/3 shrink-0"></section>
+
+                {{-- menu utama --}}
+                <section class="w-1/3 shrink-0">
+                    <div class="px-6 py-2 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                            <span class="font-black text-lg">Menu Utama</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1 items-start text-center">
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-calendar-line text-3xl font-bold text-emerald-700 bg-emerald-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Kehadiran</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-file-line text-3xl font-bold text-blue-700 bg-blue-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Izin</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-bar-chart-line text-3xl font-bold text-amber-700 bg-amber-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Kinerja</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-star-line text-3xl font-bold text-indigo-700 bg-indigo-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Rating</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-file-text-line text-3xl font-bold text-sky-700 bg-sky-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Laporan</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-file-add-line text-3xl font-bold text-green-700 bg-green-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Pengajuan Kontrak</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-book-line text-3xl font-bold text-blue-700 bg-blue-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">Al Qur'an</span>
+                            </a>
+                            <a href=""
+                                class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                                <i
+                                    class="ri-road-map-line text-3xl font-bold text-sky-700 bg-sky-300 py-3 px-4 rounded-2xl"></i>
+                                <span class="font-extrabold text-sm">SPPD</span>
+                            </a>
+                        </div>
+                    </div>
+
+
+                </section>
+
+                {{-- menu riwayat --}}
+                <section class="w-1/3 shrink-0 px-6 py-2 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                        <span class="font-black text-lg">Menu Riwayat</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1 items-start text-center">
+                        <a href=""
+                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                            <i
+                                class="ri-calendar-line text-3xl font-bold text-emerald-700 bg-emerald-300 py-3 px-4 rounded-2xl"></i>
+                            <span class="font-extrabold text-sm">Kehadiran</span>
+                        </a>
+                        <a href=""
+                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                            <i
+                                class="ri-file-line text-3xl font-bold text-blue-700 bg-blue-300 py-3 px-4 rounded-2xl"></i>
+                            <span class="font-extrabold text-sm">Izin</span>
+                        </a>
+                        <a href=""
+                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                            <i
+                                class="ri-bar-chart-line text-3xl font-bold text-amber-700 bg-amber-300 py-3 px-4 rounded-2xl"></i>
+                            <span class="font-extrabold text-sm">Kinerja</span>
+                        </a>
+                        <a href=""
+                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2">
+                            <i
+                                class="ri-file-text-line text-3xl font-bold text-sky-700 bg-sky-300 py-3 px-4 rounded-2xl"></i>
+                            <span class="font-extrabold text-sm">Laporan</span>
+                        </a>
+                    </div>
+                </section>
+
             </div>
         </div>
 
@@ -481,23 +474,21 @@
                             </div>
 
                             {{-- Handle Check Kode Jabatan --}}
-                            @if ($jabatan != 'MITRA' &&
-                                    $jabatan != 'LEADER' &&
-                                    $jabatan != 'DIREKSI')
+                            @if ($jabatan != 'MITRA' && $jabatan != 'LEADER' && $jabatan != 'DIREKSI')
 
                                 {{-- absensi --}}
                                 <div id="btnAbsensi"
                                     class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-blue-200 border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white text-blue-900 shadow-sm transition hover:-translate-y-0.5 hover:from-blue-100 hover:shadow-md">
-                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600 transition group-hover:bg-blue-500 group-hover:text-white"><i class="ri-calendar-check-line text-lg"></i></span>
+                                    <span
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600 transition group-hover:bg-blue-500 group-hover:text-white"><i
+                                            class="ri-calendar-check-line text-lg"></i></span>
                                     <button class="text-sm font-semibold">Kehadiran</button>
                                 </div>
                                 {{-- menu menu dashboard absensi --}}
                                 @php
                                     $hariIni = Carbon\Carbon::now()->format('N');
                                     $tampilkanAbsensi =
-                                        !in_array($hariIni, [6, 7]) ||
-                                        $kerjasamaId != 1 ||
-                                        $user->devisi_id != 26;
+                                        !in_array($hariIni, [6, 7]) || $kerjasamaId != 1 || $user->devisi_id != 26;
                                     $codeJabatan = $jabatan;
                                     $absensiRoute = match ($codeJabatan) {
                                         'CO-CS' => 'absensi-karyawan-co-cs.index',
@@ -507,27 +498,41 @@
                                 @endphp
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsen">
                                     <a href="{{ $tampilkanAbsensi ? route('absensi.index') : 'javascript:void(0);' }}"
-                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-medium text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-100"><i class="ri-calendar-check-line text-blue-600 transition group-hover:scale-110"></i>{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
+                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-medium text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-100"><i
+                                            class="ri-calendar-check-line text-blue-600 transition group-hover:scale-110"></i>{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
                                 </div>
                                 @if (!empty($absensiRoute))
                                     <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsenK">
-                                        <a href="{{ route($absensiRoute) }}" class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-team-line"></i>Kehadiran Karyawan</a>
+                                        <a href="{{ route($absensiRoute) }}"
+                                            class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                                class="ri-team-line"></i>Kehadiran Karyawan</a>
                                     </div>
                                 @endif
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngIzin">
-                                    <a href="{{ route('izin.create') }}" class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-calendar-close-line"></i>Izin</a>
+                                    <a href="{{ route('izin.create') }}"
+                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                            class="ri-calendar-close-line"></i>Izin</a>
                                 </div>
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="btnRiwayat">
-                                    <a href="javascript:void(0);" class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-history-line"></i>Riwayat</a>
+                                    <a href="javascript:void(0);"
+                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                            class="ri-history-line"></i>Riwayat</a>
                                 </div>
                                 <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiAbsen">
-                                    <a href="historyAbsensi" class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-history-line"></i>Riwayat Kehadiran</a>
+                                    <a href="historyAbsensi"
+                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                            class="ri-history-line"></i>Riwayat Kehadiran</a>
                                 </div>
                                 <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiLembur">
-                                    <a href="{{ route('lemburIndexUser') }}" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i class="ri-time-line text-orange-600 transition group-hover:scale-110"></i>Riwayat Lembur</a>
+                                    <a href="{{ route('lemburIndexUser') }}"
+                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i
+                                            class="ri-time-line text-orange-600 transition group-hover:scale-110"></i>Riwayat
+                                        Lembur</a>
                                 </div>
                                 <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiIzin">
-                                    <a href="{{ route('izin.index') }}" class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-file-list-3-line"></i>Riwayat Izin</a>
+                                    <a href="{{ route('izin.index') }}"
+                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                            class="ri-file-list-3-line"></i>Riwayat Izin</a>
                                 </div>
                         </div>
                         {{-- Handle Rekap & Lembur --}}
@@ -571,16 +576,24 @@
                             @if ($kerjasamaId == 1)
                                 <div id="btnCP"
                                     class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50 to-white text-emerald-900 shadow-sm transition hover:-translate-y-0.5 hover:from-emerald-100 hover:shadow-md">
-                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 transition group-hover:bg-emerald-500 group-hover:text-white"><i class="ri-task-line text-lg"></i></span>
+                                    <span
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 transition group-hover:bg-emerald-500 group-hover:text-white"><i
+                                            class="ri-task-line text-lg"></i></span>
                                     <button class="text-sm font-semibold">
                                         Kinerja Harian
                                     </button>
                                 </div>
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="isiIndex">
-                                    <a href="/checkpoint-user" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-add-line text-emerald-600 transition group-hover:rotate-90"></i>Bukti Kerja</a>
+                                    <a href="/checkpoint-user"
+                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i
+                                            class="ri-add-line text-emerald-600 transition group-hover:rotate-90"></i>Bukti
+                                        Kerja</a>
                                 </div>
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <a href="{{ route('checkpoint-user.history')}}" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat Bukti Kerja</a>
+                                    <a href="{{ route('checkpoint-user.history') }}"
+                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i
+                                            class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat
+                                        Bukti Kerja</a>
                                 </div>
                                 {{-- <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
                                     <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? '' : 'disabled' }}>Tambah Planning (sabtu - minggu )</a>-->
@@ -608,12 +621,15 @@
                         <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
                             <div id="btnRating"
                                 class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-violet-200 border-l-4 border-l-violet-500 bg-gradient-to-r from-violet-50 to-white text-violet-900 shadow-sm transition hover:-translate-y-0.5 hover:from-violet-100 hover:shadow-md">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600 transition group-hover:bg-violet-500 group-hover:text-white"><i class="ri-star-smile-line text-lg"></i></span>
+                                <span
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600 transition group-hover:bg-violet-500 group-hover:text-white"><i
+                                        class="ri-star-smile-line text-lg"></i></span>
                                 <button class="text-sm font-semibold">Rating</button>
                             </div>
                             <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekMe">
                                 <a href="{{ route('ratingSaya', $user->id) }}"
-                                    class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i class="ri-user-star-line"></i>Check Rating Saya</a>
+                                    class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
+                                        class="ri-user-star-line"></i>Check Rating Saya</a>
                             </div>
                             @if ($roleId == 2)
                                 <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
@@ -630,14 +646,22 @@
                         <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
                             <div id="btnLaporan"
                                 class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-orange-200 border-l-4 border-l-orange-500 bg-gradient-to-r from-orange-50 to-white text-orange-900 shadow-sm transition hover:-translate-y-0.5 hover:from-orange-100 hover:shadow-md">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-orange-600 transition group-hover:bg-orange-500 group-hover:text-white"><i class="ri-chat-3-line text-lg"></i></span>
+                                <span
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-orange-600 transition group-hover:bg-orange-500 group-hover:text-white"><i
+                                        class="ri-chat-3-line text-lg"></i></span>
                                 <button class="text-sm font-semibold">Laporan</button>
                             </div>
                             <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i class="ri-add-line text-orange-600 transition group-hover:rotate-90"></i>Tambah Laporan</a>
+                                <a href="https://laporan-sac.sac-po.com"
+                                    class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i
+                                        class="ri-add-line text-orange-600 transition group-hover:rotate-90"></i>Tambah
+                                    Laporan</a>
                             </div>
                             <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i class="ri-history-line text-orange-600 transition group-hover:scale-110"></i>Riwayat Laporan</a>
+                                <a href="https://laporan-sac.sac-po.com"
+                                    class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i
+                                        class="ri-history-line text-orange-600 transition group-hover:scale-110"></i>Riwayat
+                                    Laporan</a>
                             </div>
 
                         </div>
@@ -647,14 +671,17 @@
                             $kontrakSelesai = $kontrak?->tgl_selesai_kontrak
                                 ? \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast()
                                 : false;
-                            $kontrakBerjalan = $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
-                            $bisaAjukanKontrak = ! $kontrak || $kontrakSelesai || ! $kontrakBerjalan;
+                            $kontrakBerjalan =
+                                $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
+                            $bisaAjukanKontrak = !$kontrak || $kontrakSelesai || !$kontrakBerjalan;
                         @endphp
                         <div
                             class="{{ $bisaAjukanKontrak ? 'flex' : 'hidden' }} flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
                             <a href="{{ $bisaAjukanKontrak ? route('form-kontrak-request') : 'javascript:void(0)' }}"
                                 class="group {{ $bisaAjukanKontrak ? 'border border-amber-200 bg-gradient-to-r from-amber-50 to-white text-amber-900 hover:-translate-y-0.5 hover:from-amber-100 hover:shadow-md' : 'cursor-not-allowed bg-slate-200 text-slate-500' }} flex h-12 w-full items-center justify-center gap-2 rounded-xl border-l-4 border-l-amber-500 font-semibold shadow-sm transition">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-600 transition group-hover:rotate-6 group-hover:bg-amber-500 group-hover:text-white"><i class="ri-file-edit-line text-lg"></i></span>
+                                <span
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-600 transition group-hover:rotate-6 group-hover:bg-amber-500 group-hover:text-white"><i
+                                        class="ri-file-edit-line text-lg"></i></span>
                                 <span class="text-sm">Pengajuan Kontrak</span>
                             </a>
                         </div>
@@ -765,8 +792,7 @@
                                     {{-- menu menu dashboard absensi --}}
                                     @php
                                         $hariIni = Carbon\Carbon::now()->format('N');
-                                        $tampilkanAbsensi =
-                                            !in_array($hariIni, [6, 7]) || $kerjasamaId != 1;
+                                        $tampilkanAbsensi = !in_array($hariIni, [6, 7]) || $kerjasamaId != 1;
                                         $codeJabatan = $jabatan;
                                         $absensiRoute = match ($codeJabatan) {
                                             'CO-CS' => 'absensi-karyawan-co-cs.index',
@@ -819,7 +845,8 @@
                                             id="L{{ $key }}">
                                             <a href="{{ route($route) }}"
                                                 class="relative flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
-                                                <i class="{{ $icons[$key] }} text-xl text-sky-600"></i>{{ ucfirst($key) }}
+                                                <i
+                                                    class="{{ $icons[$key] }} text-xl text-sky-600"></i>{{ ucfirst($key) }}
                                                 @if ($jabatan == 'DIREKSI' && $key == 'kinerja')
                                                     <span class="absolute text-center bg-yellow-500"
                                                         style="padding: 20px 25px 5px 35px; right: -20px; top: -18px; transform: rotate(35deg);">
@@ -840,14 +867,18 @@
                         <div class="flex items-center justify-center w-full gap-x-2">
                             <div id="btnAbsi" style="{{ $kerjasamaId != 1 ?: 'width: 50%;' }}"
                                 class="group mt-5 flex h-12 items-center justify-center gap-2 rounded-xl border border-sky-200 border-l-4 border-l-sky-500 bg-gradient-to-r from-sky-50 to-white px-2 font-semibold text-sky-900 shadow-sm transition hover:-translate-y-0.5 hover:from-sky-100 hover:shadow-md">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600 transition group-hover:bg-sky-500 group-hover:text-white"><i class="ri-book-open-line text-lg"></i></span>
+                                <span
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600 transition group-hover:bg-sky-500 group-hover:text-white"><i
+                                        class="ri-book-open-line text-lg"></i></span>
                                 <a href="https://baca-alquran.sac-po.com" class="text-sm font-bold uppercase">
                                     {{ $kerjasamaId != 1 ? 'Baca Al-Qur`an' : 'Al-Qur`an' }}
                                 </a>
                             </div>
                             <div style="{{ $kerjasamaId != 1 ?: 'width: 50%;' }}"
                                 class="group {{ $kerjasamaId == 1 ? 'flex' : 'hidden' }} mt-5 h-12 items-center justify-center gap-2 rounded-xl border border-cyan-200 border-l-4 border-l-cyan-500 bg-gradient-to-r from-cyan-50 to-white px-5 font-semibold text-cyan-900 shadow-sm transition hover:-translate-y-0.5 hover:from-cyan-100 hover:shadow-md">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100 text-cyan-600 transition group-hover:bg-cyan-500 group-hover:text-white"><i class="ri-file-text-line text-lg"></i></span>
+                                <span
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100 text-cyan-600 transition group-hover:bg-cyan-500 group-hover:text-white"><i
+                                        class="ri-file-text-line text-lg"></i></span>
                                 <a href="https://sppd-online.sac-po.com/login" class="text-sm font-bold uppercase">
                                     SPPD
                                 </a>
@@ -882,8 +913,7 @@
         @endif
     </div>
 
-    <div
-        class="{{ $kontrak && $kontrak->isPending() ? 'hidden' : '' }} mx-5 mt-5 sm:mx-10">
+    <div class="{{ $kontrak && $kontrak->isPending() ? 'hidden' : '' }} mx-5 mt-5 sm:mx-10">
         @if ($kontrak && $kontrak->isActive())
             {{-- APPROVED --}}
             <div
@@ -992,8 +1022,7 @@
 
                 // fallback timezone perangkat
                 updateHeroTimezone();
-            },
-            {
+            }, {
                 enableHighAccuracy: true,
                 timeout: 10000,
                 maximumAge: 60000
@@ -1047,6 +1076,7 @@
     <script>
         const toggle = document.getElementById('mainToggle');
         const indicator = document.getElementById('toggleIndicator');
+        const track = document.getElementById('dashboardPanelTrack');
         const buttons = toggle.querySelectorAll('.toggle-btn');
 
         function setActive(index, animate = true) {
@@ -1057,10 +1087,14 @@
             indicator.style.left =
                 `${button.offsetLeft}px`;
 
-            // Animasi
-            indicator.style.transition = animate
-                ? 'left 300ms ease-out'
-                : 'none';
+            // Animasi indicator dan panel
+            indicator.style.transition = animate ?
+                'left 300ms ease-out' :
+                'none';
+            track.style.transition = animate ?
+                'transform 300ms ease-out' :
+                'none';
+            track.style.transform = `translateX(-${index * (100 / track.children.length)}%)`;
 
             buttons.forEach((btn, i) => {
 
