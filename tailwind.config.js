@@ -49,5 +49,5 @@ export default {
         themes: ["bumblebee"],
     },
 
-    plugins: [forms, require("daisyui"), require("@tailwindcss/forms")],
+    plugins: [forms, require("@tailwindcss/forms")],
 };
