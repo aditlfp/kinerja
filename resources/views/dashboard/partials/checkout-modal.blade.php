@@ -21,13 +21,13 @@
                                         <span id="startTime" startTimer="{{ $absenP->shift?->jam_start }}"></span>
                                     </span>
 
-                                    <div>
+                                    {{-- <div>
                                         <button id="modalPulangBtn" data-absen="{{ $absenP }}"
                                             class="items-center justify-center hidden px-3 py-1 mt-5 mr-0 text-xl text-white uppercase transition duration-100 ease-out bg-yellow-600 rounded-md shadow-md hover:bg-yellow-700 hover:shadow-none all sm:mr-2">
                                             <i class="font-sans text-3xl ri-run-line"></i>
                                             <span class="font-bold">Pulang</span>
                                         </button>
-                                    </div>
+                                    </div> --}}
                                     <div
                                         class="fixed inset-0 z-[9000] hidden transition-all duration-300 ease-in-out modalp bg-slate-950/35 backdrop-blur-sm">
                                         <div class="w-[min(94vw,420px)] max-h-[88vh] overflow-y-auto mx-2 rounded-lg shadow-2xl bg-slate-50 ring-1 ring-white/80">
