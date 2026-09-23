@@ -72,12 +72,47 @@
     </div>
     <input class="manual-name input input-bordered border-slate-200 mt-2 hidden w-full" type="text" name="input_manual[]" placeholder="Ketik nama pekerjaan">
     <input class="job-value" type="hidden" name="pekerjaan_id[]">
-    <label class="label mt-4 py-0"><span class="label-text font-semibold">Foto pekerjaan</span></label>
-    <label class="dropzone mt-2 flex min-h-28 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 text-center transition duration-200 hover:border-sky-400 hover:bg-sky-50">
-        <div class="photo-preview grid w-full grid-cols-3 gap-2 sm:grid-cols-5"></div>
-        <div class="photo-placeholder flex flex-col items-center"><i class="ri-upload-cloud-2-line text-3xl text-slate-400"></i><span class="text-sm font-semibold text-slate-600">Klik atau tarik foto ke sini</span><span class="text-xs text-slate-400">JPG, PNG — bisa lebih dari satu</span></div>
-        <input class="photo-input hidden" type="file" name="img[][]" accept="image/*" multiple>
-    </label>
+    <label class="label mt-4 py-0">
+    <span class="label-text font-semibold">Foto pekerjaan</span>
+        </label>
+
+        <div class="mt-2">
+            <div
+                class="dropzone flex min-h-28 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 text-center transition duration-200 hover:border-sky-400 hover:bg-sky-50"
+            >
+                <div class="photo-preview grid w-full grid-cols-3 gap-2 sm:grid-cols-5"></div>
+
+                <div class="photo-placeholder flex flex-col items-center">
+                    <i class="ri-image-add-line text-3xl text-slate-400"></i>
+
+                    <span class="text-sm font-semibold text-slate-600">
+                        Tambahkan foto
+                    </span>
+
+                    <span class="text-xs text-slate-400">
+                        Ambil foto atau pilih dari galeri
+                    </span>
+                </div>
+            </div>
+
+            <!-- Input kamera -->
+            <input
+                class="photo-input photo-camera hidden"
+                type="file"
+                name="img[][]"
+                accept="image/*"
+                capture="environment"
+                multiple
+            >
+
+            <!-- Input galeri -->
+            <input
+                class="photo-gallery hidden"
+                type="file"
+                accept="image/*"
+                multiple
+            >
+        </div>
     <div class="photo-names mt-2 text-xs text-slate-500"></div>
     <label class="label mt-4 py-0"><span class="label-text font-semibold">Deskripsi pekerjaan</span></label>
     <textarea class="textarea textarea-bordered mt-2 w-full" name="deskripsi[]" rows="3" placeholder="Jelaskan pekerjaan yang dilakukan"></textarea>

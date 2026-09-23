@@ -101,14 +101,31 @@
                 syncRow(row);
             });
             bindDropdown(row);
-            row.find('.photo-input').on('change', function () {
+            const updatePhotos = files => {
+                const input = row.find('.photo-camera')[0];
+                const transfer = new DataTransfer();
+                [...files].forEach(file => transfer.items.add(file));
+                input.files = transfer.files;
+
                 const preview = row.find('.photo-preview').empty();
-                row.find('.photo-placeholder').toggleClass('hidden', this.files.length > 0);
-                [...this.files].forEach(file => {
+                row.find('.photo-placeholder').toggleClass('hidden', input.files.length > 0);
+                [...input.files].forEach(file => {
                     if (!file.type.startsWith('image/')) return;
                     preview.append(`<img src="${URL.createObjectURL(file)}" alt="Preview ${file.name}" class="h-20 w-full rounded-lg object-cover ring-1 ring-slate-200">`);
                 });
-                row.find('.photo-names').text([...this.files].map(file => file.name).join(', '));
+                row.find('.photo-names').text([...input.files].map(file => file.name).join(', '));
+            };
+
+            row.find('.photo-camera, .photo-gallery').on('change', function () {
+                updatePhotos(this.files);
+            });
+            row.find('.dropzone').on('click', function (event) {
+                event.preventDefault();
+                const camera = row.find('.photo-camera')[0];
+                const gallery = row.find('.photo-gallery')[0];
+                const modal = $('#photo-source-modal');
+
+                openPhotoModal(camera, gallery);
             });
             row.find('.remove-job').on('click', function () {
                 if (jobs.find('.job-row').length > 1) { row.remove(); renumber(); }
@@ -119,6 +136,137 @@
 
         jobs.find('.job-row').each(function () { bind($(this)); });
         renumber();
+
+        $('body').append(`
+            <div
+                id="photo-source-modal"
+                class="fixed inset-0 z-[10000] hidden items-center justify-center overflow-hidden bg-slate-950/60 p-3 backdrop-blur-md sm:p-4"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="photo-source-title"
+            >
+                <div
+                    class="photo-modal-panel w-full max-w-md scale-95 opacity-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl transition-opacity duration-150 ease-out"
+                >
+                    <!-- Header -->
+                    <div class="px-6 pt-6">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500 text-white">
+                                    <i class="ri-image-add-line text-2xl"></i>
+                                </div>
+
+                                <h2 id="photo-source-title" class="text-xl font-extrabold tracking-tight text-slate-900">
+                                    Tambahkan foto
+                                </h2>
+
+                                <p class="mt-1 text-sm leading-5 text-slate-500">
+                                    Pilih cara untuk menambahkan foto pekerjaan.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="photo-modal-close flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-700"
+                                aria-label="Tutup"
+                            >
+                                <i class="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="grid gap-3 p-6 sm:grid-cols-2">
+
+                        <!-- Camera -->
+                        <button
+                            type="button"
+                            class="photo-modal-camera group flex min-h-[124px] flex-col items-start justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-colors duration-150 hover:border-sky-300 hover:bg-sky-50"
+                        >
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sky-600 ring-1 ring-slate-200 transition-colors duration-150 group-hover:bg-sky-500 group-hover:text-white group-hover:ring-sky-500">
+                                <i class="ri-camera-line text-xl"></i>
+                            </span>
+
+                            <span class="mt-4">
+                                <span class="block text-sm font-bold text-slate-800">Ambil foto</span>
+                                <span class="mt-0.5 block text-xs text-slate-500">Gunakan kamera</span>
+                            </span>
+                        </button>
+
+                        <!-- Gallery -->
+                        <button
+                            type="button"
+                            class="photo-modal-gallery group flex min-h-[124px] flex-col items-start justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-colors duration-150 hover:border-sky-300 hover:bg-sky-50"
+                        >
+                            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sky-600 ring-1 ring-slate-200 transition-colors duration-150 group-hover:bg-violet-500 group-hover:text-white group-hover:ring-violet-500">
+                                <i class="ri-gallery-line text-xl"></i>
+                            </span>
+
+                            <span class="mt-4">
+                                <span class="block text-sm font-bold text-slate-800">Pilih dari galeri</span>
+                                <span class="mt-0.5 block text-xs text-slate-500">Pilih foto yang sudah ada</span>
+                            </span>
+                        </button>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="border-t border-slate-100 bg-slate-50/60 px-6 py-3">
+                        <button
+                            type="button"
+                            class="photo-modal-close w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-700"
+                        >
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        const photoModal = $('#photo-source-modal');
+        const photoModalPanel = photoModal.find('.photo-modal-panel');
+
+        const openPhotoModal = (cameraInput, galleryInput) => {
+            photoModal
+                .data({ camera: cameraInput, gallery: galleryInput })
+                .removeClass('hidden')
+                .addClass('flex');
+            $('html, body').addClass('overflow-hidden').css({ overflow: 'hidden', height: '100%', overscrollBehavior: 'none' });
+
+            // trigger animasi setelah elemen ke-render sebagai flex
+            requestAnimationFrame(() => {
+                photoModalPanel.removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
+            });
+        };
+
+        const closePhotoModal = () => {
+            photoModalPanel.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+
+            setTimeout(() => {
+                photoModal.removeClass('flex').addClass('hidden').removeData('camera gallery');
+                $('html, body').removeClass('overflow-hidden').css({ overflow: '', height: '', overscrollBehavior: '' });
+            }, 200);
+        };
+
+        photoModal.on('click', function (event) {
+            if (event.target === this) closePhotoModal();
+        });
+
+        photoModal.find('.photo-modal-close').on('click', closePhotoModal);
+
+        photoModal.find('.photo-modal-camera').on('click', function () {
+            photoModal.data('camera').click();
+            closePhotoModal();
+        });
+
+        photoModal.find('.photo-modal-gallery').on('click', function () {
+            photoModal.data('gallery').click();
+            closePhotoModal();
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && !photoModal.hasClass('hidden')) closePhotoModal();
+        });
         $(document).on('click', function (event) {
             if (!$(event.target).closest('.job-dropdown, .job-menu').length) closeDropdowns();
         });
@@ -131,6 +279,7 @@
             renumber();
         });
         $('#form-cp').on('submit', function () { $('#submit-job').prop('disabled', true).text('Menyimpan...'); });
+
     });
 
     const dropdown = document.querySelector('.job-dropdown');

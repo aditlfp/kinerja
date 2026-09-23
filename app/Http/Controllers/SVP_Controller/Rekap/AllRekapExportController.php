@@ -424,7 +424,6 @@ class AllRekapExportController extends RekapController
             ];
 
             // dd($data['overtimes']);
-            // ACHMAD SYAIFUL ROBIANSYAH
             return response()->json(['success' => true, 'data' => $data]);
         } catch (\Throwable $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

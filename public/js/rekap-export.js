@@ -309,6 +309,7 @@
             mitra_kerja: (r.client_name || r.client?.name || "-").toUpperCase(),
             jabatan: (r.jabatan?.name_jabatan || "-").toUpperCase(),
             tanggal_masuk: this.fmt(r.date_in),
+            jumlah_mk: r.total_mk || '-',
             metode_gaji: (r.method_salary || "-").toUpperCase(),
             no_rek: (r.method_salary_manual || "-").toUpperCase(),
         }));
@@ -320,6 +321,7 @@
                     mitra_kerja: "-",
                     jabatan: "-",
                     tanggal_masuk: "-",
+                    jumlah_mk: "0",
                     metode_gaji: "-",
                     no_rek: "-",
                 },
@@ -502,6 +504,7 @@
             "Mitra Kerja",
             "Jabatan",
             "Tanggal Masuk",
+            "Jumlah MK",
             "Metode Gaji",
             "No Rek",
         ];

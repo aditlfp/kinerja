@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Concerns;
 
+use App\Models\Client;
+
 trait ScopesLeaderMitra
 {
     private function leaderClientIds(): array
     {
-        return auth()->id() == 157 ? [18, 21, 32] : [auth()->user()->kerjasama->client_id];
+        $clientIds = Client::where('name', 'LIKE', '%ngabar%')
+            ->pluck('id')
+            ->toArray();
+        return auth()->id() == 157 ? $clientIds : [auth()->user()->kerjasama->client_id];
     }
 
     private function scopeLeaderUser($q): void

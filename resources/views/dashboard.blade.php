@@ -1216,8 +1216,8 @@
                         @endif
 
                         {{-- End Handle --}}
+                        @if ($kerjasamaId == 1)
                         <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            @if ($kerjasamaId == 1)
                                 <div id="btnCP"
                                     class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50 to-white text-emerald-900 shadow-sm transition hover:-translate-y-0.5 hover:from-emerald-100 hover:shadow-md">
                                     <span
@@ -1239,6 +1239,19 @@
                                             class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat
                                         Bukti Kerja</a>
                                 </div>
+                                {{-- <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
+                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? '' : 'disabled' }}>Tambah Planning (sabtu - minggu )</a>-->
+                                    <a href="{{ $cex ? route('checkpoint-user.edit', $cex->id) : route('checkpoint-user.create') }}"
+                                        class="w-full btn btn-info">{{ $cex ? 'Ubah Rencana Kerja' : 'Tambah Rencana Kerja' }}
+                                        (sabtu - minggu )</a>
+                                </div>
+                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="kirimCP">
+                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? 'disabled' : '' }}>Kirim Bukti (senin - jum'at)</a>-->
+                                    <a href="{{ route('editBukti-checkpoint-user') }}" {{ !$cex ? 'disabled' : '' }}
+                                        style="{{ !$cex ? 'background: #7dd3fc; border: none; color: #1e293b;' : '' }}"
+                                        class="w-full btn btn-info ">{{ $cex ? 'Kirim Bukti' : 'Buat Rencana Kerja Terlebih Dahulu' }}
+                                        (senin - jum'at)</a>
+                                </div> --}}
                             @else
                                 <div class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s"
                                     disabled>
@@ -1249,6 +1262,45 @@
                                 </div>
                             @endif
                         </div>
+                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
+                            <div id="btnRating"
+                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
+                                <i class="text-xl ri-user-star-line"></i>
+                                <button class="text-sm font-bold uppercase">Rating</button>
+                            </div>
+                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekMe">
+                                <a href="{{ route('ratingSaya', $user->id) }}"
+                                    class="w-full btn btn-info">Check Rating Saya</a>
+                            </div>
+                            @if ($roleId == 2)
+                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
+                                    <a href="{{ route('admin.rating.index') }}"
+                                        class="w-full btn btn-info">Rating</a>
+                                </div>
+                            @elseif($jabatan == 'LEADER')
+                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
+                                    <a href="{{ route('leader-rating.index') }}"
+                                        class="w-full btn btn-info">Rating</a>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
+                            <div id="btnLaporan"
+                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
+                                <i class="text-xl ri-speak-line"></i>
+                                <button class="text-sm font-bold uppercase">Laporan</button>
+                            </div>
+                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahLaporan">
+                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Tambah
+                                    Laporan</a>
+                            </div>
+                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekLaporan">
+                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Riwayat
+                                    Laporan</a>
+                            </div>
+
+                        </div>
+
                         {{-- Button Pengajuan Kontrak --}}
                         @php
                             $kontrakSelesai = $kontrak?->tgl_selesai_kontrak

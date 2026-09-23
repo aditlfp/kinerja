@@ -36,6 +36,7 @@
                             <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Nama</th>
                             <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Nama Penginput</th>
                             <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Jabatan</th>
+                            <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Jumlah MK</th>
                             <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Tanggal Masuk</th>
                             <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">Metode Gaji</th>
                             <th class="px-4 py-3 text-xs text-center text-gray-500 uppercase">Status</th>
@@ -94,6 +95,7 @@
                     <td class="px-4 py-3 text-sm">${r.fullname || '-'}</td>
                     <td class="px-4 py-3 text-sm">${r.jabatan?.name_jabatan || '-'}</td>
                     <td class="px-4 py-3 text-sm">${fmtDate(r.date_in)}</td>
+                    <td class="px-4 py-3 text-sm">${r.total_mk || '-'}</td>
                     <td class="px-4 py-3 text-sm">${r.method_salary || '-'}</td>
                     <td class="px-4 py-3 text-sm">${r.createdBy?.nama_lengkap || '-'}</td>
                     <td class="px-4 py-3 text-sm text-center whitespace-nowrap">${statusBadge(r.status)}</td>
@@ -138,6 +140,7 @@
                 nama: r.fullname || '-',
                 jabatan: r.jabatan?.name_jabatan || '-',
                 tanggal_masuk: fmtDate(r.date_in),
+                total_mk: r.total_mk || '-',
                 metode_gaji: r.method_salary || '-',
                 no_rek: r.method_salary_manual ? r.method_salary_manual : '-',
             }));
@@ -164,9 +167,9 @@
             doc.text(`Data Personil Masuk - ${clientName}`, 14, 14);
 
             const headers = [
-                ['No', 'Nama', 'Jabatan', 'Tanggal Masuk', 'Metode Gaji', 'No Rek']
+                ['No', 'Nama', 'Jabatan', 'Tanggal Masuk', 'Total MK', 'Metode Gaji', 'No Rek']
             ];
-            const body = exportRows.map(r => [r.no, r.nama, r.jabatan, r.tanggal_masuk, r.metode_gaji, r.no_rek]);
+            const body = exportRows.map(r => [r.no, r.nama, r.jabatan, r.tanggal_masuk, r.total_mk, r.metode_gaji, r.no_rek]);
 
             doc.autoTable({
                 head: headers,

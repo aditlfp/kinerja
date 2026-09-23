@@ -148,8 +148,9 @@
                 class="text-xs text-slate-400">JPG, PNG — bisa lebih dari satu</span></div>
         <input class="existing-images" type="hidden" name="existing_img[{{ $i }}][]"
             value="{{ implode(',', $rowImages) }}">
-        <input class="photo-input hidden" type="file" name="img[{{ $i }}][]" accept="image/*" multiple
-            {{ $locked }}>
+        <input class="photo-input photo-camera hidden" type="file" name="img[{{ $i }}][]" accept="image/*"
+            capture="environment" multiple {{ $locked }}>
+        <input class="photo-gallery hidden" type="file" accept="image/*" multiple {{ $locked }}>
     </label>
     <div class="photo-names mt-2 text-xs text-slate-500"></div>
 
