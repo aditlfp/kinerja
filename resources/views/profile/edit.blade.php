@@ -1,14 +1,18 @@
 <x-app-layout>
-	<x-main-div>
-		<div class="py-10">
-			<div>
-				<p class="text-center text-2xl font-bold py-10 uppercase">Edit Profil Saya</p>
+		<div class="min-h-screen bg-slate-50 px-4 py-5 text-slate-800">
+			<div class="mx-auto flex w-full max-w-2xl items-center justify-between">
+				<a href="{{ route('dashboard.index') }}">
+					<img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32">
+				</a>
+				<span class="font-semibold text-sm text-slate-500/50">Profile Page</span>
 			</div>
+			<div class="mx-auto w-full max-w-2xl py-8">
+				<p class="mb-5 border-l-4 border-sky-500 pl-3 text-xl font-black">Edit Profil Saya</p>
 			<form action="{{ route('profile.update', $dataUser->id) }}" method="POST" enctype="multipart/form-data">
 				@method('PUT')
 				@csrf
-				<div class="bg-slate-500 mx-5 rounded">
-					<div class=" bg-slate-100 px-5 py-5 rounded shadow">
+				<div class="overflow-hidden rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-200">
+					<div class="rounded-xl bg-slate-50 px-5 py-5">
 						<!-- Nama lengkap -->
 						<div>
 							<x-input-label for="nama_lengkap" :value="__('Nama Lengkap')" />
@@ -63,14 +67,14 @@
 						</div>
 						<input type="text" name="oldimage" value="{{ $dataUser->image }}" class="hidden" />
 					</div>
-					<div class="flex justify-center mt-10 gap-2">
-						<button type="submit" class="btn btn-primary">Simpan</button>
-						<a href="{{ route('profile.index') }}" class="btn btn-error transition-all ease-linear .2s">
+					<div class="mt-6 flex justify-center gap-2">
+						<button type="submit" class="rounded-lg bg-sky-500 px-4 py-2 font-semibold text-white transition hover:bg-sky-600">Simpan</button>
+						<a href="{{ route('profile.index') }}" class="rounded-lg bg-red-400 px-4 py-2 font-semibold text-white transition hover:bg-red-300 border border-red-500/20">
 							Kembali
 						</a>
 					</div>
 				</div>
 			</form>
+			</div>
 		</div>
-	</x-main-div>
 </x-app-layout>

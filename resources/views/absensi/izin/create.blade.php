@@ -1,7 +1,11 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="p-5">
-			<p class="text-center text-lg sm:text-2xl uppercase font-bold my-10">Halaman izin</p>
+        <div class="min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+            <div class="mx-auto flex w-full max-w-2xl items-center justify-between">
+                <a href="{{ route('dashboard.index') }}"><img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32"></a>
+                <span class="font-semibold text-sm text-slate-500/50">Halaman Izin</span>
+            </div>
+            <div class="mx-auto w-full max-w-2xl pt-8">
+                <p class="mb-5 border-l-4 border-sky-500 pl-3 text-xl font-black uppercase">Halaman Izin</p>
             <form action="{{ route('izin.store') }}" method="POST" enctype="multipart/form-data" id="form-izin">
             @csrf
             @method('POST')
@@ -71,12 +75,13 @@
                 <x-input-error :messages="$errors->get('img')" class="mt-2" />
             </div>
             <div class="flex justify-center sm:justify-end gap-2 mt-4">
-				<button class="p-2 my-2 px-4 text-white bg-amber-500 hover:bg-amber-600 rounded transition-all ease-linear .2s" id="btnIzin">Izin</button>
-                <a href="{{ route('dashboard.index') }}" class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded transition-all ease-linear .2s">
+				<button class="my-2 rounded-lg bg-sky-500 p-2 px-4 font-semibold text-white transition hover:bg-sky-600" id="btnIzin">Izin</button>
+                <a href="{{ route('dashboard.index') }}" class="my-2 rounded-lg bg-slate-200 p-2 px-4 font-semibold text-slate-700 transition hover:bg-slate-300">
                     Kembali
                 </a>
             </div>
             </form>
+            </div>
         </div>
         <script>
             $(document).ready(function() {
@@ -88,5 +93,4 @@
     		})
             })
         </script>
-    </x-main-div>
 </x-app-layout>

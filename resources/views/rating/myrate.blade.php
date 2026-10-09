@@ -1,15 +1,19 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="flex justify-center flex-col items-center mx-10 my-10">
-            <div class=" py-10 font-semibold w-fit bg-slate-100 w-full  rounded-md p-3 px-10 shadow-md">
-                <p class="pb-5 text-center">Rating Saya, </p>
+        <div class="min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+            <div class="mx-auto flex w-full max-w-md items-center justify-between">
+                <a href="{{ route('dashboard.index') }}"><img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32"></a>
+                <span class="font-semibold text-sm text-slate-500/50">Rating Saya</span>
+            </div>
+            <div class="mx-auto mt-8 w-full max-w-md overflow-hidden rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-200">
+                <div class="rounded-xl bg-slate-50 px-5 py-8 font-semibold">
+                <p class="border-l-4 border-sky-500 pl-3 text-xl font-black">Rating Saya</p>
                 @php
                     $ratM = $rating ? $rating->rate_mitra : 0;
                     $ratL = $rating ? $rating->rate_leader : 0;
                     $totalR = ($ratM + $ratL) / 2;
                 @endphp
-                <p class="font-semibold text-center mt-5">~ Rating ~</p>
-                <span class="p-2 mb-5 flex justify-center items-center rounded-lg bg-slate-300">
+                <p class="mt-6 text-center font-semibold text-slate-600">Rating</p>
+                <span class="mb-5 flex items-center justify-center rounded-lg bg-white p-3 ring-1 ring-slate-200">
                     @if($totalR <= 0)
                         <p class="text-center font-semibold">Belum Ada Rating</p>
                     @else
@@ -19,9 +23,9 @@
 					@endfor
                 </span>
                 <div class="pt-5 flex justify-center">
-                    <a href="{{ route('dashboard.index') }}" class="btn btn-error">Kembali</a>
+                    <a href="{{ route('dashboard.index') }}" class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300">Kembali</a>
+                </div>
                 </div>
             </div>
         </div>
-    </x-main-div>
 </x-app-layout>

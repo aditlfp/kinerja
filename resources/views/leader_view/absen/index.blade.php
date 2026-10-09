@@ -1,13 +1,15 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10 sm:mx-10">
-            <p class="text-lg font-bold text-center uppercase sm:text-2xl ">Riwayat Absensi, <br>PT. Surya Amanah Cendikia</p>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <p class="border-l-4 border-sky-500 text-lg font-bold text-center uppercase sm:text-2xl">Riwayat Absensi, <br>{{ auth()->user()->kerjasama->client->name }}</p>
             <div class="flex flex-col items-center justify-start mx-2 my-2 sm:justify-center">
                 <div class="flex items-center justify-center my-5 sm:justify-between">
                     <div class="flex flex-col items-center justify-center w-full gap-2 sm:flex-row sm:gap-5 sm:justify-between">
-                        <div class="flex justify-start my-1 w-full">
-                            <button onclick="history.back()" class="btn btn-error">Kembali</button>
-                        </div>
                         <div class="w-full p-4 mx-5 rounded-md bg-slate-100">
                             @php
                                 $isMitra = Auth::user()->divisi->jabatan->code_jabatan === 'MITRA';
@@ -71,7 +73,7 @@
                                     </div>
                                 </form>
                             @elseif($isSpvW)
-                                <form method="GET" class="flex flex-wrap items-end gap-3 p-4 bg-base-100 rounded-xl shadow-sm border border-base-200">
+                                <form method="GET" class="flex flex-wrap items-end gap-3 p-4 bg-base-100 rounded-xl shadow-xs border border-base-200">
                                     <div class="form-control w-full sm:w-auto">
                                         <label class="label pb-1"><span class="label-text text-xs font-semibold">Bulan</span></label>
                                         <input type="month" name="search" id="search" value="{{ $defaultMonth }}" max="{{ $now }}"
@@ -118,7 +120,7 @@
                                 </form>
                             @else
                                 <form action="{{ url('LEADER/leader-absensi') }}" method="GET" class="sm:flex sm:justify-start">
-                                    <div class="join sm:ml-10">
+                                    <div class="join sm:ml-10 min-w-full">
                                         <input type="month" name="search" id="search" value="{{ $defaultMonth }}" max="{{ $now }}" placeholder="pilih bulan..." class="text-sm join-item input input-bordered" />
                                         <button type="submit" class="btn btn-info join-item">FILTER</button>
                                     </div>
@@ -168,7 +170,7 @@
 										<x-no-img />
 									</td>
 								@endif
-                                <td class="p-1 break-words whitespace-pre-wrap line-clamp-3">{{ ucwords(strtolower($i->user->nama_lengkap)) }}</td>
+                                <td class="p-1 wrap-break-word whitespace-pre-wrap line-clamp-3">{{ ucwords(strtolower($i->user->nama_lengkap)) }}</td>
                                 <td class="p-1 text-center">{{ $i->shift?->shift_name }}, <br> {{ Carbon\Carbon::parse($i->shift?->jam_start)->format('H:i') }} - {{ Carbon\Carbon::parse($i->shift?->jam_end)->subHour(1)->format('H:i') }}</td>
                                 @if(auth()->user()->id == 175)
 								<td class="p-1 text-center">
@@ -262,6 +264,7 @@
                     {{ $absen->links() }}
                 </div>
             </div>
+            </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

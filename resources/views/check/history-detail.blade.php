@@ -13,7 +13,7 @@
                 @php($manual = array_values((array) $checkpoint->input_manual)[$i] ?? null)
                 @php($status = data_get((array) $checkpoint->approve_status, $i))
 
-                <article class="rounded-2xl border {{ $status != 'denied' ? 'border-gray-200' : 'border-rose-500' }} bg-white p-5 shadow-sm">
+                <article class="rounded-2xl border {{ $status != 'denied' ? 'border-gray-200' : 'border-rose-500' }} bg-white p-5 shadow-xs">
                     <h2 class="font-bold text-slate-800">{{ $jobs[$jobId]->name ?? ($manual ?? 'Pekerjaan') }}</h2>
                     @php($rowImages = data_get((array) $checkpoint->img, $i, []))
                     @php($rowImages = is_array($rowImages) ? $rowImages : explode(',', (string) $rowImages))

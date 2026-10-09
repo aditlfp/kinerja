@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <div id="rejectModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
+    <div id="rejectModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4 backdrop-blur-xs">
         <form method="POST" action="{{ route('direksi.cp.history.approve', $checkpoint->id) }}"
             class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             @csrf @method('PATCH')
@@ -71,7 +71,7 @@
                 <div><h3 class="font-bold text-slate-900">Tolak checkpoint</h3><p class="text-xs text-slate-500">Alasan wajib diisi sebelum menolak.</p></div>
             </div>
             <label class="mt-5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Alasan penolakan</label>
-            <textarea name="note" id="rejectNote" rows="3" required placeholder="Tulis alasan penolakan..." class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 focus:border-rose-300 focus:outline-none"></textarea>
+            <textarea name="note" id="rejectNote" rows="3" required placeholder="Tulis alasan penolakan..." class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 focus:border-rose-300 focus:outline-hidden"></textarea>
             @error('note')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
             <div class="mt-5 flex justify-end gap-2">
                 <button type="button" onclick="closeRejectModal()" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Batal</button>

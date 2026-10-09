@@ -1,16 +1,22 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="w-full max-w-3xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-3xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50">
+                    <i class="ri-home-4-line"></i> Dashboard
+                </a>
+            </div>
+            <div class="p-4 mb-4 bg-white border rounded-2xl shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center gap-3">
                     <a href="{{ route('index.rekap.data.leader') }}"
-                        class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg sm:ml-0 shrink-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                        class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg sm:ml-0 shrink-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                         aria-label="Kembali ke rekapitulasi">
                         <i class="text-xl ri-arrow-left-line"></i>
                     </a>
                     <div class="min-w-0">
                         <p class="text-xs font-medium text-slate-500">Data Rekap</p>
-                        <h1 class="text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
+                        <h1 class="border-l-4 border-sky-500 pl-3 text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
                             Pengajuan Personil Keluar
                         </h1>
                         <p class="mt-1 text-sm leading-5 text-slate-500">
@@ -24,14 +30,14 @@
                 x-data="personOutForm()" class="space-y-4">
                 @csrf
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5">
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div class="sm:col-span-2">
                             <label for="user_id" class="mb-1.5 block text-sm font-semibold text-slate-700">
                                 Nama Pegawai <span class="text-red-500">*</span>
                             </label>
                             <select name="user_id" id="user_id"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required>
                                 <option value="">Pilih nama pegawai</option>
                                 @forelse($users as $user)
@@ -54,7 +60,7 @@
                                 Tanggal Keluar <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="out_date" id="out_date" value="{{ old('out_date') }}"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required>
                             @error('out_date')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -66,7 +72,7 @@
                                 Jumlah MK <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="total_mk" id="total_mk" value="{{ old('total_mk') }}"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required placeholder="Masukkan Total Hari Kerja (Misal: 11 Hari)">
                             @error('total_mk')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -75,7 +81,7 @@
                     </div>
                 </section>
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5">
                     <div class="mb-3">
                         <h2 class="text-sm font-semibold text-slate-800">
                             Alasan Keluar <span class="text-red-500">*</span>
@@ -126,7 +132,7 @@
                             </label>
                             <input type="text" name="reason_manual" id="reason_manual" x-model="manualReason"
                                 value="{{ old('reason_manual') }}" placeholder="Contoh: meninggal, cacat permanen"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 :required="selectedReason === 'lainnya'" :disabled="selectedReason !== 'lainnya'">
                             <p class="mt-1 text-xs text-slate-500">Isi singkat dan jelas sesuai kondisi sebenarnya.</p>
                         </div>
@@ -140,7 +146,7 @@
                     @enderror
                 </section>
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5" x-data="imagePreview()">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5" x-data="imagePreview()">
                     <label for="img" class="mb-1.5 block text-sm font-semibold text-slate-700">
                         Unggah Bukti <span class="text-red-500">*</span>
                     </label>
@@ -152,7 +158,7 @@
                         class="p-4 text-center transition border-2 border-dashed rounded-lg cursor-pointer hover:border-sky-400 hover:bg-sky-50 sm:p-6">
                         <template x-if="!imageUrl">
                             <div class="flex flex-col items-center gap-3">
-                                <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-sm text-slate-500 ring-1 ring-slate-200">
+                                <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-xs text-slate-500 ring-1 ring-slate-200">
                                     <i class="text-2xl ri-upload-cloud-2-line"></i>
                                 </div>
                                 <div>
@@ -187,15 +193,15 @@
                 </section>
 
                 <div
-                    class="sticky sm:bottom-16 z-20 mx-0.5 rounded-md border-t border-slate-200 bg-white/95 p-3 shadow-[0_-8px_18px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:rounded-lg sm:border sm:shadow-sm">
+                    class="sticky sm:bottom-16 z-20 mx-0.5 rounded-md border-t border-slate-200 bg-white/95 p-3 shadow-[0_-8px_18px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:static sm:mx-0 sm:rounded-lg sm:border sm:shadow-xs">
                     <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         <button type="submit"
-                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
+                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-500 focus:outline-hidden focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
                             <i class="ri-save-line"></i>
                             Simpan Pengajuan
                         </button>
                         <a href="{{ route('index.rekap.data.leader') }}"
-                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
                             <i class="ri-close-line"></i>
                             Batal
                         </a>
@@ -216,7 +222,7 @@
                 </div>
             </div>
         </div>
-    </x-main-div>
+    </div>
 
     <script>
         function personOutForm() {

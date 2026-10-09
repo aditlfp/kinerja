@@ -6,12 +6,12 @@
         $ende = \Carbon\Carbon::now('Asia/Jakarta')->endOfMonth();
     @endphp
 
-    <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-xl) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Jadwal Karyawan</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">{{ Auth::user()->kerjasama->client->name }}</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data Jadwal Karyawan</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">{{ Auth::user()->kerjasama->client->name }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     @if(Auth::user()->divisi->jabatan->code_jabatan == "CO-CS")
@@ -26,7 +26,7 @@
         </section>
 
         @if(Auth::user()->role_id == 2)
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <div class="flex flex-col justify-center items-center gap-3 md:flex-row md:justify-between w-full">
                     <form action="{{ route('admin.jadwal.import') }}" method="POST" class="flex items-center gap-2 overflow-hidden" enctype="multipart/form-data">
                         @csrf
@@ -38,7 +38,7 @@
                 </div>
             </section>
 
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <form action="{{ route('admin.jadwal.export') }}" method="get" class="grid gap-3 md:grid-cols-4 items-end">
                     <div>
                         <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">Mulai</label>
@@ -65,7 +65,7 @@
                 </form>
             </section>
         @elseif(Auth::user()->divisi->jabatan->code_jabatan == 'LEADER')
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <form action="{{ route('store.processDate') }}" method="GET" class="grid gap-3 md:grid-cols-4 items-end">
                     <div>
                         <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">Mulai</label>

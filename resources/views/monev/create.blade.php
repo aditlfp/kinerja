@@ -4,7 +4,7 @@
 		<p class="text-center text-2xl uppercase font-bold">Validasi Monev</p>
 		<form method="POST" action="{{ route('admin.jabatan.store') }}" class="m-5" id="form">
 			@csrf
-			<div class="bg-slate-100 px-10 py-5 rounded shadow">
+			<div class="bg-slate-100 px-10 py-5 rounded-sm shadow-sm">
 			    <!-- foto -->
 			    <div class="flex flex-col">
 			        <div class="flex flex-col  sm:m-0 items-center  justify-center">
@@ -12,7 +12,7 @@
 						    <video id="video" style="scale: 100%; padding: 0.5rem;" class="bg-slate-200 rounded-md square-video" autoplay></video>
 					    </div>
 						<canvas id="canvas"  style="display:none;"></canvas>
-						<div id="results" class=" sm:mt-0 rounded mb-3"></div>
+						<div id="results" class=" sm:mt-0 rounded-sm mb-3"></div>
 						
 						@if($errors->image)
 						    <!--<p class=" font-bold bg-white text-start p-1 rounded-lg" style="color: red">Foto Tidak Boleh Kosong</p>-->

@@ -1,17 +1,21 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="w-full max-w-3xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-3xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="p-4 mb-4 bg-white border rounded-2xl shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center min-w-0 gap-3">
                         <a href="{{ route('index.rekap.data.leader') }}"
-                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                             aria-label="Kembali ke rekapitulasi">
                             <i class="text-xl ri-arrow-left-line"></i>
                         </a>
                         <div class="min-w-0">
                             <p class="text-xs font-medium text-slate-500">Data Rekap</p>
-                            <h1 class="text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
+                            <h1 class="border-l-4 border-sky-500 pl-3 text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
                                 Pengajuan Keterangan Lanjutan
                             </h1>
                             <p class="mt-1 text-sm leading-5 text-slate-500">
@@ -40,7 +44,7 @@
                 }">
                 @csrf
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5">
                     <label class="mb-1.5 block text-sm font-semibold text-slate-700">
                         Keterangan Lanjutan <span class="text-red-500">*</span>
                     </label>
@@ -51,19 +55,19 @@
                                     <div>
                                         <label class="mb-1 block text-xs font-semibold text-slate-600">Periode</label>
                                         <input type="text" :name="`entries[${index}][periode]`" x-model="entry.periode"
-                                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                             placeholder="Contoh: Mei 2026 / 20-05-2026">
                                     </div>
                                     <div>
                                         <label class="mb-1 block text-xs font-semibold text-slate-600">Judul Keterangan</label>
                                         <input type="text" :name="`entries[${index}][judul]`" x-model="entry.judul"
-                                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                             placeholder="Contoh: Kedisiplinan">
                                     </div>
                                     <div>
                                         <label class="mb-1 block text-xs font-semibold text-slate-600">Keterangan</label>
                                         <textarea :name="`entries[${index}][keterangan]`" x-model="entry.keterangan" rows="3"
-                                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                             placeholder="Isi detail keterangan"></textarea>
                                     </div>
                                 </div>
@@ -106,5 +110,5 @@
                 </div>
             </form>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

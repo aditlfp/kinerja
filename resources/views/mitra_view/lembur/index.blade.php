@@ -37,13 +37,13 @@
                                     <img
                                         data-responsive-src="{{ asset('storage/images/' . $item->image) }}"
                                         alt="Foto {{ $item->user->nama_lengkap ?? 'Karyawan' }}"
-                                        class="object-cover w-12 h-12 rounded"
+                                        class="object-cover w-12 h-12 rounded-sm"
                                         loading="lazy"
                                         decoding="async"
                                         fetchpriority="low"
                                     >
                                 @else
-                                    <div class="flex items-center justify-center w-12 h-12 text-xs font-bold rounded mitra-avatar-fallback">
+                                    <div class="flex items-center justify-center w-12 h-12 text-xs font-bold rounded-sm mitra-avatar-fallback">
                                         {{ strtoupper(substr($item->user->nama_lengkap ?? 'K', 0, 1)) }}
                                     </div>
                                 @endif
@@ -98,13 +98,13 @@
                                             <img
                                                 data-responsive-src="{{ asset('storage/images/' . $item->image) }}"
                                                 alt="Foto {{ $item->user->nama_lengkap ?? 'Karyawan' }}"
-                                                class="object-cover w-12 h-12 rounded"
+                                                class="object-cover w-12 h-12 rounded-sm"
                                                 loading="lazy"
                                                 decoding="async"
                                                 fetchpriority="low"
                                             >
                                         @else
-                                            <div class="flex items-center justify-center w-12 h-12 text-xs font-bold rounded mitra-avatar-fallback">
+                                            <div class="flex items-center justify-center w-12 h-12 text-xs font-bold rounded-sm mitra-avatar-fallback">
                                                 {{ strtoupper(substr($item->user->nama_lengkap ?? 'K', 0, 1)) }}
                                             </div>
                                         @endif

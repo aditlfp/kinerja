@@ -14,7 +14,7 @@
             </div>
 
             <div
-                class="grid grid-cols-1 gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:grid-cols-5">
+                class="grid grid-cols-1 gap-3 p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-xs sm:grid-cols-5">
                 <input id="search" type="text" placeholder="Cari nama..."
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                 <input id="month" type="month" value="{{ now()->format('Y-m') }}"
@@ -28,7 +28,7 @@
 
             <div id="loading" class="p-8 text-center bg-white border border-gray-200 rounded-lg">Memuat data...</div>
 
-            <div id="tableWrap" class="hidden overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div id="tableWrap" class="hidden overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-xs">
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
@@ -107,7 +107,7 @@
         function actionButtons(r) {
             if ((r.status || '').toLowerCase() !== 'di ajukan') return '-';
             return `<div class="flex items-center justify-center gap-2">
-                 <button onclick="updateStatus(${r.id}, 'Di Tolak')" class="px-2 py-1 text-xs text-white rounded bg-rose-600 hover:bg-rose-700">Tolak</button>
+                 <button onclick="updateStatus(${r.id}, 'Di Tolak')" class="px-2 py-1 text-xs text-white rounded-sm bg-rose-600 hover:bg-rose-700">Tolak</button>
              </div>`;
          }
 

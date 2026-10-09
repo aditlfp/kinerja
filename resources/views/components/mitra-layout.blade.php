@@ -1463,7 +1463,7 @@
         <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden opacity-0 bg-slate-950/45 lg:hidden"></div>
 
         <div id="appContent" class="flex flex-col flex-1 min-h-screen">
-            <nav id="navbar" class="sticky top-0 z-30 border-b shadow-sm">
+            <nav id="navbar" class="sticky top-0 z-30 border-b shadow-xs">
                 <div class="flex items-center justify-between h-16 px-4 lg:px-8">
                     <div class="flex items-center gap-3">
                         <button id="sidebarToggle" type="button" class="inline-flex items-center justify-center w-10 h-10 border rounded-lg lg:hidden mitra-theme-button">

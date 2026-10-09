@@ -37,7 +37,7 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-blue-600/20 rounded-lg">
                         <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-emerald-600/20 rounded-lg">
                         <svg class="w-6 h-6 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-violet-600/20 rounded-lg">
                         <svg class="w-6 h-6 text-violet-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-amber-600/20 rounded-lg">
                         <svg class="w-6 h-6 text-amber-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,22 +100,22 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mb-6">
+        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Cari Karyawan</label>
                     <input type="text" id="searchEmployee" placeholder="Nama karyawan..."
-                        class="w-full input input-sm bg-white border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full input input-sm bg-white border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Filter Tanggal</label>
                     <input type="date" id="filterDate"
-                        class="w-full input input-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full input input-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select id="filterStatus"
-                        class="w-full select select-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full select select-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
@@ -125,7 +125,7 @@
                 <div class="flex-1">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Lembur</label>
                     <select id="filterType"
-                        class="w-full select select-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full select select-sm bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Tipe</option>
                         <option value="shift">Shift</option>
                         <option value="jam">Jam</option>
@@ -143,13 +143,13 @@
         </div>
 
         <!-- Loading State -->
-        <div id="loadingState" class="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-sm">
+        <div id="loadingState" class="bg-white border border-gray-200 rounded-lg p-8 text-center shadow-xs">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
             <p class="text-gray-600">Memuat data...</p>
         </div>
 
         <!-- Table Section -->
-        <div id="tableContainer" class="hidden bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+        <div id="tableContainer" class="hidden bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200" id="overtimeTable">
                     <thead class="bg-gray-50">
@@ -177,7 +177,7 @@
             </div>
         </div>
         <!-- Pagination Section -->
-        <div id="paginationContainer" class="hidden bg-white border border-gray-200 rounded-lg p-4 shadow-sm mt-4">
+        <div id="paginationContainer" class="hidden bg-white border border-gray-200 rounded-lg p-4 shadow-xs mt-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <!-- Info -->
                 <div class="text-sm text-gray-700">
@@ -190,7 +190,7 @@
                 <div class="flex items-center gap-2 mr-4">
                     <label class="text-sm text-gray-700">Per halaman:</label>
                     <select id="itemsPerPage"
-                        class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
@@ -233,7 +233,7 @@
         </div>
         <!-- Empty State -->
         <div id="emptyState"
-            class="hidden bg-white border border-gray-200 rounded-lg p-8 sm:p-12 text-center shadow-sm">
+            class="hidden bg-white border border-gray-200 rounded-lg p-8 sm:p-12 text-center shadow-xs">
             <div class="max-w-sm mx-auto">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,7 +249,7 @@
 
     </div>
 
-    <div id="actionConfirmModal" class="fixed inset-0 z-[9999] hidden">
+    <div id="actionConfirmModal" class="fixed inset-0 z-9999 hidden">
         <div class="absolute inset-0 bg-gray-900/50" onclick="closeActionModal()"></div>
         <div class="relative flex min-h-full items-center justify-center p-4">
             <div class="w-full max-w-md rounded-xl bg-white shadow-xl border border-gray-200">
@@ -411,7 +411,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">${item.user?.nama_lengkap || '-'}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${formatDate(item.date_overtime)}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <span class="px-2 py-1 text-xs font-medium rounded bg-indigo-100 text-indigo-800">${overtimeDisplay}</span>
+                <span class="px-2 py-1 text-xs font-medium rounded-sm bg-indigo-100 text-indigo-800">${overtimeDisplay}</span>
             </td>
             <td class="px-6 py-4 text-sm text-gray-600">
                 <span class="font-semibold text-indigo-600">${item.desc}</span>

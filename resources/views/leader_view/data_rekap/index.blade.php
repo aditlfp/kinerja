@@ -101,10 +101,19 @@
         </style>
     @endpush
 
-    <x-main-div>
-        <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
-            <div
-                class="mb-4 overflow-hidden bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+        <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+            <div class="mx-auto w-full max-w-7xl">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                    <a href="{{ route('dashboard.index') }}"
+                        class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 transition hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-sky-400">
+                        <i class="ri-home-4-line"></i>
+                        Dashboard
+                    </a>
+                </div>
+
+                <div
+                    class="mb-4 overflow-hidden rounded-2xl border border-white/60 bg-white shadow-xs ring-1 ring-slate-900/5">
                 <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="p-4 sm:p-5">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -114,7 +123,7 @@
                                     <i class="text-sm ri-stack-line text-sky-700"></i>
                                     Data Rekap
                                 </div>
-                                <h1 class="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">
+                                <h1 class="border-l-4 border-sky-500 pl-3 text-xl font-bold leading-tight text-slate-900 sm:text-2xl">
                                     Rekapitulasi
                                 </h1>
                                 <p class="mt-1 text-sm leading-5 text-slate-500">
@@ -139,7 +148,7 @@
                         <div class="flex flex-col justify-center h-full gap-2">
                             <div class="flex items-center gap-3">
                                 <span
-                                    class="inline-flex items-center justify-center bg-white rounded-lg shadow-sm h-9 w-9 shrink-0 text-slate-700 ring-1 ring-slate-200">
+                                    class="inline-flex items-center justify-center bg-white rounded-lg shadow-xs h-9 w-9 shrink-0 text-slate-700 ring-1 ring-slate-200">
                                     <i class="text-lg ri-calendar-check-line"></i>
                                 </span>
                                 <div>
@@ -180,7 +189,7 @@
                 key: 'leaderRekapMode',
                 init() { this.mode = sessionStorage.getItem(this.key) || 'pengajuan' },
                 setMode(mode) { this.mode = mode; sessionStorage.setItem(this.key, mode) },
-            }" class="overflow-hidden bg-white border rounded-lg shadow-sm border-slate-200">
+            }" class="overflow-hidden bg-white border rounded-lg shadow-xs border-slate-200">
                 <div class="border-b border-slate-200 bg-slate-50 p-3 sm:p-4">
                     <div class="flex flex-col gap-4">
                         <div class="flex items-start gap-3">
@@ -195,7 +204,7 @@
 
                         <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end">
                             <button type="button" @click="setMode(mode === 'exportAll' ? 'pengajuan' : 'exportAll')"
-                                class="flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left shadow-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                class="flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left shadow-xs transition duration-200 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                                 :class="mode === 'exportAll'
                                     ? 'border-emerald-600 bg-emerald-600 text-white shadow-md'
                                     : 'border-emerald-200 bg-white text-slate-800 hover:border-emerald-400 hover:bg-emerald-50'">
@@ -211,17 +220,17 @@
                                 </span>
                             </button>
 
-                            <div class="grid grid-cols-2 rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200">
+                            <div class="grid grid-cols-2 rounded-xl bg-white p-1 shadow-xs ring-1 ring-slate-200">
                                 <button type="button" @click="setMode('pengajuan')"
                                     class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition"
-                                    :class="mode === 'pengajuan' ? 'bg-emerald-600 text-white shadow-sm' :
+                                    :class="mode === 'pengajuan' ? 'bg-emerald-600 text-white shadow-xs' :
                                         'text-slate-600 hover:bg-slate-50'">
                                     <i class="ri-file-add-line"></i>
                                     Pengajuan
                                 </button>
                                 <button type="button" @click="setMode('riwayat')"
                                     class="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition"
-                                    :class="mode === 'riwayat' ? 'bg-indigo-600 text-white shadow-sm' :
+                                    :class="mode === 'riwayat' ? 'bg-indigo-600 text-white shadow-xs' :
                                         'text-slate-600 hover:bg-slate-50'">
                                     <i class="ri-history-line"></i>
                                     Riwayat
@@ -244,7 +253,7 @@
                                 class="flex items-center justify-between gap-3 px-4 py-3 min-h-16 opacity-60 cursor-not-allowed bg-slate-50">
                             @else
                             <a href="{{ $menu['pengajuan_url'] }}"
-                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100">
+                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100">
                             @endif
                                 <span class="flex items-center min-w-0 gap-3">
                                     <span
@@ -276,10 +285,10 @@
 
                 <div x-show="mode === 'exportAll'" x-cloak>
                     <div class="p-4 sm:p-5">
-                        <div class="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm ring-1 ring-slate-900/5">
-                            <div class="border-b border-emerald-100 bg-gradient-to-r from-emerald-50 to-teal-50 p-4 sm:p-5">
+                        <div class="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-xs ring-1 ring-slate-900/5">
+                            <div class="border-b border-emerald-100 bg-linear-to-r from-emerald-50 to-teal-50 p-4 sm:p-5">
                                 <div class="flex items-start gap-3">
-                                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
+                                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
                                         <i class="ri-download-cloud-2-line text-xl"></i>
                                     </span>
                                     <div class="min-w-0">
@@ -296,30 +305,30 @@
                                     <label class="block text-sm font-semibold text-slate-700">
                                         Periode rekap <span class="text-xs font-normal text-slate-500">(tgl 26-25)</span>
                                         <input id="bulanRekap" type="month" value="{{ now()->format('Y-m') }}"
-                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-xs focus:border-emerald-500 focus:ring-emerald-500">
                                     </label>
                                     <label class="block text-sm font-semibold text-slate-700">
                                         Dari
                                         <input id="tanggalDariRekap" type="date" value="{{ now()->subMonth()->format('Y-m-d') }}"
-                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-xs focus:border-emerald-500 focus:ring-emerald-500">
                                     </label>
                                     <label class="block text-sm font-semibold text-slate-700">
                                         Sampai
                                         <input id="tanggalSampaiRekap" type="date" value="{{ now()->format('Y-m-d') }}"
-                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500">
+                                            class="mt-2 block w-full rounded-xl border-slate-300 bg-white text-sm shadow-xs focus:border-emerald-500 focus:ring-emerald-500">
                                     </label>
                                 </div>
 
                                 <div class="grid gap-3 sm:grid-cols-2">
                                     <button type="button" onclick="exportLeader('excel')"
-                                        class="group flex min-h-14 items-center justify-center gap-3 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                        class="group flex min-h-14 items-center justify-center gap-3 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-emerald-700 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
                                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 group-hover:bg-white/20">
                                             <i class="ri-file-excel-2-line text-xl"></i>
                                         </span>
                                         Download Excel
                                     </button>
                                     <button type="button" onclick="exportLeader('pdf')"
-                                        class="group flex min-h-14 items-center justify-center gap-3 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                        class="group flex min-h-14 items-center justify-center gap-3 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 group-hover:bg-white/20">
                                             <i class="ri-file-pdf-2-line text-xl"></i>
                                         </span>
@@ -335,7 +344,7 @@
                     <div class="divide-y divide-slate-100">
                         @foreach ($rekapMenus as $menu)
                             <a href="{{ $menu['riwayat_url'] }}"
-                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100">
+                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100">
                                 <span class="flex items-center min-w-0 gap-3">
                                     <span
                                         class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 {{ $menu['icon_bg'] }}">
@@ -360,6 +369,6 @@
                     </div>
                 </div>
             </section>
+            </div>
         </div>
-    </x-main-div>
 </x-app-layout>

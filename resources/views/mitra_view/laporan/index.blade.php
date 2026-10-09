@@ -107,7 +107,7 @@
                                                 fetchpriority="low"
                                                 width="80"
                                                 height="80"
-                                                class="object-cover rounded cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
+                                                class="object-cover rounded-sm cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
                                                 style="min-width: 3.5rem; min-height: 3.5rem;"
                                             >
                                         @else
@@ -126,7 +126,7 @@
                                                 fetchpriority="low"
                                                 width="80"
                                                 height="80"
-                                                class="object-cover rounded cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
+                                                class="object-cover rounded-sm cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
                                                 style="min-width: 3.5rem; min-height: 3.5rem;"
                                             >
                                         @else
@@ -145,7 +145,7 @@
                                                 fetchpriority="low"
                                                 width="80"
                                                 height="80"
-                                                class="object-cover rounded cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
+                                                class="object-cover rounded-sm cursor-pointer imeg w-14 h-14 md:w-20 md:h-20"
                                                 style="min-width: 3.5rem; min-height: 3.5rem;"
                                             >
                                         @else
@@ -171,7 +171,7 @@
         </div>
     </div>
 
-    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm">
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-xs">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative p-3 rounded-2xl mitra-modal-surface">
                 <button
@@ -181,7 +181,7 @@
                 >
                     &times;
                 </button>
-                <img id="modalImagePreview" src="" alt="Preview Laporan" class="object-contain w-full max-w-xs rounded md:max-w-sm">
+                <img id="modalImagePreview" src="" alt="Preview Laporan" class="object-contain w-full max-w-xs rounded-sm md:max-w-sm">
             </div>
         </div>
     </div>

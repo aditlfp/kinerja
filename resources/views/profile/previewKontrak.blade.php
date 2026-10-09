@@ -250,7 +250,7 @@
         <!--{/* Hal 2 */}-->
         <div class="w-8-5 min-h-11 bg-white flex flex-col">
           <img src="{{ $Header }}" alt="header" class="mt-6 px-20" />
-          <div class="mx-70 leading-tight flex-grow">
+          <div class="mx-70 leading-tight grow">
             <p class="font-bold text-center">
               Pasal 2 <br />
               RUANG LINGKUP PEKERJAAN DAN PENEMPATAN
@@ -461,7 +461,7 @@
         <!--{/* Hal 3 */}-->
         <div class="w-8-5 min-h-11 bg-white flex flex-col">
           <img src="{{ $Header }}" alt="header" class="mt-6 px-20" />
-          <div class="mx-70 leading-tight flex-grow">
+          <div class="mx-70 leading-tight grow">
             <p class="font-bold text-center">
               Pasal 5 <br />
               TUNJANGAN - TUNJANGAN
@@ -634,7 +634,7 @@
         <!--{/* Hal 4 */}-->
         <div class="w-8-5 min-h-11 bg-white flex flex-col">
           <img src="{{ $Header }}" alt="header" class="mt-6 px-20" />
-          <div class="mx-70 leading-tight flex-grow">
+          <div class="mx-70 leading-tight grow">
             <p class="font-bold text-center">
               Pasal 8 <br />
               PENGAKHIRAN DAN PERPANJANGAN MASA KERJA
@@ -818,7 +818,7 @@
         <!--{/* Hal 5 */}-->
         <div class="w-8-5 min-h-11 bg-white flex flex-col">
           <img src="{{ $Header }}" alt="header" class="mt-6 px-20" />
-          <div class="mx-70 leading-tight flex-grow">
+          <div class="mx-70 leading-tight grow">
             <p class="font-bold text-center">
               Pasal 11 <br />
               PENUTUP

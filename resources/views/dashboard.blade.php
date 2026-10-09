@@ -46,33 +46,31 @@
         | USER CONTEXT
         |--------------------------------------------------------------------------
         */
-        $userId         = $user->id;
-        $jabatan        = $user->jabatan;
-        $jabatanId      = $user->jabatan_id;
-        $roleId         = $roleId;
-        $kerjasamaId    = $kerjasamaId;
-        $devisiId       = $user->devisi_id;
-        $directJabatan  = $directJabatan;
-
+        $userId = $user->id;
+        $jabatan = $user->jabatan;
+        $jabatanId = $user->jabatan_id;
+        $roleId = $roleId;
+        $kerjasamaId = $kerjasamaId;
+        $devisiId = $user->devisi_id;
+        $directJabatan = $directJabatan;
 
         /*
         |--------------------------------------------------------------------------
         | ACCESS / ROLE
         |--------------------------------------------------------------------------
         */
-        $isMitra        = $jabatan->code_jabatan == 'MITRA';
-        $isDireksi      = $jabatanId == 24;
-        
-        $isLeader       = $jabatan->code_jabatan == 'LEADER';
-        $isCoCs         = $jabatan->code_jabatan == 'CO-CS';
-        $isCoScr        = $jabatan->code_jabatan == 'CO-SCR';
-        $isSPVW         = $jabatan->code_jabatan == "SPV-W";
+        $isMitra = $jabatan->code_jabatan == 'MITRA';
+        $isDireksi = $jabatanId == 24;
+
+        $isLeader = $jabatan->code_jabatan == 'LEADER';
+        $isCoCs = $jabatan->code_jabatan == 'CO-CS';
+        $isCoScr = $jabatan->code_jabatan == 'CO-SCR';
+        $isSPVW = $jabatan->code_jabatan == 'SPV-W';
 
         $isManajemen = $kerjasamaId == 1;
-        $isAdmin        = $roleId == 2;
+        $isAdmin = $roleId == 2;
 
-        $isSPV      = $user->jabatan_id == 4 || $user->jabatan_id == 14;
-
+        $isSPV = $user->jabatan_id == 4 || $user->jabatan_id == 14;
 
         /*
         |--------------------------------------------------------------------------
@@ -83,11 +81,7 @@
 
         $isWeekend = in_array($hariIni, [6, 7]);
 
-        $tampilkanAbsensi =
-            !$isWeekend ||
-            !$isManajemen ||
-            $devisiId != 26;
-
+        $tampilkanAbsensi = !$isWeekend || !$isManajemen || $devisiId != 26;
 
         /*
         |--------------------------------------------------------------------------
@@ -95,31 +89,21 @@
         |--------------------------------------------------------------------------
         */
         $absensiRoute = match ($jabatan->code_jabatan) {
-            'CO-CS'  => 'absensi-karyawan-co-cs.index',
+            'CO-CS' => 'absensi-karyawan-co-cs.index',
             'CO-SCR' => 'absensi-karyawan-co-scr.index',
-            default  => null,
+            default => null,
         };
-
 
         /*
         |--------------------------------------------------------------------------
         | REKAP
         |--------------------------------------------------------------------------
         */
-        $jabatanRekap = [
-            'CO-CS',
-            'CO-SCR',
-            'SPV-W',
-        ];
+        $jabatanRekap = ['CO-CS', 'CO-SCR', 'SPV-W'];
 
-        $bisaLihatRekap =
-            in_array($jabatan->code_jabatan, $jabatanRekap) &&
-            $userId != 7;
+        $bisaLihatRekap = in_array($jabatan->code_jabatan, $jabatanRekap) && $userId != 7;
 
-        $rekapRoute = $isSPVW
-            ? 'spvw.rekap.index'
-            : 'index.rekap.data.leader';
-
+        $rekapRoute = $isSPVW ? 'spvw.rekap.index' : 'index.rekap.data.leader';
 
         /*
         |--------------------------------------------------------------------------
@@ -130,31 +114,18 @@
             ? \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast()
             : false;
 
-        $kontrakBerjalan =
-            $kontrak &&
-            (
-                $kontrak->isPending() ||
-                $kontrak->isActive() ||
-                $kontrak->isProses()
-            );
+        $kontrakBerjalan = $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
 
-        $bisaAjukanKontrak =
-            !$kontrak ||
-            $kontrakSelesai ||
-            !$kontrakBerjalan;
-
+        $bisaAjukanKontrak = !$kontrak || $kontrakSelesai || !$kontrakBerjalan;
 
         /*
         |--------------------------------------------------------------------------
         | MENU KHUSUS
         |--------------------------------------------------------------------------
         */
-        $bisaLihatMenuManajemen =
-            in_array($jabatanId, [4, 14]);
+        $bisaLihatMenuManajemen = in_array($jabatanId, [4, 14]);
 
-        $bisaLihatMenuSlip =
-            in_array($userId, [7, 10, 5]);
-
+        $bisaLihatMenuSlip = in_array($userId, [7, 10, 5]);
 
         /*
         |--------------------------------------------------------------------------
@@ -163,45 +134,38 @@
         */
         $routes = [
             'MITRA' => [
-                'karyawan'        => 'mitra_user',
-                'jadwal'          => $isAdmin
-                    ? 'admin.jadwal.index'
-                    : 'mitra_jadwal',
-                'absensi'         => 'mitra_absensi',
-                'izin'            => 'mitra_izin',
-                'lembur'          => 'mitra_lembur',
-                'laporan'         => 'mitra_laporan',
-                'rating'          => 'mitra-rating.index',
+                'karyawan' => 'mitra_user',
+                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'mitra_jadwal',
+                'absensi' => 'mitra_absensi',
+                'izin' => 'mitra_izin',
+                'lembur' => 'mitra_lembur',
+                'laporan' => 'mitra_laporan',
+                'rating' => 'mitra-rating.index',
                 'laporan bulanan' => 'mitra-laporan-bulanan.index',
             ],
 
             'LEADER' => [
                 'karyawan' => 'lead_user',
-                'jadwal'   => $isAdmin
-                    ? 'admin.jadwal.index'
-                    : 'leader-jadwal.index',
+                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'leader-jadwal.index',
                 'absensi' => 'lead_absensi',
-                'izin'    => 'lead_izin',
-                'lembur'  => 'lead_lembur',
+                'izin' => 'lead_izin',
+                'lembur' => 'lead_lembur',
                 'laporan' => 'lead_laporan',
-                'rating'  => 'leader-rating.index',
+                'rating' => 'leader-rating.index',
             ],
 
             'DIREKSI' => [
                 'karyawan' => 'direksi_user',
-                'jadwal'   => $isAdmin
-                    ? 'admin.jadwal.index'
-                    : 'direksi_jadwal',
+                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'direksi_jadwal',
                 'absensi' => 'direksi_absensi',
-                'izin'    => 'direksi_izin',
-                'lembur'  => 'direksi_lembur',
+                'izin' => 'direksi_izin',
+                'lembur' => 'direksi_lembur',
                 'laporan' => 'direksi_laporan',
-                'rating'  => 'direksi-rating.index',
+                'rating' => 'direksi-rating.index',
                 'kinerja' => 'direksi.cp.index',
                 'kontrak' => 'direksi-cekKontrak',
             ],
         ];
-
 
         /*
         |--------------------------------------------------------------------------
@@ -209,16 +173,16 @@
         |--------------------------------------------------------------------------
         */
         $icons = [
-            'karyawan'        => 'ri-pass-pending-line',
-            'jadwal'          => 'ri-calendar-check-line',
-            'absensi'         => 'ri-todo-line',
-            'izin'            => 'ri-shield-user-line',
-            'lembur'          => 'ri-time-line',
-            'laporan'         => 'ri-image-add-line',
+            'karyawan' => 'ri-pass-pending-line',
+            'jadwal' => 'ri-calendar-check-line',
+            'absensi' => 'ri-todo-line',
+            'izin' => 'ri-shield-user-line',
+            'lembur' => 'ri-time-line',
+            'laporan' => 'ri-image-add-line',
             'laporan bulanan' => 'ri-image-add-line',
-            'rating'          => 'ri-sparkling-line',
-            'kinerja'         => 'ri-sparkling-line',
-            'kontrak'         => 'ri-pass-pending-line',
+            'rating' => 'ri-sparkling-line',
+            'kinerja' => 'ri-sparkling-line',
+            'kontrak' => 'ri-pass-pending-line',
         ];
     @endphp
     @php
@@ -231,83 +195,83 @@
         $dashboardMenus = [
             // base menu
             [
-                'key'   => 'kehadiran',
+                'key' => 'kehadiran',
                 'label' => 'Kehadiran',
                 'route' => 'absensi.index',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
             ],
 
             [
-                'key'   => 'data-rekap',
+                'key' => 'data-rekap',
                 'label' => 'Data Rekap',
                 'route' => $rekapRoute,
-                'icon'  => 'ri-database-line',
+                'icon' => 'ri-database-line',
                 'color' => 'indigo',
-                'show'  => $bisaLihatRekap,
+                'show' => $bisaLihatRekap,
             ],
 
             [
-                'key'   => 'izin',
+                'key' => 'izin',
                 'label' => 'Izin',
-                'route' => 'izin.index',
-                'icon'  => 'ri-file-line',
+                'route' => 'izin.create',
+                'icon' => 'ri-file-line',
                 'color' => 'blue',
             ],
 
             [
-                'key'   => 'kinerja',
+                'key' => 'kinerja',
                 'label' => 'Kinerja',
                 'route' => 'checkpoint-user.index',
-                'icon'  => 'ri-bar-chart-line',
+                'icon' => 'ri-bar-chart-line',
                 'color' => 'amber',
                 'show' => !$isDireksi || $isManajemen, // Hide for Direksi
             ],
 
             [
-                'key'   => 'rating',
+                'key' => 'rating',
                 'label' => 'Rating',
                 'route' => 'ratingSaya',
                 'params' => [$user->id],
-                'icon'  => 'ri-star-line',
+                'icon' => 'ri-star-line',
                 'color' => 'indigo',
                 'show' => !$isDireksi, // Hide for Direksi
             ],
 
             [
-                'key'   => 'laporan',
+                'key' => 'laporan',
                 'label' => 'Laporan',
                 'route' => 'laporan.index',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
                 'show' => !$isDireksi, // Hide for Direksi
             ],
 
             [
-                'key'   => 'kontrak',
+                'key' => 'kontrak',
                 'label' => 'Pengajuan Kontrak',
                 'route' => 'form-kontrak-request',
-                'icon'  => 'ri-file-add-line',
+                'icon' => 'ri-file-add-line',
                 'color' => 'green',
-                'show'  => $bisaAjukanKontrak && !$isDireksi, // Show if user can submit contract or is not Direksi
+                'show' => $bisaAjukanKontrak && !$isDireksi, // Show if user can submit contract or is not Direksi
             ],
 
             // addons
             [
-                'key'   => 'alquran',
+                'key' => 'alquran',
                 'label' => "Al Qur'an",
-                'url'   => 'https://baca-alquran.sac-po.com',
-                'icon'  => 'ri-book-line',
+                'url' => 'https://baca-alquran.sac-po.com',
+                'icon' => 'ri-book-line',
                 'color' => 'amber',
             ],
 
             [
-                'key'   => 'sppd',
+                'key' => 'sppd',
                 'label' => 'SPPD',
-                'url'   => 'https://sppd-online.sac-po.com/login',
-                'icon'  => 'ri-road-map-line',
+                'url' => 'https://sppd-online.sac-po.com/login',
+                'icon' => 'ri-road-map-line',
                 'color' => 'sky',
-                'show'  => $isManajemen,
+                'show' => $isManajemen,
             ],
         ];
 
@@ -315,149 +279,149 @@
         $dashboardAddMenus = [
             // direksi menu
             [
-                'key'   => 'karyawan-direksi',
+                'key' => 'karyawan-direksi',
                 'label' => 'Karyawan',
                 'route' => 'direksi_user',
-                'icon'  => 'ri-team-line',
+                'icon' => 'ri-team-line',
                 'color' => 'blue',
-                'show'  => $isDireksi,
+                'show' => $isDireksi,
             ],
 
             [
-                'key'   => 'absensi-direksi',
+                'key' => 'absensi-direksi',
                 'label' => 'Absensi',
                 'route' => 'direksi_absensi',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isDireksi,
+                'show' => $isDireksi,
             ],
 
             [
-                'key'   => 'izin-direksi',
+                'key' => 'izin-direksi',
                 'label' => 'Izin',
                 'route' => 'direksi_izin',
-                'icon'  => 'ri-shield-user-line',
+                'icon' => 'ri-shield-user-line',
                 'color' => 'blue',
-                'show'  => $isDireksi,
+                'show' => $isDireksi,
             ],
 
             [
                 'key' => 'kinerja-direksi',
                 'label' => 'Kinerja',
                 'route' => 'direksi.cp.index',
-                'icon'  => 'ri-bar-chart-line',
+                'icon' => 'ri-bar-chart-line',
                 'color' => 'amber',
-                'show'  => $isDireksi,
+                'show' => $isDireksi,
             ],
 
             [
-                'key'   => 'kontrak-direksi',
+                'key' => 'kontrak-direksi',
                 'label' => 'Kontrak',
                 'route' => 'direksi-cekKontrak',
-                'icon'  => 'ri-file-add-line',
+                'icon' => 'ri-file-add-line',
                 'color' => 'green',
-                'show'  => $isDireksi,
+                'show' => $isDireksi,
             ],
 
             // SPV menu
             [
-                'key'   => 'data-rekap',
+                'key' => 'data-rekap',
                 'label' => 'Data Rekap',
                 'route' => 'manajemen_rekap',
-                'icon'  => 'ri-database-line',
+                'icon' => 'ri-database-line',
                 'color' => 'purple',
-                'show'  => $isSPV,
+                'show' => $isSPV,
             ],
 
             [
-                'key'   => 'slip-gaji-karyawan',
+                'key' => 'slip-gaji-karyawan',
                 'label' => 'Slip Gaji Karyawan',
                 'route' => 'slip-karyawan',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
-                'show'  => $isSPV,
+                'show' => $isSPV,
             ],
 
             [
-                'key'   => 'absensi-karyawan',
+                'key' => 'absensi-karyawan',
                 'label' => 'Absensi Karyawan',
                 'route' => 'manajemen_absensi',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isSPV,
+                'show' => $isSPV,
             ],
 
             [
-                'key'   => 'laporan-karyawan',
+                'key' => 'laporan-karyawan',
                 'label' => 'Laporan Karyawan',
                 'route' => 'manajemen_laporan',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
-                'show'  => $isSPV,
+                'show' => $isSPV,
             ],
 
             [
-                'key'  => 'data-karyawan',
+                'key' => 'data-karyawan',
                 'label' => 'Data Karyawan',
                 'route' => 'manajemen_user',
-                'icon'  => 'ri-user-line',
+                'icon' => 'ri-user-line',
                 'color' => 'green',
-                'show'  => $isSPV,
+                'show' => $isSPV,
             ],
 
             // menu SPV-W
             [
-                'key'  => 'data-karyawan-spvw',
+                'key' => 'data-karyawan-spvw',
                 'label' => 'Data Karyawan',
                 'route' => 'spvw_user',
-                'icon'  => 'ri-user-line',
+                'icon' => 'ri-user-line',
                 'color' => 'green',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             [
-                'key'  => 'data-absensi-spvw',
+                'key' => 'data-absensi-spvw',
                 'label' => 'Data Absensi',
                 'route' => 'spvw_absensi',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             [
                 'key' => 'data-izin-spvw',
                 'label' => 'Data Izin',
                 'route' => 'spvw_izin',
-                'icon'  => 'ri-file-line',
+                'icon' => 'ri-file-line',
                 'color' => 'blue',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             [
                 'key' => 'data-rating-spvw',
                 'label' => 'Data Rating',
                 'route' => 'spvw-rating.index',
-                'icon'  => 'ri-star-line',
+                'icon' => 'ri-star-line',
                 'color' => 'yellow',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             [
                 'key' => 'data-checklist-spvw',
                 'label' => 'Data Checklist',
                 'route' => 'spvw-checklist.index',
-                'icon'  => 'ri-list-check',
+                'icon' => 'ri-list-check',
                 'color' => 'indigo',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             [
                 'key' => 'data-slip-spvw',
                 'label' => 'Slip Gaji Karyawan',
                 'route' => 'spvw-slip',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
-                'show'  => $isSPVW,
+                'show' => $isSPVW,
             ],
 
             // menu co-cs
@@ -465,63 +429,63 @@
                 'key' => 'data-karyawan-leader',
                 'label' => 'Data Karyawan',
                 'route' => 'lead_user',
-                'icon'  => 'ri-user-line',
+                'icon' => 'ri-user-line',
                 'color' => 'green',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-absensi-leader',
                 'label' => 'Data Absensi',
                 'route' => 'lead_absensi',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-izin-leader',
                 'label' => 'Data Izin',
                 'route' => 'lead_izin',
-                'icon'  => 'ri-file-line',
+                'icon' => 'ri-file-line',
                 'color' => 'blue',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-absen-sholat-leader',
-                'label' => 'Data Absen Sholat',
+                'label' => 'Data Sholat',
                 'route' => 'leader-absenSholat',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-rating-leader',
                 'label' => 'Data Rating',
                 'route' => 'leader-rating.index',
-                'icon'  => 'ri-star-line',
+                'icon' => 'ri-star-line',
                 'color' => 'yellow',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-checklist-leader',
                 'label' => 'Data Checklist',
                 'route' => 'leader-checklist.index',
-                'icon'  => 'ri-list-check',
+                'icon' => 'ri-list-check',
                 'color' => 'indigo',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             [
                 'key' => 'data-slip-leader',
                 'label' => 'Slip Gaji Karyawan',
                 'route' => 'leader-slip',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
-                'show'  => $isCoCs,
+                'show' => $isCoCs,
             ],
 
             // menu co-scr
@@ -529,63 +493,63 @@
                 'key' => 'data-karyawan-leader',
                 'label' => 'Data Karyawan',
                 'route' => 'danru_user',
-                'icon'  => 'ri-user-line',
+                'icon' => 'ri-user-line',
                 'color' => 'green',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-absensi-leader',
                 'label' => 'Data Absensi',
                 'route' => 'danru_absensi',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-izin-leader',
                 'label' => 'Data Izin',
                 'route' => 'danru_izin',
-                'icon'  => 'ri-file-line',
+                'icon' => 'ri-file-line',
                 'color' => 'blue',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-absen-sholat-leader',
                 'label' => 'Data Absen Sholat',
                 'route' => 'leader-absenSholat',
-                'icon'  => 'ri-calendar-line',
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-rating-leader',
                 'label' => 'Data Rating',
                 'route' => 'danru-rating.index',
-                'icon'  => 'ri-star-line',
+                'icon' => 'ri-star-line',
                 'color' => 'yellow',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-checklist-leader',
                 'label' => 'Data Checklist',
                 'route' => 'leader-checklist.index',
-                'icon'  => 'ri-list-check',
+                'icon' => 'ri-list-check',
                 'color' => 'indigo',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
 
             [
                 'key' => 'data-slip-leader',
                 'label' => 'Slip Gaji Karyawan',
                 'route' => 'danru-slip',
-                'icon'  => 'ri-file-text-line',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
-                'show'  => $isCoScr,
+                'show' => $isCoScr,
             ],
         ];
 
@@ -593,38 +557,34 @@
         $historyMenus = [
             [
                 'label' => 'Kehadiran',
-                'url'   => url('historyAbsensi'),
-                'icon'  => 'ri-calendar-line',
+                'url' => url('historyAbsensi'),
+                'icon' => 'ri-calendar-line',
                 'color' => 'emerald',
             ],
             [
                 'label' => 'Izin',
-                'url'   => route('izin.index'),
-                'icon'  => 'ri-file-line',
+                'url' => route('izin.index'),
+                'icon' => 'ri-file-line',
                 'color' => 'blue',
             ],
             [
                 'label' => 'Kinerja',
-                'url'   => route('checkpoint-user.history'),
-                'icon'  => 'ri-bar-chart-line',
+                'url' => route('checkpoint-user.history'),
+                'icon' => 'ri-bar-chart-line',
                 'color' => 'amber',
             ],
             [
                 'label' => 'Laporan',
-                'url'   => 'https://laporan-sac.sac-po.com',
-                'icon'  => 'ri-file-text-line',
+                'url' => 'https://laporan-sac.sac-po.com',
+                'icon' => 'ri-file-text-line',
                 'color' => 'sky',
             ],
         ];
 
         // Hanya tampilkan menu yang memenuhi kondisi
-        $dashboardMenus = collect($dashboardMenus)
-            ->filter(fn ($menu) => $menu['show'] ?? true)
-            ->values();
-        
-        $dashboardAddMenus = collect($dashboardAddMenus)
-            ->filter(fn ($menu) => $menu['show'] ?? true)
-            ->values();
+        $dashboardMenus = collect($dashboardMenus)->filter(fn($menu) => $menu['show'] ?? true)->values();
+
+        $dashboardAddMenus = collect($dashboardAddMenus)->filter(fn($menu) => $menu['show'] ?? true)->values();
     @endphp
     <div class="min-h-screen pb-24 relative">
         {{-- @include('../layouts/navbar') --}}
@@ -634,29 +594,29 @@
             <div class="flex items-center justify-between">
                 <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" srcset="" class="w-32 h-auto">
                 <div class="flex items-center justify-center gap-2">
-                    <a href="#"
-                        class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-3xl">
+                    <a href="{{ route('slip-gaji.index', ['bulan' => now()->format('Y-m')]) }}"
+                        class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-2xl">
                         <i class="ri-wallet-3-line text-xl"></i>
                         <span class="font-medium">Slip</span>
                     </a>
                     <form action="{{ route('logout') }}" method="post"
-                        class="min-w-0 bg-neutral-500/10 border border-neutral-500/15 py-1 px-3 rounded-2xl">
+                        class="min-w-0 py-1 px-3 border border-red-500/15 bg-red-100 rounded-xl">
                         @csrf
                         @method('POST')
                         <button type="submit"
-                            class="flex w-full flex-col items-center gap-1 rounded-lg text-slate-500 transition hover:bg-red-50">
-                            <i class="ri-logout-box-r-line text-lg"></i>
+                            class="flex w-full flex-col items-center gap-1 rounded-lg">
+                            <i class="ri-logout-box-r-line text-lg text-red-500"></i>
                         </button>
                     </form>
                 </div>
             </div>
             <div>
-                <div class="flex items-center font-extrabold text-lg gap-2">
-                    <i class="ri-user-line"></i>
-                    <span>
+                <a href="{{ route('profile.index') }}" class="flex items-center justify-start font-extrabold text-lg gap-2 max-w-[55svw]">
+                    <i class="ri-user-line text-lg"></i>
+                    <span class="truncate">
                         Halo, {{ ucwords(strtolower($user->nama_lengkap)) }}
                     </span>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -664,21 +624,19 @@
         <div class="flex w-full justify-center px-4 py-2">
             @if (!$absenP)
                 <span
-                    class="inline-flex items-center gap-2 rounded-lg bg-rose-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
+                    class="inline-flex items-center gap-2 rounded-lg bg-rose-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
                     <i class="ri-information-line text-lg"></i>
                     <span>Kamu belum melakukan presensi hari ini</span>
                 </span>
-
             @elseif ($absenP->absensi_type_pulang == null)
                 <span
-                    class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
+                    class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
                     <i class="ri-time-line text-lg"></i>
                     <span>Kamu sedang dalam shift</span>
                 </span>
-
             @else
                 <span
-                    class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
+                    class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
                     <i class="ri-check-double-line text-lg"></i>
                     <span>Kamu sudah melakukan presensi hari ini</span>
                 </span>
@@ -914,77 +872,62 @@
 
                 {{-- menu utama --}}
                 <section class="w-1/3 shrink-0">
-                    @if($dashboardMenus->isNotEmpty())
-                    <div class="px-6 py-2 space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-1 h-5 rounded-full bg-sky-500"></span>
-                            <span class="font-black text-lg">Menu Utama</span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-1 items-start text-center">
-                            @foreach ($dashboardMenus as $menu)
+                    @if ($dashboardMenus->isNotEmpty())
+                        <div class="px-6 py-2 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                                <span class="font-black text-lg">Menu Utama</span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1 items-start text-center">
+                                @foreach ($dashboardMenus as $menu)
+                                    <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
+                                        class="flex flex-col items-center justify-center
+                                        gap-1 rounded-lg px-3 py-2">
 
-                                <a
-                                    href="{{ isset($menu['url'])
-                                        ? $menu['url']
-                                        : route($menu['route'], $menu['params'] ?? []) }}"
-                                    class="flex flex-col items-center justify-center
-                                        gap-1 rounded-lg px-3 py-2"
-                                >
-
-                                    <i
-                                        class="{{ $menu['icon'] }}
-                                            text-3xl font-bold
+                                        <i
+                                            class="{{ $menu['icon'] }} text-3xl font-bold
                                             text-{{ $menu['color'] }}-700
-                                            bg-{{ $menu['color'] }}-300
-                                            py-3 px-4 rounded-2xl"
-                                    ></i>
+                                            bg-{{ $menu['color'] }}-200
+                                            py-3 px-4 rounded-2xl"></i>
 
-                                    <span class="font-extrabold text-sm">
-                                        {{ $menu['label'] }}
-                                    </span>
+                                        <span class="font-extrabold text-sm">
+                                            {{ $menu['label'] }}
+                                        </span>
 
-                                </a>
-
-                            @endforeach
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endif
-                    
+
                     {{-- menu tambahan --}}
-                    @if($dashboardAddMenus->isNotEmpty())
-                    <div class="px-6 py-2 space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-1 h-5 rounded-full bg-sky-500"></span>
-                            <span class="font-black text-lg">Menu Tambahan</span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-1 items-start text-center">
-                            @foreach ($dashboardAddMenus as $menu)
+                    @if ($dashboardAddMenus->isNotEmpty())
+                        <div class="px-6 py-2 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                                <span class="font-black text-lg">Menu Tambahan</span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1 items-start text-center">
+                                @foreach ($dashboardAddMenus as $menu)
+                                    <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
+                                        class="flex flex-col items-center justify-center
+                                        gap-1 rounded-lg px-3 py-2">
 
-                                <a
-                                    href="{{ isset($menu['url'])
-                                        ? $menu['url']
-                                        : route($menu['route'], $menu['params'] ?? []) }}"
-                                    class="flex flex-col items-center justify-center
-                                        gap-1 rounded-lg px-3 py-2"
-                                >
-
-                                    <i
-                                        class="{{ $menu['icon'] }}
+                                        <i
+                                            class="{{ $menu['icon'] }}
                                             text-3xl font-bold
                                             text-{{ $menu['color'] }}-700
                                             bg-{{ $menu['color'] }}-300
-                                            py-3 px-4 rounded-2xl"
-                                    ></i>
+                                            py-3 px-4 rounded-2xl"></i>
 
-                                    <span class="font-extrabold text-sm">
-                                        {{ $menu['label'] }}
-                                    </span>
+                                        <span class="font-extrabold text-sm">
+                                            {{ $menu['label'] }}
+                                        </span>
 
-                                </a>
-
-                            @endforeach
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endif
 
                 </section>
@@ -997,27 +940,22 @@
                     </div>
                     <div class="grid grid-cols-4 gap-1 items-start text-center">
                         @foreach ($historyMenus as $menu)
-
-                            <a
-                                href="{{ $menu['url'] }}"
+                            <a href="{{ $menu['url'] }}"
                                 class="flex flex-col items-center justify-center
-                                    gap-1 rounded-lg px-3 py-2"
-                            >
+                                    gap-1 rounded-lg px-3 py-2">
 
                                 <i
                                     class="{{ $menu['icon'] }}
                                         text-3xl font-bold
                                         text-{{ $menu['color'] }}-700
                                         bg-{{ $menu['color'] }}-300
-                                        py-3 px-4 rounded-2xl"
-                                ></i>
+                                        py-3 px-4 rounded-2xl"></i>
 
                                 <span class="font-extrabold text-sm">
                                     {{ $menu['label'] }}
                                 </span>
 
                             </a>
-
                         @endforeach
                     </div>
                 </section>
@@ -1026,28 +964,23 @@
         </div>
 
         {{-- Tombol Pulang --}}
-        @if($absenP && $absenP?->absensi_type_pulang == null)
-        <div
-            class="fixed inset-x-0 bottom-0 z-30 hidden
+        @if ($absenP && $absenP?->absensi_type_pulang == null)
+            <div
+                class="fixed inset-x-0 bottom-0 z-30 hidden
                 flex justify-center
                 px-4 pb-4
-                pointer-events-none"
-        >
-            <div
-                class="pointer-events-auto
+                pointer-events-none">
+                <div
+                    class="pointer-events-auto
                     w-full max-w-sm
                     rounded-2xl
                     bg-white/80
                     p-1.5
                     shadow-lg
                     ring-1 ring-slate-200/70
-                    backdrop-blur-md"
-            >
-                <button
-                    id="modalPulangBtn"
-                    data-absen="{{ $absenP }}"
-                    type="button"
-                    class="group flex w-full
+                    backdrop-blur-md">
+                    <button id="modalPulangBtn" data-absen="{{ $absenP }}" type="button"
+                        class="group flex w-full
                         items-center justify-center gap-2
                         rounded-xl
                         bg-red-500
@@ -1056,55 +989,32 @@
                         shadow-md shadow-red-500/20
                         transition-all duration-200
                         hover:bg-red-600
-                        active:scale-[0.98]"
-                >
-                    <span
-                        class="flex h-9 w-9
+                        active:scale-[0.98]">
+                        <span
+                            class="flex h-9 w-9
                             items-center justify-center
                             rounded-lg
-                            bg-white/15"
-                    >
-                        <i class="ri-run-line text-xl"></i>
-                    </span>
+                            bg-white/15">
+                            <i class="ri-run-line text-xl"></i>
+                        </span>
 
-                    <span class="text-sm font-extrabold">
-                        Waktunya Pulang
-                    </span>
+                        <span class="text-sm font-extrabold">
+                            Waktunya Pulang
+                        </span>
 
-                    <i
-                        class="ri-arrow-right-line
+                        <i
+                            class="ri-arrow-right-line
                             text-lg opacity-80
                             transition-transform duration-200
-                            group-hover:translate-x-1"
-                    ></i>
-                </button>
+                            group-hover:translate-x-1"></i>
+                    </button>
+                </div>
             </div>
-        </div>
         @endif
-
-        <div class="flex items-center justify-start">
-            @if ($absenP && $absenP?->absensi_type_pulang == null)
-                <div id="statusAbsensiContainer"
-                    class="inset-0 px-4 py-2 ml-5 font-semibold text-center rounded-tr-lg rounded-bl-lg shadow-md w-fit"
-                    style="background-color: #fafafa; font-size: 10pt; margin-bottom: 10px;">
-                    <p id="statusAbsensiText">Memeriksa status...</p>
-                </div>
-            @endif
-
-            @if ($izin)
-                <span class="hidden">
-                    <span id="waktuIzin" data-waktu="{{ $izin->updated_at->format('H:i') }}"></span>
-                </span>
-                <div id="inpoIzin"
-                    class="text-center hidden rounded-tr-lg rounded-bl-lg my-5 sm:w-fit text-md sm:text-xl font-semibold text-slate-50 {{ $statusClass }} py-2 px-4 shadow-md ml-5 sm:ml-10 inset-0">
-                    <p>{{ $statusMessage }}</p>
-                </div>
-            @endif
-        </div>
 
         @if ($kerjasamaId == 1 && session()->has('point'))
             <div class="flex items-center justify-end mx-5 mb-5">
-                <div class="flex flex-row px-4 py-1 text-xs text-white rounded-md shadow-sm gap-x-2 sm:w-fit"
+                <div class="flex flex-row px-4 py-1 text-xs text-white rounded-md shadow-xs gap-x-2 sm:w-fit"
                     style="background-color: #0C642F">
                     <i class="ri-checkbox-circle-line"></i>
                     <span>{{ session('point') }}</span>
@@ -1113,371 +1023,20 @@
         @endif
 
         @include('dashboard.partials.prayer-modal')
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <main>
-                <div class="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div class="p-4 sm:p-6">
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            {{-- Handle Check Kode Jabatan --}}
-                            @if ($jabatan != 'MITRA' && $jabatan != 'LEADER' && $jabatan != 'DIREKSI')
-                                {{-- absensi --}}
-                                <div id="btnAbsensi"
-                                    class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-blue-200 border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white text-blue-900 shadow-sm transition hover:-translate-y-0.5 hover:from-blue-100 hover:shadow-md">
-                                    <span
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600 transition group-hover:bg-blue-500 group-hover:text-white"><i
-                                            class="ri-calendar-check-line text-lg"></i></span>
-                                    <button class="text-sm font-semibold">Kehadiran</button>
-                                </div>
-                                {{-- menu menu dashboard absensi --}}
-                                @php
-                                    $hariIni = Carbon\Carbon::now()->format('N');
-                                    $tampilkanAbsensi =
-                                        !in_array($hariIni, [6, 7]) || $kerjasamaId != 1 || $user->devisi_id != 26;
-                                    $codeJabatan = $jabatan;
-                                    $absensiRoute = match ($codeJabatan) {
-                                        'CO-CS' => 'absensi-karyawan-co-cs.index',
-                                        'CO-SCR' => 'absensi-karyawan-co-scr.index',
-                                        default => '',
-                                    };
-                                @endphp
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsen">
-                                    <a href="{{ $tampilkanAbsensi ? route('absensi.index') : 'javascript:void(0);' }}"
-                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-medium text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-100"><i
-                                            class="ri-calendar-check-line text-blue-600 transition group-hover:scale-110"></i>{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
-                                </div>
-                                @if (!empty($absensiRoute))
-                                    <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsenK">
-                                        <a href="{{ route($absensiRoute) }}"
-                                            class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
-                                                class="ri-team-line"></i>Kehadiran Karyawan</a>
-                                    </div>
-                                @endif
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngIzin">
-                                    <a href="{{ route('izin.create') }}"
-                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
-                                            class="ri-calendar-close-line"></i>Izin</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="btnRiwayat">
-                                    <a href="javascript:void(0);"
-                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
-                                            class="ri-history-line"></i>Riwayat</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiAbsen">
-                                    <a href="historyAbsensi"
-                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
-                                            class="ri-history-line"></i>Riwayat Kehadiran</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiLembur">
-                                    <a href="{{ route('lemburIndexUser') }}"
-                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 font-medium text-orange-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-100"><i
-                                            class="ri-time-line text-orange-600 transition group-hover:scale-110"></i>Riwayat
-                                        Lembur</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiIzin">
-                                    <a href="{{ route('izin.index') }}"
-                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white"><i
-                                            class="ri-file-list-3-line"></i>Riwayat Izin</a>
-                                </div>
-                        </div>
-                        {{-- Handle Rekap & Lembur --}}
-                        @php
-                            $jabatanMatch = match ($codeJabatan) {
-                                'CO-CS' => true,
-                                'CO-SCR' => true,
-                                'SPV-W' => true,
-                                default => false,
-                            };
-                        @endphp
-                        @if ($jabatanMatch && $user->id != '7')
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnRekap"
-                                    onclick="window.location='{{ $codeJabatan == 'SPV-W' ? route('spvw.rekap.index') : route('index.rekap.data.leader') }}'"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="ri-calendar-schedule-line"></i>
-                                    <button class="text-sm font-bold uppercase">
-                                        Data Rekap (Trial)
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
 
-                        {{-- TO Manajemen SPV And MRT --}}
+        @include('dashboard.partials.checkout-modal')
 
-                        @if (in_array($user->jabatan_id, [4, 14]))
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnRekap" onclick="window.location='{{ route('manajemen_rekap') }}'"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="ri-calendar-schedule-line"></i>
-                                    <button class="text-sm font-bold uppercase">
-                                        Data Rekap
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
-
-                        {{-- End Handle --}}
-                        @if ($kerjasamaId == 1)
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnCP"
-                                    class="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-50 to-white text-emerald-900 shadow-sm transition hover:-translate-y-0.5 hover:from-emerald-100 hover:shadow-md">
-                                    <span
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 transition group-hover:bg-emerald-500 group-hover:text-white"><i
-                                            class="ri-task-line text-lg"></i></span>
-                                    <button class="text-sm font-semibold">
-                                        Kinerja Harian
-                                    </button>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="isiIndex">
-                                    <a href="/checkpoint-user"
-                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i
-                                            class="ri-add-line text-emerald-600 transition group-hover:rotate-90"></i>Bukti
-                                        Kerja</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <a href="{{ route('checkpoint-user.history') }}"
-                                        class="group flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-100"><i
-                                            class="ri-history-line text-emerald-600 transition group-hover:scale-110"></i>Riwayat
-                                        Bukti Kerja</a>
-                                </div>
-                                {{-- <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? '' : 'disabled' }}>Tambah Planning (sabtu - minggu )</a>-->
-                                    <a href="{{ $cex ? route('checkpoint-user.edit', $cex->id) : route('checkpoint-user.create') }}"
-                                        class="w-full btn btn-info">{{ $cex ? 'Ubah Rencana Kerja' : 'Tambah Rencana Kerja' }}
-                                        (sabtu - minggu )</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="kirimCP">
-                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? 'disabled' : '' }}>Kirim Bukti (senin - jum'at)</a>-->
-                                    <a href="{{ route('editBukti-checkpoint-user') }}" {{ !$cex ? 'disabled' : '' }}
-                                        style="{{ !$cex ? 'background: #7dd3fc; border: none; color: #1e293b;' : '' }}"
-                                        class="w-full btn btn-info ">{{ $cex ? 'Kirim Bukti' : 'Buat Rencana Kerja Terlebih Dahulu' }}
-                                        (senin - jum'at)</a>
-                                </div> --}}
-                            @else
-                                <div class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s"
-                                    disabled>
-                                    <i class="ri-list-check-3"></i>
-                                    <button class="text-sm font-bold uppercase" disabled>
-                                        Kinerja harian
-                                    </button>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <div id="btnRating"
-                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-user-star-line"></i>
-                                <button class="text-sm font-bold uppercase">Rating</button>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekMe">
-                                <a href="{{ route('ratingSaya', $user->id) }}"
-                                    class="w-full btn btn-info">Check Rating Saya</a>
-                            </div>
-                            @if ($roleId == 2)
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
-                                    <a href="{{ route('admin.rating.index') }}"
-                                        class="w-full btn btn-info">Rating</a>
-                                </div>
-                            @elseif($jabatan == 'LEADER')
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
-                                    <a href="{{ route('leader-rating.index') }}"
-                                        class="w-full btn btn-info">Rating</a>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <div id="btnLaporan"
-                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-speak-line"></i>
-                                <button class="text-sm font-bold uppercase">Laporan</button>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Tambah
-                                    Laporan</a>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Riwayat
-                                    Laporan</a>
-                            </div>
-
-                        </div>
-
-                        {{-- Button Pengajuan Kontrak --}}
-                        @php
-                            $kontrakSelesai = $kontrak?->tgl_selesai_kontrak
-                                ? \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast()
-                                : false;
-                            $kontrakBerjalan =
-                                $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
-                            $bisaAjukanKontrak = !$kontrak || $kontrakSelesai || !$kontrakBerjalan;
-                        @endphp
-                        <div
-                            class="{{ $bisaAjukanKontrak ? 'flex' : 'hidden' }} flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <a href="{{ $bisaAjukanKontrak ? route('form-kontrak-request') : 'javascript:void(0)' }}"
-                                class="group {{ $bisaAjukanKontrak ? 'border border-amber-200 bg-gradient-to-r from-amber-50 to-white text-amber-900 hover:-translate-y-0.5 hover:from-amber-100 hover:shadow-md' : 'cursor-not-allowed bg-slate-200 text-slate-500' }} flex h-12 w-full items-center justify-center gap-2 rounded-xl border-l-4 border-l-amber-500 font-semibold shadow-sm transition">
-                                <span
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-600 transition group-hover:rotate-6 group-hover:bg-amber-500 group-hover:text-white"><i
-                                        class="ri-file-edit-line text-lg"></i></span>
-                                <span class="text-sm">Pengajuan Kontrak</span>
-                            </a>
-                        </div>
-
-                    @else
-                        @php
-                            $routes = [
-                                'MITRA' => [
-                                    'karyawan' => 'mitra_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'mitra_jadwal',
-                                    'absensi' => 'mitra_absensi',
-                                    'izin' => 'mitra_izin',
-                                    'lembur' => 'mitra_lembur',
-                                    'laporan' => 'mitra_laporan',
-                                    'rating' => 'mitra-rating.index',
-                                    'laporan bulanan' => 'mitra-laporan-bulanan.index',
-                                ],
-                                'LEADER' => [
-                                    'karyawan' => 'lead_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'leader-jadwal.index',
-                                    'absensi' => 'lead_absensi',
-                                    'izin' => 'lead_izin',
-                                    'lembur' => 'lead_lembur',
-                                    'laporan' => 'lead_laporan',
-                                    'rating' => 'leader-rating.index',
-                                ],
-                                'DIREKSI' => [
-                                    'karyawan' => 'direksi_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'direksi_jadwal',
-                                    'absensi' => 'direksi_absensi',
-                                    'izin' => 'direksi_izin',
-                                    'lembur' => 'direksi_lembur',
-                                    'laporan' => 'direksi_laporan',
-                                    'rating' => 'direksi-rating.index',
-                                    'kinerja' => 'direksi.cp.index',
-                                    'kontrak' => 'direksi-cekKontrak',
-                                ],
-                            ];
-                            $icons = [
-                                'karyawan' => 'ri-pass-pending-line',
-                                'jadwal' => 'ri-calendar-check-line',
-                                'absensi' => 'ri-todo-line',
-                                'izin' => 'ri-shield-user-line',
-                                'lembur' => 'ri-time-line',
-                                'laporan' => 'ri-image-add-line',
-                                'laporan bulanan' => 'ri-image-add-line',
-                                'rating' => 'ri-sparkling-line',
-                                'kinerja' => 'ri-sparkling-line',
-                                'kontrak' => 'ri-pass-pending-line',
-                            ];
-                        @endphp
-                        @if (array_key_exists($jabatan, $routes))
-                            <div class="w-full gap-2">
-                                @if ($jabatan == 'DIREKSI')
-                                    {{-- absensi --}}
-                                    <div id="btnAbsensi"
-                                        class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                        <i class="text-xl ri-todo-line"></i>
-                                        <button class="text-sm font-bold uppercase">Kehadiran</button>
-                                    </div>
-                                    {{-- menu menu dashboard absensi --}}
-                                    @php
-                                        $hariIni = Carbon\Carbon::now()->format('N');
-                                        $tampilkanAbsensi = !in_array($hariIni, [6, 7]) || $kerjasamaId != 1;
-                                        $codeJabatan = $jabatan;
-                                        $absensiRoute = match ($codeJabatan) {
-                                            'CO-CS' => 'absensi-karyawan-co-cs.index',
-                                            'CO-SCR' => 'absensi-karyawan-co-scr.index',
-                                            default => null,
-                                        };
-                                    @endphp
-                                    <div class="flex flex-col gap-2 mt-2">
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="ngabsen">
-                                            <a href="{{ $tampilkanAbsensi ? route('absensi.index') : 'javascript:void(0);' }}"
-                                                class="w-full btn btn-info">{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
-                                        </div>
-                                        @if ($absensiRoute)
-                                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                                id="ngabsenK">
-                                                <a href="{{ route($absensiRoute) }}"
-                                                    class="w-full btn btn-info">Kehadiran karyawan</a>
-                                            </div>
-                                        @endif
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="ngIzin">
-                                            <a href="{{ route('izin.create') }}" class="w-full btn btn-info">Izin</a>
-                                        </div>
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="btnRiwayat">
-                                            <a href="#" class="w-full btn btn-success">Riwayat</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiAbsen">
-                                            <a href="historyAbsensi" class="w-full btn btn-info">Riwayat Kehadiran</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiLembur">
-                                            <a href="{{ route('lemburIndexUser') }}"
-                                                class="w-full btn btn-info">Riwayat Lembur</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiIzin">
-                                            <a href="{{ route('izin.index') }}" class="w-full btn btn-info">Riwayat
-                                                Izin</a>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                <div
-                                    class="grid w-full grid-cols-2 gap-2 mt-5 space-y-0 overflow-hidden sm:grid-cols-3">
-                                    @foreach ($routes[$jabatan] as $key => $route)
-                                        <div class="w-full md:space-y-4 overflow-hidden rounded-lg {{ $key == 'rating' && $jabatan == 'DIREKSI' ? 'hidden' : '' }}"
-                                            id="L{{ $key }}">
-                                            <a href="{{ route($route) }}"
-                                                class="relative flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
-                                                <i
-                                                    class="{{ $icons[$key] }} text-xl text-sky-600"></i>{{ ucfirst($key) }}
-                                                @if ($jabatan == 'DIREKSI' && $key == 'kinerja')
-                                                    <span class="absolute text-center bg-yellow-500"
-                                                        style="padding: 20px 25px 5px 35px; right: -20px; top: -18px; transform: rotate(35deg);">
-                                                        <p style="transform: rotate(-35deg);">
-                                                            {{ $totcex }}
-                                                        </p>
-                                                    </span>
-                                                @endif
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                        @endif
-                        @include('dashboard.partials.checkout-modal')
-                    </div>
-                </div>
-
-                @include('dashboard.partials.news-modal')
-                @include('dashboard.partials.checkpoint-reminder-modal')
-                @include('dashboard.partials.checkpoint-rejected-modal')
-                @include('dashboard.partials.checkpoint-pending-modal')
-
-                
-            </main>
-        </div>
-        @if (count($warn) >= 3)
-            <div class="flex justify-center pt-10 mx-10 sm:justify-start">
-                <div
-                    class="inset-0 flex flex-col justify-start px-4 py-2 mb-5 font-semibold text-white bg-red-500 rounded-lg shadow-md w-fit text-md sm:text-xl">
-                    <p class="p-1 px-2 text-xs bg-yellow-500 rounded-full w-fit">Warning</p>
-                    <p style="padding-left: 3px;">Kamu Sudah Tidak Absen Pulang {{ count($warn) }}x</p>
-                </div>
-            </div>
-        @endif
+        @include('dashboard.partials.news-modal')
+        @include('dashboard.partials.checkpoint-reminder-modal')
+        @include('dashboard.partials.checkpoint-rejected-modal')
+        @include('dashboard.partials.checkpoint-pending-modal')
     </div>
 
     <div class="{{ $kontrak && $kontrak->isPending() ? 'hidden' : '' }} mx-5 mt-5 sm:mx-10">
         @if ($kontrak && $kontrak->isActive())
             {{-- APPROVED --}}
             <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-green-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
+                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-green-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
                 <div class="w-full text-center md:text-left">
                     <span
                         class="mb-2 inline-flex rounded-full bg-green-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
@@ -1495,12 +1054,12 @@
                     <div class="flex flex-col gap-2 sm:flex-row sm:justify-center md:justify-start">
                         <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
                             onclick="window.open(this.href, '_blank'); window.location.reload(); return false;"
-                            class="rounded-2xl bg-yellow-400 px-4 py-2.5 text-center text-sm font-bold text-slate-900 shadow-sm transition hover:bg-yellow-500">
+                            class="rounded-2xl bg-yellow-400 px-4 py-2.5 text-center text-sm font-bold text-slate-900 shadow-xs transition hover:bg-yellow-500">
                             Lihat Detail
                         </a>
 
                         {{-- <a href="{{ route('form-kontrak-index', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
-                            class="rounded-2xl bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white shadow-sm transition hover:bg-green-700">
+                            class="rounded-2xl bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white shadow-xs transition hover:bg-green-700">
                             Tanda Tangan Kontrak
                         </a> --}}
                     </div>
@@ -1514,7 +1073,7 @@
         @elseif($kontrak && $kontrak->isPending())
             {{-- PENDING --}}
             <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
+                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
                 <div class="w-full text-center md:text-left">
                     <span
                         class="mb-2 inline-flex rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
@@ -1541,7 +1100,7 @@
         @elseif ($kontrak && $kontrak->isProses())
             {{-- PROSES --}}
             <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
+                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
                 <div class="w-full text-center md:text-left">
                     <span
                         class="mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-700">

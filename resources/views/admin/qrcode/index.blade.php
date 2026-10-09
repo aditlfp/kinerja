@@ -1,10 +1,10 @@
 <x-admin-layout :fullWidth="true">
 		<div class="py-10 px-5">
-			<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data QR Code</h1>
+			<h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data QR Code</h1>
 			<div class="flex justify-end ">
 				<div class="input flex items-center w-fit input-bordered my-10">
 					<i class="ri-search-2-line"></i>
-					<input type="search" id="searchInput" class="border-none rounded ml-1" placeholder="Search..." required>
+					<input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
 				</div>
 			</div>
 			
@@ -34,7 +34,7 @@
                                 <option value="1">Export Per Ceklist</option>
                             </select>
                         </div>
-				    <button type="submit" class="bg-yellow-400 px-3 flex gap-x-2 items-center py-2 h-fit shadow rounded-md text-2xl">
+				    <button type="submit" class="bg-yellow-400 px-3 flex gap-x-2 items-center py-2 h-fit shadow-sm rounded-md text-2xl">
 						<i class="ri-file-download-line"></i>
 						<span class="text-sm font-semibold">Export PDF</span>
 				    </button>

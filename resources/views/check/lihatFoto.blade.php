@@ -7,7 +7,7 @@
             <div class="flex justify-end">
                 <div class="input flex w-fit mx-10 items-center justify-end mb-5 input-bordered">
                     <i class="ri-search-2-line"></i>
-                    <input type="search" id="searchInput" class="border-none rounded ml-1" placeholder="Search..." required>
+                    <input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
                 </div>
             </div>
             <div class="flex justify-center gap-2 sm:justify-between mx-10">
@@ -39,7 +39,7 @@
                                             @forelse ($cek as $arr)
                                                 @forelse ($arr->image as $item)
                                                     @foreach ($item->image as $i)
-                                                        <img src="{{ asset('storage/images/' . $i)}}" alt="" srcset="" width="120px" class="rounded">
+                                                        <img src="{{ asset('storage/images/' . $i)}}" alt="" srcset="" width="120px" class="rounded-sm">
                                                     @endforeach
                                                 @empty
                                                 ---

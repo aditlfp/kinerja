@@ -1,17 +1,17 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Laporan Mitra')
 
-    {{-- <div x-data="{ delOpen: false, deleteId: null }" class="w-full max-w-screen-xl px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
+    {{-- <div x-data="{ delOpen: false, deleteId: null }" class="w-full max-w-(--breakpoint-xl) px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Laporan Mitra</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola dokumen PDF laporan dari masing-masing mitra.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data Laporan Mitra</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Kelola dokumen PDF laporan dari masing-masing mitra.</p>
                 </div>
                 <div class="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex items-center w-full h-10 gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50 sm:w-72">
                         <i class="text-base text-gray-500 ri-search-2-line"></i>
-                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-none" placeholder="Cari laporan mitra..." />
+                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari laporan mitra..." />
                     </label>
                     <a href="{{ route('admin.index') }}" class="inline-flex items-center h-10 px-4 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">Dashboard</a>
                     @if(Auth::user()->id == 2)
@@ -21,7 +21,7 @@
             </div>
         </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
             <div class="w-full overflow-x-auto">
                 <table class="w-full min-w-[700px] divide-y divide-gray-100" id="searchTable">
                     <thead class="text-xs font-semibold tracking-wide text-left text-gray-600 uppercase bg-gray-50">
@@ -62,7 +62,7 @@
             </div>
         </section>
 
-        <div x-show="delOpen" x-cloak style="display:none" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm">
+        <div x-show="delOpen" x-cloak style="display:none" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-xs">
             <div class="w-full max-w-md overflow-hidden bg-white shadow-xl rounded-2xl">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <h3 class="text-sm font-semibold text-gray-800">Konfirmasi Hapus Laporan</h3>
@@ -110,7 +110,7 @@
     @endpush --}}
 
     <div class="w-full max-w-3xl px-4 py-8 mx-auto sm:px-6 lg:px-8">
-        <div class="px-5 py-4 text-sm text-center text-blue-900 border border-blue-100 shadow-sm rounded-2xl bg-blue-50">
+        <div class="px-5 py-4 text-sm text-center text-blue-900 border border-blue-100 shadow-xs rounded-2xl bg-blue-50">
             <span class="font-medium">
                 Sekarang laporan berada di link yang berbeda,
                 <a href="https://laporan-sac.sac-po.com/" class="inline-flex items-center ml-1 font-semibold text-blue-700 underline transition decoration-blue-300 underline-offset-4 hover:text-blue-900">

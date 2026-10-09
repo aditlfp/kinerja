@@ -379,7 +379,7 @@
                         <div class="relative flex-1">
                             <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                                 placeholder="Cari mitra..."
-                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
                             <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3 pointer-events-none" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -406,11 +406,11 @@
         </div>
 
         <!-- Global Export Section -->
-        <div class="my-6 overflow-hidden bg-white border border-gray-200 shadow-sm rounded-2xl">
-            <div class="p-5 bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 sm:p-6">
+        <div class="my-6 overflow-hidden bg-white border border-gray-200 shadow-xs rounded-2xl">
+            <div class="p-5 bg-linear-to-r from-indigo-600 via-blue-600 to-cyan-600 sm:p-6">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 bg-white/15 rounded-xl ring-1 ring-white/25">
+                        <div class="flex items-center justify-center shrink-0 w-12 h-12 bg-white/15 rounded-xl ring-1 ring-white/25">
                             <i class="text-2xl text-white ri-file-download-line"></i>
                         </div>
                         <div>
@@ -451,12 +451,12 @@
 
                     <div class="grid grid-cols-2 gap-3 sm:flex">
                         <button onclick="exportGlobalToExcel()"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white transition shadow-sm rounded-xl bg-emerald-600 hover:bg-emerald-700">
+                            class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white transition shadow-xs rounded-xl bg-emerald-600 hover:bg-emerald-700">
                             <i class="text-lg ri-file-excel-2-line"></i>
                             Excel
                         </button>
                         <button onclick="exportGlobalToPDF()"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white transition shadow-sm rounded-xl bg-red-600 hover:bg-red-700">
+                            class="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white transition shadow-xs rounded-xl bg-red-600 hover:bg-red-700">
                             <i class="text-lg ri-file-pdf-2-line"></i>
                             PDF
                         </button>
@@ -468,7 +468,7 @@
         <!-- Stats Summary -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <!-- Total Mitra -->
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-indigo-600 rounded-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -485,7 +485,7 @@
             </div>
 
             <!-- Halaman -->
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-emerald-600 rounded-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -503,7 +503,7 @@
             </div>
 
             <!-- Bulan Ini -->
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-violet-600 rounded-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -555,19 +555,19 @@
                         <div class="flex items-start sm:items-center gap-4 flex-1 min-w-0">
                             <!-- Avatar -->
                             <div
-                                class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                                class="w-12 h-12 sm:w-14 sm:h-14 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shrink-0">
                                 {{ strtoupper(substr($mitra->client->name ?? 'M', 0, 1)) }}
                             </div>
 
                             <!-- Client Info -->
                             <div class="flex-1 min-w-0">
-                                <h3 class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 break-words">
+                                <h3 class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 wrap-break-word">
                                     {{ $mitra->client->name ?? 'Nama Mitra' }}
                                 </h3>
                                 <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4">
                                     @if ($mitra->client->email)
                                         <p class="text-gray-600 text-xs sm:text-sm flex items-center gap-1.5 break-all">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none"
+                                            <svg class="w-4 h-4 shrink-0 text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
@@ -578,7 +578,7 @@
                                     @endif
                                     @if ($mitra->client->phone)
                                         <p class="text-gray-600 text-xs sm:text-sm flex items-center gap-1.5">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-gray-400" fill="none"
+                                            <svg class="w-4 h-4 shrink-0 text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
@@ -681,14 +681,14 @@
                         <!-- Action Button -->
                         <button
                             onclick="openModal({{ $mitra->id }}, '{{ addslashes($mitra->client->name ?? 'Nama Mitra') }}')"
-                            class="w-full sm:w-auto flex-shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
+                            class="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
                             <i class="ri-eye-line"></i>
                             <span>Lihat Detail</span>
                         </button>
                     </div>
                 </div>
             @empty
-                <div class="bg-white border border-gray-200 rounded-lg p-8 sm:p-12 text-center shadow-sm">
+                <div class="bg-white border border-gray-200 rounded-lg p-8 sm:p-12 text-center shadow-xs">
                     <div class="max-w-sm mx-auto">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
@@ -724,7 +724,7 @@
         <!-- Pagination -->
         @if ($client->hasPages())
             <div class="mt-6">
-                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                     {{ $client->appends(['search' => request('search')])->links() }}
                 </div>
             </div>
@@ -733,7 +733,7 @@
     </div>
 
     <!-- Modal Overlay -->
-    <div id="detailModal" class="fixed inset-0 z-[999999] hidden" aria-labelledby="modal-title" role="dialog"
+    <div id="detailModal" class="fixed inset-0 z-999999 hidden" aria-labelledby="modal-title" role="dialog"
         aria-modal="true">
         <!-- Background overlay -->
         <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
@@ -748,7 +748,7 @@
                     <div class="bg-white px-6 pt-6 pb-4">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                                <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shrink-0"
                                     id="modalAvatar">
                                     M
                                 </div>
@@ -759,7 +759,7 @@
                                 </div>
                             </div>
                             <button type="button" onclick="closeModal()"
-                                class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none flex-shrink-0 ml-3">
+                                class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-hidden shrink-0 ml-3">
                                 <i class="ri-close-line text-xl"></i>
                             </button>
                         </div>
@@ -769,9 +769,9 @@
                     <div class="bg-white px-6 py-4 space-y-3">
                         <!-- Data Lembur Button -->
                         <a href="#" id="linkLembur"
-                            class="group flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border border-indigo-200 rounded-lg transition-all duration-200">
+                            class="group flex items-center gap-3 p-4 bg-linear-to-r from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200 border border-indigo-200 rounded-lg transition-all duration-200">
                             <div
-                                class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0">
                                 <i class="ri-time-line text-white text-lg"></i>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -784,14 +784,14 @@
                                 </p>
                             </div>
                             <i
-                                class="ri-arrow-right-s-line text-indigo-600 group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
+                                class="ri-arrow-right-s-line text-indigo-600 group-hover:translate-x-1 transition-transform shrink-0"></i>
                         </a>
 
                         <!-- Data Personil Keluar Button -->
                         <a href="#" id="linkPersonilKeluar"
-                            class="group flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 border border-emerald-200 rounded-lg transition-all duration-200">
+                            class="group flex items-center gap-3 p-4 bg-linear-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 border border-emerald-200 rounded-lg transition-all duration-200">
                             <div
-                                class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center shrink-0">
                                 <i class="ri-user-unfollow-line text-white text-lg"></i>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -804,13 +804,13 @@
                                 </p>
                             </div>
                             <i
-                                class="ri-arrow-right-s-line text-emerald-600 group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
+                                class="ri-arrow-right-s-line text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0"></i>
                         </a>
 
                         <a href="#" id="linkPersonilMasuk"
-                            class="group flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border border-blue-200 rounded-lg transition-all duration-200">
+                            class="group flex items-center gap-3 p-4 bg-linear-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border border-blue-200 rounded-lg transition-all duration-200">
                             <div
-                                class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
                                 <i class="ri-user-follow-line text-white text-lg"></i>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -823,13 +823,13 @@
                                 </p>
                             </div>
                             <i
-                                class="ri-arrow-right-s-line text-blue-600 group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
+                                class="ri-arrow-right-s-line text-blue-600 group-hover:translate-x-1 transition-transform shrink-0"></i>
                         </a>
 
                         <a href="#" id="linkCutting"
-                            class="group flex items-center gap-3 p-4 bg-gradient-to-r from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border border-rose-200 rounded-lg transition-all duration-200">
+                            class="group flex items-center gap-3 p-4 bg-linear-to-r from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border border-rose-200 rounded-lg transition-all duration-200">
                             <div
-                                class="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                class="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center shrink-0">
                                 <i class="ri-scissors-cut-line text-white text-lg"></i>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -842,13 +842,13 @@
                                 </p>
                             </div>
                             <i
-                                class="ri-arrow-right-s-line text-rose-600 group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
+                                class="ri-arrow-right-s-line text-rose-600 group-hover:translate-x-1 transition-transform shrink-0"></i>
                         </a>
 
                         <a href="#" id="linkFinishedTraining"
-                            class="group flex items-center gap-3 p-4 bg-gradient-to-r from-violet-50 to-violet-100 hover:from-violet-100 hover:to-violet-200 border border-violet-200 rounded-lg transition-all duration-200">
+                            class="group flex items-center gap-3 p-4 bg-linear-to-r from-violet-50 to-violet-100 hover:from-violet-100 hover:to-violet-200 border border-violet-200 rounded-lg transition-all duration-200">
                             <div
-                                class="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                class="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center shrink-0">
                                 <i class="ri-graduation-cap-line text-white text-lg"></i>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -861,7 +861,7 @@
                                 </p>
                             </div>
                             <i
-                                class="ri-arrow-right-s-line text-violet-600 group-hover:translate-x-1 transition-transform flex-shrink-0"></i>
+                                class="ri-arrow-right-s-line text-violet-600 group-hover:translate-x-1 transition-transform shrink-0"></i>
                         </a>
                     </div>
 

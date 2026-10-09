@@ -1,6 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin "daisyui" {
+    themes: bumblebee;
+}
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+@source inline("bg-{emerald,indigo,blue,amber,sky,green,purple,yellow}-{200,300}");
+@source inline("text-{emerald,indigo,blue,amber,sky,green,purple,yellow}-700");
+
+@theme {
+  --font-sans: Figtree, ui-sans-serif, system-ui, sans-serif;
+
+  --animate-shadow: shadow 5s ease infinite;
+  --animate-spin-pulse: spin-pulse 2s linear infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-rotate-border: spin 4s linear infinite;
+
+  --background-image-guest-hp: url('/logo/abs2.svg');
+  --background-image-guest-pc: url('/logo/abs4.svg');
+  --background-image-guest-head: url('/logo/abs1.svg');
+
+  @keyframes shadow {
+    0% {
+      width: 27%;
+    }
+    25% {
+      width: 30%;
+    }
+    50% {
+      width: 60%;
+    }
+    100% {
+      width: 27%;
+    }
+  }
+  @keyframes spin-pulse {
+    0%,
+    100% {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: rotate(180deg);
+      opacity: 0.5;
+    }
+  }
+  @keyframes rotate-border {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
 
 .required::after {
     content: "*";

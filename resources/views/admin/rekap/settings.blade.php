@@ -1,11 +1,11 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Pengaturan Rekap')
 
-    <div class="w-full px-2 py-6 mx-auto space-y-4 max-w-screen-xl sm:px-3 lg:px-4">
+    <div class="w-full px-2 py-6 mx-auto space-y-4 max-w-(--breakpoint-xl) sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Pengaturan Batas Waktu Rekap</h1>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Pengaturan Batas Waktu Rekap</h1>
                     <p class="mt-1 text-sm text-gray-600">
                         Atur tanggal (1–31) + jam. Berlaku tiap bulan: setelah lewat, pengajuan rekap Leader/SPVW dikunci sampai bulan berikutnya. Belum diisi = tetap terbuka.
                     </p>
@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
             @if (!$setting)
                 <div class="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
                     Batas waktu belum diatur. Semua pengajuan rekap masih terbuka.
@@ -34,7 +34,7 @@
                         <select
                             id="due_day"
                             name="due_day"
-                            class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none"
+                            class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden"
                             required
                         >
                             <option value="">Pilih tanggal</option>
@@ -54,7 +54,7 @@
                             id="due_time"
                             name="due_time"
                             value="{{ $oldTime }}"
-                            class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none"
+                            class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden"
                             required
                         >
                         @error('due_time')
@@ -91,8 +91,8 @@
                     </form>
                 </div>
 
-                <div id="reset-batas-waktu-modal" class="fixed inset-0 z-[99999] hidden items-center justify-center px-4 py-6">
-                    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-reset-overlay></div>
+                <div id="reset-batas-waktu-modal" class="fixed inset-0 z-99999 hidden items-center justify-center px-4 py-6">
+                    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" data-reset-overlay></div>
                     <div class="relative w-full max-w-md overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-slate-900/5">
                         <div class="p-5">
                             <div class="flex items-start gap-4">

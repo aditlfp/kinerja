@@ -1,20 +1,20 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Tambah Pekerjaan')
 
-    <div class="w-full px-2 py-6 mx-auto max-w-screen-xl sm:px-3 lg:px-4">
+    <div class="w-full px-2 py-6 mx-auto max-w-(--breakpoint-xl) sm:px-3 lg:px-4">
         <section class="px-0.5">
-            <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Pekerjaan CP</h1>
-            <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Lengkapi data pekerjaan untuk menentukan rencana kerja berdasarkan user, divisi, dan kerjasama.</p>
+            <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Tambah Pekerjaan CP</h1>
+            <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Lengkapi data pekerjaan untuk menentukan rencana kerja berdasarkan user, divisi, dan kerjasama.</p>
         </section>
 
-        <section class="p-4 mt-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-6">
+        <section class="p-4 mt-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-6">
             <form method="POST" action="{{ route('admin.pekerjaan-cp.store') }}" id="form" class="space-y-5">
                 @csrf
 
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="flex flex-col">
                         <label for="user_id" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Pilih User</label>
-                        <select name="user_id" id="user_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                        <select name="user_id" id="user_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden">
                             <option disabled selected>~ Pilih User ~</option>
                             @forelse ($user as $us)
                                 @if($us->kerjasama_id == 1)
@@ -28,7 +28,7 @@
 
                     <div class="flex flex-col">
                         <label for="devisi_id" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Pilih Divisi</label>
-                        <select name="devisi_id" id="devisi_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                        <select name="devisi_id" id="devisi_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden">
                             <option disabled selected>~ Pilih Divisi ~</option>
                             @forelse ($divisi as $d)
                                 <option value="{{ $d->id }}">{{ $d->jabatan->name_jabatan }}</option>
@@ -40,7 +40,7 @@
 
                     <div class="flex flex-col">
                         <label for="kerjasama_id" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Pilih Kerjasama</label>
-                        <select name="kerjasama_id" id="kerjasama_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                        <select name="kerjasama_id" id="kerjasama_id" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden">
                             <option disabled selected>~ Pilih Kerjasama ~</option>
                             @forelse ($kerjasama as $ker)
                                 <option value="{{ $ker->id }}" {{ Auth::user()->kerjasama_id == $ker->id ? 'selected' : '' }}>{{ $ker->client->name }}</option>
@@ -52,7 +52,7 @@
 
                     <div class="flex flex-col">
                         <label for="type_check" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Pilih Jenis Pekerjaan</label>
-                        <select name="type_check" id="type_check" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                        <select name="type_check" id="type_check" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden">
                             <option disabled selected>~ Pilih Jenis Pekerjaan ~</option>
                             <option value="harian">Harian</option>
                             <option value="mingguan">Mingguan</option>
@@ -64,7 +64,7 @@
 
                 <div class="flex flex-col">
                     <label for="name" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Nama Pekerjaan</label>
-                    <input type="text" name="name" id="name" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none" placeholder="Nama pekerjaan...">
+                    <input type="text" name="name" id="name" class="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-hidden" placeholder="Nama pekerjaan...">
                 </div>
 
                 <div class="flex flex-wrap justify-end gap-2 pt-2">

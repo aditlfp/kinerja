@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Tambah Laporan Mitra')
 
-    <div class="mx-auto w-full max-w-screen-lg space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-lg) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Laporan Mitra</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Upload file PDF laporan dari mitra terkait.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Tambah Laporan Mitra</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Upload file PDF laporan dari mitra terkait.</p>
                 </div>
                 <a href="{{ route('laporanMitra.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50">Kembali</a>
             </div>
@@ -15,11 +15,11 @@
         <form action="{{ route('laporanMitra.post') }}" method="post" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('POST')
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <div class="space-y-4">
                     <div>
                         <label for="kerjasama_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Mitra</label>
-                        <select class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-none" name="kerjasama_id" id="kerjasama_id">
+                        <select class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-hidden" name="kerjasama_id" id="kerjasama_id">
                             <option selected disabled>~ Pilih Mitra ~</option>
                             @foreach ($kerjasama as $i)
                                 <option value="{{ $i->id }}">{{ $i->client->name }}</option>

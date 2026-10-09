@@ -20,11 +20,11 @@
             <div class="w-full md:w-auto">
                 <div class="flex w-full flex-col gap-1 p-1 rounded-xl sm:inline-flex sm:flex-row md:w-auto mitra-panel-soft">
                     <a href="{{ route('mitra_absensi', ['periode' => 'today']) }}"
-                       class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-semibold transition rounded-lg md:flex-none {{ $currentPeriode === 'today' ? 'bg-blue-500 text-white shadow-sm' : 'mitra-text-soft hover:text-white' }}">
+                       class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-semibold transition rounded-lg md:flex-none {{ $currentPeriode === 'today' ? 'bg-blue-500 text-white shadow-xs' : 'mitra-text-soft hover:text-white' }}">
                         Hari Ini
                     </a>
                     <a href="{{ route('mitra_absensi', ['periode' => '30days']) }}"
-                       class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-semibold transition rounded-lg md:flex-none {{ $currentPeriode === '30days' ? 'bg-blue-500 text-white shadow-sm' : 'mitra-text-soft hover:text-white' }}">
+                       class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-semibold transition rounded-lg md:flex-none {{ $currentPeriode === '30days' ? 'bg-blue-500 text-white shadow-xs' : 'mitra-text-soft hover:text-white' }}">
                         30 Hari Terakhir
                     </a>
                 </div>

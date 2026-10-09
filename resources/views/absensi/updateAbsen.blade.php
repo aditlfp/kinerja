@@ -33,7 +33,7 @@
     </head>
 
 <body class="font-sans antialiased  bg-slate-400">
-    <div class="min-h-screen pb-[12.5rem]">
+    <div class="min-h-screen pb-50">
         @include('../layouts/navbar')
         <div class="sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md">
             <main>
@@ -44,8 +44,8 @@
                         @csrf
                         {{-- @if (Auth::user()->kerjasama_id != 1)
                             <div class="flex flex-col sm:flex-row sm:m-0 items-center  justify-center gap-3 mb-3">
-                                <div id="my_camera" class="bg-slate-200 scale-90 px-10 rounded"></div>
-                                <div id="results" class=" sm:mt-0 rounded"></div>
+                                <div id="my_camera" class="bg-slate-200 scale-90 px-10 rounded-sm"></div>
+                                <div id="results" class=" sm:mt-0 rounded-sm"></div>
                             </div>
 
                             <div class="flex justify-center">
@@ -54,7 +54,7 @@
                                         class="ri-camera-fill"></i></button>
                             </div>
                         @endif --}}
-                        <div class="p-1 rounded my-3 ">
+                        <div class="p-1 rounded-sm my-3 ">
                             <label class="required">Map :</label>
                             <span id="labelMap" class="text-white text-center flex flex-col justify-center">
                                 <p>Pastikan map sudah muncul !!</p>
@@ -202,10 +202,10 @@
                             <span class="flex justify-center gap-3">
 
                                 <button
-                                    class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded transition-all ease-linear .2s"
+                                    class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded-sm transition-all ease-linear .2s"
                                     id="btnAbsen">Update Absen</button>
                                 <a href="{{ route('dashboard.index') }}"
-                                    class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded transition-all ease-linear .2s">
+                                    class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded-sm transition-all ease-linear .2s">
                                     Kembali
                                 </a>
                             </span>
@@ -228,7 +228,7 @@
         </div>
     </div>
     <div class="flex justify-center">
-        <div class="fixed bottom-0 z-[999]">
+        <div class="fixed bottom-0 z-999">
             <x-menu-mobile />
         </div>
     </div>

@@ -38,7 +38,7 @@
                                 <label class="text-sm font-medium text-slate-700 required">Tempat Lahir</label>
                                 <input type="text" name="tempat_lhr" value="{{ old('tempat_lhr') }}"
                                     placeholder="Contoh: Madiun"
-                                    class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
+                                    class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 transition-colors focus:outline-hidden focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
                                     @error('tempat_lhr') border-red-400 focus:ring-red-100 focus:border-red-500 @else border-slate-300 @enderror" />
                                 @error('tempat_lhr')
                                     <span class="text-xs text-red-500">{{ $message }}</span>
@@ -49,7 +49,7 @@
                                 <label class="text-sm font-medium text-slate-700 required">Tanggal Lahir</label>
                                 <input type="date" name="tgl_lhr" value="{{ old('tgl_lhr') }}"
                                     max="{{ Carbon\Carbon::now()->subYears(17)->format('Y-m-d') }}"
-                                    class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
+                                    class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 transition-colors focus:outline-hidden focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
                                     @error('tgl_lhr') border-red-400 focus:ring-red-100 focus:border-red-500 @else border-slate-300 @enderror" />
                                 @error('tgl_lhr')
                                     <span class="text-xs text-red-500">{{ $message }}</span>
@@ -66,7 +66,7 @@
                             <input type="text" name="nik" value="{{ old('nik') }}" inputmode="numeric"
                                 maxlength="16" placeholder="0000 0000 0000 0000"
                                 style="font-variant-numeric: tabular-nums; letter-spacing: 0.04em;"
-                                class="w-full px-3.5 py-2.5 text-sm font-mono rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 placeholder:font-sans placeholder:tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
+                                class="w-full px-3.5 py-2.5 text-sm font-mono rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 placeholder:font-sans placeholder:tracking-normal transition-colors focus:outline-hidden focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
                                 @error('nik') border-red-400 focus:ring-red-100 focus:border-red-500 @else border-slate-300 @enderror" />
                             @error('nik')
                                 <span class="text-xs text-red-500">{{ $message }}</span>
@@ -77,7 +77,7 @@
                         <div class="flex flex-col gap-1.5">
                             <label class="text-sm font-medium text-slate-700 required">Alamat</label>
                             <textarea name="alamat_pk_kda" rows="3" placeholder="Alamat tempat tinggal sekarang"
-                                class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 transition-colors resize-none focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
+                                class="w-full px-3.5 py-2.5 text-sm rounded-lg border bg-white text-slate-900 placeholder:text-slate-400 transition-colors resize-none focus:outline-hidden focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500
                                 @error('alamat_pk_kda') border-red-400 focus:ring-red-100 focus:border-red-500 @else border-slate-300 @enderror">{{ old('alamat_pk_kda') }}</textarea>
                             @error('alamat_pk_kda')
                                 <span class="text-xs text-red-500">{{ $message }}</span>

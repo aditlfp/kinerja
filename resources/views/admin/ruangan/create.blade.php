@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Tambah Ruangan')
 
-    <div class="mx-auto w-full max-w-screen-md space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-md) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Ruangan</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Tambahkan ruangan baru untuk mitra terkait.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Tambah Ruangan</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Tambahkan ruangan baru untuk mitra terkait.</p>
                 </div>
                 <a href="{{ route('admin.ruangan.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">Kembali</a>
             </div>
@@ -14,11 +14,11 @@
 
         <form method="POST" action="{{ route('admin.ruangan.store') }}" class="space-y-4" id="form">
             @csrf
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <div class="space-y-4">
                     <div>
                         <label for="kerjasama_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Nama Mitra</label>
-                        <select name="kerjasama_id" id="kerjasama_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <select name="kerjasama_id" id="kerjasama_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                             <option selected disabled>~ Pilih Mitra ~</option>
                             @foreach ($kerjasama as $i)
                                 <option value="{{ $i->id }}">{{ $i->client->name }}</option>
@@ -28,7 +28,7 @@
                     </div>
                     <div>
                         <label for="nama_ruangan" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Nama Ruangan</label>
-                        <input id="nama_ruangan" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none" type="text" name="nama_ruangan" value="{{ old('name') }}" required autocomplete="nama_ruangan" />
+                        <input id="nama_ruangan" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden" type="text" name="nama_ruangan" value="{{ old('name') }}" required autocomplete="nama_ruangan" />
                         <x-input-error :messages="$errors->get('nama_ruangan')" class="mt-2" />
                     </div>
                 </div>

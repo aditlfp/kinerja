@@ -1,17 +1,17 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Data Ruangan')
 
-    <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-xl) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Ruangan</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola daftar ruangan berdasarkan mitra/client.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data Ruangan</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Kelola daftar ruangan berdasarkan mitra/client.</p>
                 </div>
                 <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex h-10 w-full items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 sm:w-72">
                         <i class="ri-search-2-line text-base text-gray-500"></i>
-                        <input type="search" id="searchInput" class="w-full border-none bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none" placeholder="Cari ruangan atau client..." />
+                        <input type="search" id="searchInput" class="w-full border-none bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari ruangan atau client..." />
                     </label>
                     <a href="{{ route('admin.ruangan.create') }}" class="inline-flex h-10 items-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"><i class="ri-add-line mr-1.5"></i>Ruangan</a>
                     <a href="{{ route('admin.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">Dashboard</a>
@@ -19,7 +19,7 @@
             </div>
         </section>
 
-        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+        <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
             <form action="{{ route('admin.ruangan.import') }}" method="POST" class="flex flex-wrap items-center gap-2" enctype="multipart/form-data">
                 @csrf
                 <label for="iCP" class="inline-flex h-10 cursor-pointer items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"><i class="ri-file-excel-2-line mr-1.5 text-base"></i><span id="importLabel">Import Ruangan</span></label>
@@ -28,7 +28,7 @@
             </form>
         </section>
 
-        <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xs">
             <div class="w-full overflow-x-auto">
                 <table class="w-full min-w-[700px] divide-y divide-gray-100" id="searchTable">
                     <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">

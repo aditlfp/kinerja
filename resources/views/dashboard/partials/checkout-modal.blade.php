@@ -29,7 +29,7 @@
                                         </button>
                                     </div> --}}
                                     <div
-                                        class="fixed inset-0 z-[9000] hidden transition-all duration-300 ease-in-out modalp bg-slate-950/35 backdrop-blur-sm">
+                                        class="fixed inset-0 z-9000 hidden transition-all duration-300 ease-in-out modalp bg-slate-950/35 backdrop-blur-xs">
                                         <div class="w-[min(94vw,420px)] max-h-[88vh] overflow-y-auto mx-2 rounded-lg shadow-2xl bg-slate-50 ring-1 ring-white/80">
                                             <div class="flex items-start justify-between gap-3 border-b border-slate-200 px-3 py-2.5">
                                                 <div>
@@ -37,7 +37,7 @@
                                                     <p class="text-base font-black leading-tight text-slate-900">Pastikan titik lokasi benar</p>
                                                 </div>
                                                 <button type="button"
-                                                    class="flex items-center justify-center w-8 h-8 text-lg font-bold text-red-600 transition rounded-full shadow-sm close shrink-0 bg-red-50 hover:bg-red-100">&times;</button>
+                                                    class="flex items-center justify-center w-8 h-8 text-lg font-bold text-red-600 transition rounded-full shadow-xs close shrink-0 bg-red-50 hover:bg-red-100">&times;</button>
                                             </div>
                                             <form id="checkoutForm" action="{{ route('data.update', $absenP->id) }}" method="POST"
                                                 class="flex items-center justify-center">
@@ -55,7 +55,7 @@
                                                         @endif
                                                     </div>
                                                     <div class="mt-3 space-y-1.5">
-                                                        <div class="overflow-hidden rounded-md border border-slate-200 bg-white p-1.5 shadow-sm">
+                                                        <div class="overflow-hidden rounded-md border border-slate-200 bg-white p-1.5 shadow-xs">
                                                             <div id="checkoutMap"></div>
                                                         </div>
                                                         <div class="grid grid-cols-4 justify-evenly items-center gap-1.5 text-[10px] font-semibold text-slate-700">
@@ -77,7 +77,7 @@
                                                             </span>
                                                         </div>
                                                         <div id="checkoutDistanceInfo"
-                                                            class="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-center text-[11px] font-bold text-slate-700 shadow-sm">
+                                                            class="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-center text-[11px] font-bold text-slate-700 shadow-xs">
                                                             Menunggu lokasi sekarang...
                                                         </div>
                                                     </div>

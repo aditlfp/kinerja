@@ -16,7 +16,7 @@
 
             <a href="{{ route('profile.index') }}" class="flex items-center gap-2"
                 style="width: {{ $user->role_id == 2 ? '70%' : '85%' }};">
-                <div class="relative flex-shrink-0" style="width: 40px; height: 40px;">
+                <div class="relative shrink-0" style="width: 40px; height: 40px;">
                     <img class="block object-cover object-center rounded-full p-[2px] shadow-md bg-slate-300 shadow-slate-600 hover:shadow-none transition-all duration-200 ease-in-out"
                         src="{{ $imgSrc }}" alt="profile-logo" style="width: 40px; height: 40px;" />
                     @if ($hasSignedContract)
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="flex flex-row gap-1 min-w-0">
-                    <p class="text-sm font-semibold text-white break-words line-clamp-1">
+                    <p class="text-sm font-semibold text-white wrap-break-word line-clamp-1">
                         {{ ucwords(strtolower($user->nama_lengkap)) }}</p>
                 </div>
             </a>

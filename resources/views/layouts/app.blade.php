@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="bumblebee">
 
 <head>
     <meta charset="utf-8">
@@ -34,6 +34,12 @@
         html {
             overflow-x: hidden;
         }
+
+        .table-scroll {
+            max-width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
     @stack('styles')
 </head>
@@ -44,13 +50,13 @@
             @include('check.partials.sidebar')
         @elseif (request()->routeIs('direksi.cp.*'))
             @include('direksi.checkpoint.partials.direksi-sidebar')
-        @else
+        @elseif (Auth::user()->role_id == 2)
             @include('layouts.navbar')
         @endif
 
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white shadow">
+            <header class="bg-white shadow-sm">
                 <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
@@ -58,7 +64,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*')) ? 'lg:pl-[17.5rem] pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
+        <main class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*')) ? 'lg:pl-70 pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
             <div class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*')) ? 'motion-safe:animate-[fadeSlide_.5s_cubic-bezier(.22,1,.36,1)]' : '' }}">
                 {{ $slot }}
             </div>
@@ -66,12 +72,12 @@
 
     </div>
     {{-- <div class="flex justify-center">
-        <div class="fixed bottom-0 z-[999]">
+        <div class="fixed bottom-0 z-999">
             <x-menu-mobile />
         </div>
     </div> --}}
-    <div id="global-confirm-modal" class="fixed inset-0 z-[99999] hidden items-center justify-center px-4 py-6">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-confirm-overlay></div>
+    <div id="global-confirm-modal" class="fixed inset-0 z-99999 hidden items-center justify-center px-4 py-6">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" data-confirm-overlay></div>
         <div class="relative w-full max-w-md overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-slate-900/5">
             <div class="p-5">
                 <div class="flex items-start gap-4">
@@ -484,13 +490,13 @@
                 var modalId = $(this).attr('id').replace('myModalBtn', '');
                 var modal = $('#myModal' + modalId);
                 modal.removeClass('hidden ');
-                modal.addClass(' inset-0 z-[999]');
+                modal.addClass(' inset-0 z-999');
             });
 
             $(document).on("click", ".close", function() {
                 var modalId = $(this).closest('.modalz').attr('id').replace('myModal', '');
                 var modal = $('#myModal' + modalId);
-                modal.removeClass(' inset-0 z-[99]');
+                modal.removeClass(' inset-0 z-99');
                 modal.addClass('hidden ');
             });
         });

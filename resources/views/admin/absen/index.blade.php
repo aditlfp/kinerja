@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Data Absensi')
         <div class="w-full px-2 py-4 mx-auto space-y-4 max-w-[90vw] sm:px-3 lg:px-4">
-            <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+            <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
                 <p class="text-2xl font-bold tracking-tight text-gray-900">Data Absensi</p>
                 <p class="mt-1 text-sm text-gray-600">Kelola absensi harian, filter, export, dan validasi data.</p>
             </section>
 
-            <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+            <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
                 <div class="flex flex-col gap-3">
                     <form id="filterForm" action="{{ route('admin.absen') }}" method="GET" data-user-search-url="{{ route('admin.absen.users.search') }}" class="grid w-full gap-2 sm:grid-cols-2 xl:max-w-6xl xl:grid-cols-5">
                         <select name="filterKerjasama" id="filterKerjasama" class="w-full text-sm select select-bordered">
@@ -47,9 +47,9 @@
                 </div>
             </section>
 
-            <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+            <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
                 <form method="GET" class="grid gap-3 md:grid-cols-2 xl:grid-cols-6 xl:items-end">
-                    <select name="kerjasama_id" id="selectInput" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-sm rounded-xl">
+                    <select name="kerjasama_id" id="selectInput" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-xs rounded-xl">
                         <option disabled selected>Pilih Mitra</option>
                         @forelse ($absenSi as $i)
                             <option value="{{ $i->id }}">{{ $i?->client?->panggilan ?? $i?->client?->name }}</option>
@@ -57,9 +57,9 @@
                             <option>~Kosong~</option>
                         @endforelse
                     </select>
-                    <input type="date" name="str1" id="str1" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-sm rounded-xl">
-                    <input type="date" name="end1" id="end1" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-sm rounded-xl">
-                    <select name="divisi_id" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-sm rounded-xl">
+                    <input type="date" name="str1" id="str1" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-xs rounded-xl">
+                    <input type="date" name="end1" id="end1" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-xs rounded-xl">
+                    <select name="divisi_id" class="h-10 px-3 text-sm bg-white border border-gray-300 shadow-xs rounded-xl">
                         <option disabled selected>Pilih Divisi</option>
                         @forelse($divisi as $i)
                             <option value="{{ $i->id }}">{{ $i->name }}</option>
@@ -71,7 +71,7 @@
                         <input type="checkbox" name="jadwal" id="jadwal" value="1" class="checkbox">
                         <label for="jadwal" class="text-xs font-semibold text-gray-600">Jadwal</label>
                     </div>
-                    <input type="text" name="libur" class="h-10 px-3 text-xs bg-white border border-gray-300 shadow-sm rounded-xl" placeholder="Masukkan hari libur..">
+                    <input type="text" name="libur" class="h-10 px-3 text-xs bg-white border border-gray-300 shadow-xs rounded-xl" placeholder="Masukkan hari libur..">
 
                     <div class="flex justify-end gap-2 md:col-span-2 xl:col-span-6">
                         <button type="submit" formaction="{{ route('admin.exportV2') }}" class="text-yellow-900 border-0 btn bg-yellow-400/80 hover:bg-yellow-500">
@@ -84,7 +84,7 @@
                 </form>
             </section>
 
-            <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+            <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
                 <p class="font-semibold">*Hapus Foto Absen</p>
                 <form action="{{ route('absen.hapusFotoAbsen') }}" method="post" class="mt-2">
                     @csrf
@@ -104,7 +104,7 @@
                 </form>
             </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
         <div class="my-1 overflow-x-auto">
             <table class="table w-full table-zebra bg-slate-50" id="searchTable">
                 <thead>
@@ -143,7 +143,7 @@
                                         alt="data-absensi-image" width="120px" />
                                 @endif
                             </td>
-                            <td class="break-words whitespace-pre-line">
+                            <td class="wrap-break-word whitespace-pre-line">
                                 {{ $arr->user ? ucwords(strtolower($arr->user->nama_lengkap)) : 'user_id' . ' : ' . $arr->user_id . 'AKU KOSONG' }}
                             </td>
                             <td class="text-center">{{ $arr->tanggal_absen }}</td>
@@ -152,7 +152,7 @@
                                         style="font-size: 10pt;">{{ Carbon\Carbon::parse($arr->shift->jam_start)->format('H:i') }} -
                                         {{ Carbon\Carbon::parse($arr->shift->jam_end)->subHour()->format('H:i') }}</span></td>
                             @else
-                                <td class="font-semibold text-red-500 break-words whitespace-pre-wrap">Shift Kosong
+                                <td class="font-semibold text-red-500 wrap-break-word whitespace-pre-wrap">Shift Kosong
                                 </td>
                             @endif
                             
@@ -259,7 +259,7 @@
                             </td>
                             {{-- EndHandle Keterangan --}}
 
-                            <td class="break-words whitespace-pre-line">
+                            <td class="wrap-break-word whitespace-pre-line">
                                 @if ($arr->subuh != 0 || $arr->dzuhur != 0 || $arr->asar != 0 || $arr->magrib != 0 || $arr->isya != 0)
                                     <span>{{ $arr->subuh ? 'subuh,' : '' }} {{ $arr->dzuhur ? 'dzuhur,' : '' }}
                                         {{ $arr->asar ? 'asar,' : '' }} {{ $arr->magrib ? 'magrib,' : '' }}
@@ -267,7 +267,7 @@
                                 @endif
                             </td>
 
-                            <td class="break-words whitespace-pre-line">
+                            <td class="wrap-break-word whitespace-pre-line">
                                 {{ $arr?->kerjasama?->client?->panggilan ? $arr?->kerjasama?->client?->panggilan : $arr?->kerjasama?->client?->name }}
                             </td>
 
@@ -283,7 +283,7 @@
                                             @if ($arr->point_id == null)
                                                 <input type="text" name="point_id" id="point_id"
                                                     value="{{ $item->id }}" class="hidden">
-                                                <button class="w-16 px-2 py-1 rounded bg-amber-400" type="submit">+
+                                                <button class="w-16 px-2 py-1 rounded-sm bg-amber-400" type="submit">+
                                                     Point</button>
                                                 @break
                                             @endif

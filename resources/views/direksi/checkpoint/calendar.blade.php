@@ -1,7 +1,7 @@
 <x-app-layout>
     @section('title', 'Kalender Checkpoint')
     <div class="w-full max-w-5xl px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
-        <section class="mt-10 p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="mt-10 p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-3">
                     <span
@@ -21,7 +21,7 @@
             </div>
         </section>
         <section
-    class="w-full rounded-2xl border border-gray-100 bg-white p-2.5 shadow-sm sm:p-4 md:p-5">
+    class="w-full rounded-2xl border border-gray-100 bg-white p-2.5 shadow-xs sm:p-4 md:p-5">
 
     {{-- Header --}}
     <div class="mb-3 flex items-center justify-between gap-2 sm:mb-4">
@@ -78,7 +78,7 @@
 
     {{-- Day Header --}}
     <div
-        class="grid grid-cols-7 gap-1 pb-2 text-center text-[8px] font-semibold uppercase tracking-[.06em] text-gray-400 sm:gap-1.5 sm:pb-3 sm:text-[10px] sm:tracking-[.1em] md:text-[11px]">
+        class="grid grid-cols-7 gap-1 pb-2 text-center text-[8px] font-semibold uppercase tracking-[.06em] text-gray-400 sm:gap-1.5 sm:pb-3 sm:text-[10px] sm:tracking-widest md:text-[11px]">
 
         @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $day)
 

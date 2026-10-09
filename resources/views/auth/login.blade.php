@@ -13,7 +13,7 @@
                 <label for="name" class="block text-xs font-semibold text-stone-700">Nama Pengguna</label>
                 <div class="mt-1">
                     <input id="name" name="name" value="{{ old('name') }}" type="text" required autofocus
-                        class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+                        class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-amber-300 transition"
                         placeholder="Masukkan Username..." />
                 </div>
                 @error('name')
@@ -25,7 +25,7 @@
                 <label for="password" class="block text-xs font-semibold text-stone-700">Kata Sandi</label>
                 <div class="mt-1 relative">
                     <input id="password" name="password" :type="show ? 'text' : 'password'" required
-                        class="w-full rounded-lg border border-amber-200 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+                        class="w-full rounded-lg border border-amber-200 px-3 py-2 pr-10 focus:outline-hidden focus:ring-2 focus:ring-amber-300 transition"
                         placeholder="Masukkan Password..." />
                     <button type="button" @click="show = !show" :aria-label="show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
                         class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-amber-700 hover:text-amber-900">
@@ -43,14 +43,14 @@
 
             <div class="flex items-center justify-between text-sm">
                 <label class="inline-flex items-center gap-2">
-                    <input type="checkbox" name="remember" class="rounded text-amber-500 focus:ring-0" />
+                    <input type="checkbox" name="remember" class="rounded-sm text-amber-500 focus:ring-0" />
                     <span class="text-stone-700">Ingat saya</span>
                 </label>
             </div>
 
             <div>
                 <button type="submit"
-                    class="w-full btnLogin bg-amber-500 hover:bg-amber-600 text-white font-semibold px-4 py-2 rounded-lg shadow">
+                    class="w-full btnLogin bg-amber-500 hover:bg-amber-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm">
                     Masuk
                 </button>
             </div>

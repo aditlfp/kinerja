@@ -1,11 +1,11 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Slip Gaji')
 
-    <div class="w-full px-2 py-6 mx-auto space-y-4 max-w-screen-2xl sm:px-3 lg:px-4">
+    <div class="w-full px-2 py-6 mx-auto space-y-4 max-w-(--breakpoint-2xl) sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">List Gaji Karyawan</h1>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">List Gaji Karyawan</h1>
                     <p class="mt-1 text-sm text-gray-600">
                         {{ $penempatan ? $mitra->firstWhere('id', $penempatan)->client->name : 'Semua Mitra' }},
                         {{ $bulan ? Carbon\Carbon::parse($bulan)->isoFormat('MMMM Y') : Carbon\Carbon::now()->subMonth()->isoFormat('MMMM Y') }}
@@ -15,11 +15,11 @@
             </div>
         </section>
 
-        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+        <section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
             <form method="GET" class="grid gap-3 md:grid-cols-12">
                 <div class="md:col-span-6">
                     <label for="penempatan" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Pilih Mitra</label>
-                    <select id="penempatan" name="penempatan" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none">
+                    <select id="penempatan" name="penempatan" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden">
                         <option disabled selected>~ Pilih Mitra ~</option>
                         <option value="semua" selected>Semua Mitra</option>
                         @forelse($mitra as $i)
@@ -31,7 +31,7 @@
                 </div>
                 <div class="md:col-span-4">
                     <label for="bulan" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Bulan</label>
-                    <input id="bulan" type="month" name="bulan" value="{{ $bulan ? $bulan : Carbon\Carbon::now()->subMonth()->format('Y-m') }}" max="{{ Carbon\Carbon::now()->addMonth()->format('Y-m') }}" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-none" />
+                    <input id="bulan" type="month" name="bulan" value="{{ $bulan ? $bulan : Carbon\Carbon::now()->subMonth()->format('Y-m') }}" max="{{ Carbon\Carbon::now()->addMonth()->format('Y-m') }}" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-blue-500 focus:outline-hidden" />
                 </div>
                 <div class="flex items-end md:col-span-2">
                     <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700">
@@ -41,7 +41,7 @@
             </form>
         </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
             <div class="w-full overflow-x-auto">
                 <table id="searchTable" class="w-full min-w-[1280px] divide-y divide-gray-100 text-xs">
                     <thead class="text-xs font-semibold tracking-wide text-center text-gray-600 uppercase bg-gray-50">

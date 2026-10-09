@@ -1,12 +1,14 @@
 <x-app-layout>
     <x-main-div>
-        <div class="w-full px-3 py-4 mx-auto space-y-3 max-w-screen-2xl sm:px-4 lg:px-6">
-            <!-- Header Section -->
-            <section class="p-3 bg-white border border-gray-100 shadow-sm rounded-xl sm:p-4">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-600">Absen Sholat</p>
-                <h1 class="mt-0.5 text-lg font-bold tracking-tight text-gray-900 sm:text-xl">Data Absen Sholat</h1>
-                <p class="mt-0.5 text-xs text-gray-500">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
-            </section>
+        <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+            <div class="mx-auto w-full max-w-7xl">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                    <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+                </div>
+                <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                    <p class="border-l-4 border-sky-500 text-lg font-bold text-center uppercase sm:text-2xl">Absen Sholat, Data Kehadiran</p>
+                    <div class="px-3 py-4">
 
             <!-- Dashboard/Stats Summary -->
             @php
@@ -44,7 +46,7 @@
             </section>
 
             <!-- Attendance Records Table -->
-            <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
+            <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-xl">
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                     <div>
                         <h2 class="text-sm font-semibold text-gray-800">Rekap Harian</h2>
@@ -155,8 +157,8 @@
                     </table>
                 </div>
             </section>
-            <div class="flex justify-end my-1 w-full">
-                <button onclick="history.back()" class="btn btn-error">Kembali</button>
+                    </div>
+                </div>
             </div>
         </div>
     </x-main-div>

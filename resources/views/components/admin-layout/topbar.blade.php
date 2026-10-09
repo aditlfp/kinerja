@@ -32,7 +32,7 @@
      halaman punya judulnya sendiri lewat komponen admin-page-header. Ini
      menghapus h1 "Dashboard Admin" yang sebelumnya muncul di semua halaman. --}}
 <header
-    class="sticky top-0 z-40 border-b border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)]/95 backdrop-blur">
+    class="sticky top-0 z-40 border-b border-(--md-sys-color-outline-variant) bg-(--md-sys-color-surface-container-low)/95 backdrop-blur-sm">
     <div class="flex h-16 items-center gap-2 px-3 sm:gap-3 sm:px-4 lg:px-6">
 
         {{-- Mobile: buka drawer overlay --}}
@@ -52,12 +52,12 @@
              metadata tetap tampil tanpa judul palsu. --}}
         <div class="min-w-0 flex-1">
             @if ($headerTitle)
-                <p class="truncate text-sm font-semibold text-[var(--md-sys-color-on-surface)]">
+                <p class="truncate text-sm font-semibold text-(--md-sys-color-on-surface)">
                     {{ $headerTitle }}
                 </p>
             @endif
             <p
-                class="{{ $headerTitle ? 'mt-0.5 hidden sm:block' : '' }} truncate text-xs text-[var(--md-sys-color-on-surface-variant)]">
+                class="{{ $headerTitle ? 'mt-0.5 hidden sm:block' : '' }} truncate text-xs text-(--md-sys-color-on-surface-variant)">
                 <span translate="no">{{ request()->root() }}</span>
                 <span aria-hidden="true">&middot;</span>
                 IP <span class="font-mono">{{ request()->ip() }}</span>
@@ -67,10 +67,10 @@
         {{-- Pengguna yang sedang login --}}
         <div class="flex shrink-0 items-center gap-2" title="{{ $userName }}">
             <span
-                class="grid h-8 w-8 place-items-center rounded-full bg-[var(--md-sys-color-primary-container)] text-xs font-bold text-[var(--md-sys-color-on-primary-container)]"
+                class="grid h-8 w-8 place-items-center rounded-full bg-(--md-sys-color-primary-container) text-xs font-bold text-(--md-sys-color-on-primary-container)"
                 aria-hidden="true">{{ $initials }}</span>
             <span
-                class="hidden max-w-[10rem] truncate text-xs font-semibold text-[var(--md-sys-color-on-surface)] md:block">
+                class="hidden max-w-40 truncate text-xs font-semibold text-(--md-sys-color-on-surface) md:block">
                 {{ $userName }}
             </span>
         </div>

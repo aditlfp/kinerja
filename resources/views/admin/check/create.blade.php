@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Tambah Check Point')
 
-    <div class="mx-auto w-full max-w-screen-md space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-md) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Check Point</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Buat rencana checkpoint berdasarkan user dan jumlah item.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Tambah Check Point</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Buat rencana checkpoint berdasarkan user dan jumlah item.</p>
                 </div>
                 <a href="{{ route('admin.cp.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50">Kembali</a>
             </div>
@@ -17,11 +17,11 @@
 
         <form action="{{ route('admin.cp.store')}}" method="post" class="space-y-4">
             @csrf
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <div class="space-y-4">
                     <div>
                         <label for="user_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Pilih User/Karyawan</label>
-                        <select name="user_id" id="user_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <select name="user_id" id="user_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                             <option readonly disabled selected>~ Pilih User ~</option>
                             @forelse ($user as $arr)
                                 <option value="{{ $arr->id}}" data-client_id="{{ $arr->kerjasama->client_id}}">{{ $arr->nama_lengkap}}</option>
@@ -48,7 +48,7 @@
 
                     <div>
                         <label for="check_count" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Masukkan Jumlah CheckPoint</label>
-                        <input type="number" min="1" name="check_count" id="check_count" placeholder="10" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <input type="number" min="1" name="check_count" id="check_count" placeholder="10" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                         <x-input-error :messages="$errors->get('check-count')" class="mt-2" />
                     </div>
 
@@ -84,7 +84,7 @@
                     for (let i = 1; i <= checkCount; i++) {
                         nameInputsDiv.append(`
                             <label for="name${i}" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">Name ${i} (Opsional)</label>
-                            <input type="text" name="name[]" id="name${i}" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-none" placeholder="Name...">
+                            <input type="text" name="name[]" id="name${i}" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-hidden" placeholder="Name...">
                         `);
                     }
                 });

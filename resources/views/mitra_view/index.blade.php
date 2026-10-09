@@ -141,7 +141,7 @@
                 <a href="{{ route($menu['route']) }}" class="p-4 transition-all border group rounded-2xl mitra-panel-soft hover:-translate-y-0.5">
                     <div class="flex items-start justify-between gap-4">
                         <div class="flex items-start gap-4 min-w-0">
-                            <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-xl" style="{{ $menu['icon_style'] }}">
+                            <div class="flex items-center justify-center shrink-0 w-12 h-12 rounded-xl" style="{{ $menu['icon_style'] }}">
                                 <i class="text-xl {{ $menu['icon'] }}"></i>
                             </div>
                             <div class="min-w-0">
@@ -149,7 +149,7 @@
                                 <p class="mt-1 text-lg font-bold tracking-tight mitra-text-strong">{{ $menu['title'] }}</p>
                             </div>
                         </div>
-                        <i class="flex-shrink-0 mt-1 text-lg ri-arrow-right-line mitra-text-muted"></i>
+                        <i class="shrink-0 mt-1 text-lg ri-arrow-right-line mitra-text-muted"></i>
                     </div>
                     <p class="mt-4 text-sm leading-6 mitra-text-soft">{{ $menu['description'] }}</p>
                     <div class="pt-4 mt-4 border-t" style="border-color: var(--mitra-border);">

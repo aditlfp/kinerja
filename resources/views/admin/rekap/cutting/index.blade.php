@@ -31,7 +31,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-blue-600/20 rounded-lg">
                         <i class="ri-scissors-cut-line text-blue-700 text-xl"></i>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-emerald-600/20 rounded-lg">
                         <i class="ri-checkbox-circle-line text-emerald-700 text-xl"></i>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-amber-600/20 rounded-lg">
                         <i class="ri-time-line text-amber-700 text-xl"></i>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-violet-600/20 rounded-lg">
                         <i class="ri-calendar-line text-violet-700 text-xl"></i>
@@ -77,22 +77,22 @@
             </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mb-6">
+        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
             <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Cari Karyawan</label>
                     <input id="search" type="text" placeholder="Nama karyawan..."
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Filter Bulan</label>
                     <input id="month" type="month" value="{{ now()->format('Y-m') }}"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Status</label>
                     <select id="statusFilter"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="di ajukan">Di Ajukan</option>
                         <option value="pending">Pending</option>
@@ -101,7 +101,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Tipe Cutting</label>
                     <select id="typeFilter"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Semua Tipe</option>
                     </select>
                 </div>
@@ -114,12 +114,12 @@
             </div>
         </div>
 
-        <div id="loading" class="bg-white rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+        <div id="loading" class="bg-white rounded-lg p-8 text-center border border-gray-200 shadow-xs">
             <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mx-auto mb-3"></div>
             <p class="text-gray-600">Memuat data...</p>
         </div>
 
-        <div id="tableWrap" class="hidden bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+        <div id="tableWrap" class="hidden bg-white rounded-lg shadow-xs border border-gray-200 overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
@@ -136,7 +136,7 @@
             </table>
         </div>
 
-        <div id="paginationContainer" class="hidden bg-white border border-gray-200 rounded-lg p-4 shadow-sm mt-4">
+        <div id="paginationContainer" class="hidden bg-white border border-gray-200 rounded-lg p-4 shadow-xs mt-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="text-sm text-gray-600">
                     Menampilkan <span class="font-medium" id="showingFrom">0</span> -
@@ -146,7 +146,7 @@
                 <div class="flex items-center gap-2 mr-4">
                     <label class="text-sm text-gray-600">Per halaman:</label>
                     <select id="itemsPerPage"
-                        class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
@@ -174,13 +174,13 @@
             </div>
         </div>
 
-        <div id="empty" class="hidden bg-white rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+        <div id="empty" class="hidden bg-white rounded-lg p-8 text-center border border-gray-200 shadow-xs">
             <p class="text-gray-700 font-semibold">Tidak ada data.</p>
             <p class="text-gray-500 text-sm">Coba ubah filter atau periode.</p>
         </div>
     </div>
 
-    <div id="actionConfirmModal" class="fixed inset-0 z-[9999] hidden">
+    <div id="actionConfirmModal" class="fixed inset-0 z-9999 hidden">
         <div class="absolute inset-0 bg-gray-900/50" onclick="closeActionModal()"></div>
         <div class="relative flex min-h-full items-center justify-center p-4">
             <div class="w-full max-w-md rounded-xl bg-white shadow-xl border border-gray-200">

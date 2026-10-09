@@ -13,7 +13,7 @@
             </div>
 
             {{-- Header --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+            <div class="bg-white rounded-2xl shadow-xs border border-slate-200 p-6 mb-6">
 
 
                 <div class="flex flex-col items-center text-center">
@@ -36,7 +36,7 @@
             </div>
 
             {{-- Kontrak --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+            <div class="bg-white rounded-2xl shadow-xs border border-slate-200 p-6 mb-6">
 
                 <div class="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
 
@@ -65,7 +65,7 @@
             </div>
 
             {{-- Signature --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
 
                 <div class="border-b border-slate-200 px-6 py-4">
 
@@ -89,10 +89,10 @@
                                 session('seen_kontrak')[0] != true &&
                                 session('seen_kontrak')[1] != \Carbon\Carbon::now()->format('Y-m-d'))
                             <div
-                                class="absolute inset-0 z-10 bg-slate-100/80 backdrop-blur-sm flex items-center justify-center rounded-xl">
+                                class="absolute inset-0 z-10 bg-slate-100/80 backdrop-blur-xs flex items-center justify-center rounded-xl">
 
                                 <div
-                                    class="bg-white border border-red-200 text-red-600 px-5 py-3 rounded-xl font-medium shadow">
+                                    class="bg-white border border-red-200 text-red-600 px-5 py-3 rounded-xl font-medium shadow-sm">
                                     Baca kontrak terlebih dahulu
                                 </div>
 

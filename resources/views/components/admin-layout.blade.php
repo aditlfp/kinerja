@@ -76,7 +76,7 @@
     {{-- Permukaan datar Material 3 (surface-container-low). M3 tidak memakai gradien
          sebagai latar aplikasi: kedalaman datang dari elevasi + warna container. --}}
     <div :data-sidebar-collapsed="sidebarOpen ? null : 'true'"
-        class="admin-shell m3-wash flex min-h-screen bg-[var(--md-sys-color-surface-container-low)]" x-data="{
+        class="admin-shell m3-wash flex min-h-screen bg-(--md-sys-color-surface-container-low)" x-data="{
         isDashboardActive: {{ $isDashboardActive ? 'true' : 'false' }},
         // Drawer (>=lg) dikontrol tombol toggle di topbar dan diingat antar halaman.
         // Mobile tetap memakai overlay terpisah lewat mobileSidebarOpen.
@@ -96,7 +96,7 @@
     }" @keydown.escape.window="mobileSidebarOpen = false">
 
         <div x-cloak x-show="mobileSidebarOpen" x-transition.opacity.duration.300ms @click="mobileSidebarOpen = false"
-            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"></div>
+            class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden"></div>
 
         <x-admin-layout.sidebar :is-dashboard-active="$isDashboardActive" :active-menu="$activeMenu" :is-user-menu-active="$isUserMenuActive"
             :is-divisi-menu-active="$isDivisiMenuActive" :is-klien-menu-active="$isKlienMenuActive" :is-shift-menu-active="$isShiftMenuActive"

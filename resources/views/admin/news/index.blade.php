@@ -1,24 +1,24 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Data News')
 
-    <div class="w-full max-w-screen-xl px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
+    <div class="w-full max-w-(--breakpoint-xl) px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data News SAC</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola berita aktif untuk ditampilkan ke user.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data News SAC</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Kelola berita aktif untuk ditampilkan ke user.</p>
                 </div>
                 <div class="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex items-center w-full h-10 gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50 sm:w-72">
                         <i class="text-base text-gray-500 ri-search-2-line"></i>
-                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-none" placeholder="Cari berita..." />
+                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari berita..." />
                     </label>
                     <a href="{{ route('admin.news.create') }}" class="inline-flex items-center h-10 px-4 text-sm font-semibold text-white transition bg-blue-600 rounded-xl hover:bg-blue-700"><i class="ri-add-line mr-1.5"></i>Tambah Berita</a>
                 </div>
             </div>
         </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
             <div class="w-full overflow-x-auto">
                 <table class="w-full min-w-[680px] divide-y divide-gray-100" id="searchTable">
                     <thead class="text-xs font-semibold tracking-wide text-left text-gray-600 uppercase bg-gray-50">

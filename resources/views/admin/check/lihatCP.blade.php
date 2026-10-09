@@ -1,11 +1,11 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Detail Checkpoint')
 
-    <div class="mx-auto w-full max-w-screen-xl space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-xl) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">{{ ($type == 'rencana' ? 'Rencana Kerja' : 'Pekerjaan') . ' ' . $user->nama_lengkap }}</h1>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">{{ ($type == 'rencana' ? 'Rencana Kerja' : 'Pekerjaan') . ' ' . $user->nama_lengkap }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
                     @foreach (['rencana' => 'Rencana', 'dikerjakan' => 'Dikerjakan'] as $filterType => $label)
@@ -18,7 +18,7 @@
             </div>
         </section>
 
-        <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xs">
             <div class="w-full overflow-x-auto">
                 <table class="w-full min-w-[920px] divide-y divide-gray-100">
                     <thead class="bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-600">
@@ -51,7 +51,7 @@
                                             @if (empty($cpId) || $cpId == 'no-image.jpg' || !$img)
                                                 <x-no-img class="scale-50" />
                                             @else
-                                                <img src="{{ asset('storage/images/' . $img) }}" width="70" class="rounded" alt="Gambar Bukti">
+                                                <img src="{{ asset('storage/images/' . $img) }}" width="70" class="rounded-sm" alt="Gambar Bukti">
                                             @endif
                                         </td>
                                     @endif
@@ -110,13 +110,13 @@
             <a href="{{ $backRoute }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 hover:bg-gray-50">Kembali</a>
         </div>
 
-        <div id="modalShow" class="modalShow hidden fixed inset-0 z-[9000] flex justify-center items-center bg-slate-500/10 backdrop-blur-sm p-5">
-            <div class="bg-slate-50 rounded-md shadow p-6 w-full max-w-md relative">
+        <div id="modalShow" class="modalShow hidden fixed inset-0 z-9000 flex justify-center items-center bg-slate-500/10 backdrop-blur-xs p-5">
+            <div class="bg-slate-50 rounded-md shadow-sm p-6 w-full max-w-md relative">
                 <button id="closeButton" class="btn btn-error absolute top-2 right-2 scale-90">&times;</button>
                 <div class="flex flex-col justify-center items-center gap-4">
                     <span id="status" class="text-lg p-2 rounded-lg text-white font-semibold"></span>
-                    <img id="modalImg" loading="lazy" alt="" width="120" class="rounded" />
-                    <p id="modalTitle" class="font-semibold whitespace-pre-wrap break-words py-5 text-center"></p>
+                    <img id="modalImg" loading="lazy" alt="" width="120" class="rounded-sm" />
+                    <p id="modalTitle" class="font-semibold whitespace-pre-wrap wrap-break-word py-5 text-center"></p>
                     <div class="flex flex-col w-full">
                         <label for="notes">Note</label>
                         <textarea id="notes" name="note" class="textarea textarea-bordered" placeholder="notes..."></textarea>
@@ -169,7 +169,7 @@
                                     @csrf
                                     <p class="font-semibold text-center">~${filteredPc ? filteredPc.name : ''}~</p>
                                     <div class="flex justify-center">
-                                        ${imgSrc ? `<img src="${imgSrc}" class="rounded" alt="Gambar Bukti" width="70">` : ''}
+                                        ${imgSrc ? `<img src="${imgSrc}" class="rounded-sm" alt="Gambar Bukti" width="70">` : ''}
                                     </div>
                                     <p class="text-xs sm:text-sm line-clamp-2 text-start my-2">${deskripsi}</p>
                                     <fieldset class="w-full">

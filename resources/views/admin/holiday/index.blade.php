@@ -1,10 +1,10 @@
 <x-admin-layout :fullWidth="true">
         <div class="py-10 px-5">
-			<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Hari Libur</h1>
+			<h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Hari Libur</h1>
             <div class="flex justify-end ">
 				<div class="input flex items-center w-fit input-bordered my-10">
 					<i class="ri-search-2-line"></i>
-					<input type="search" id="searchInput" class="border-none rounded ml-1" placeholder="Search..." required>
+					<input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
 				</div>
 			</div>
             <div class="flex justify-center overflow-x-auto mx-10 pb-10">

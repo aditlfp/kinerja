@@ -3,8 +3,8 @@
         @method('put')
         @csrf
         <div>
-		<h1 class="my-6 text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Edit Pekerjaan</h1>
-        <div class="bg-slate-100 mx-10 my-10 px-10 py-5 rounded shadow">
+		<h1 class="my-6 text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Edit Pekerjaan</h1>
+        <div class="bg-slate-100 mx-10 my-10 px-10 py-5 rounded-sm shadow-sm">
             <!-- user -->
 				<div class="flex flex-col">
 					<label for="user_id" class="label">Pilih User</label>
