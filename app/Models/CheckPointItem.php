@@ -36,6 +36,14 @@ class CheckPointItem extends Model
         return $this->hasMany(CheckPointImage::class)->orderBy('urutan');
     }
 
+    /**
+     * Two-way conversation: management review notes and the employee's replies.
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(CheckPointMessage::class)->orderBy('id');
+    }
+
     public function pekerjaanCp(): BelongsTo
     {
         return $this->belongsTo(PekerjaanCp::class, 'pekerjaan_cp_id');

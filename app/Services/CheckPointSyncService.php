@@ -55,9 +55,16 @@ class CheckPointSyncService
                 'latitude' => $row['latitude'],
                 'longtitude' => $row['longtitude'],
                 'approve_status' => $row['approve_status'],
-                'note' => $row['note'],
                 'urutan' => $urutan,
             ]);
+
+            // `note` is management feedback (Direksi/Manager CS) and the
+            // employee edit form never posts it, so only a brand-new row takes
+            // the submitted value — an existing row keeps the note it has.
+            // Copying it from the request used to erase the feedback on save.
+            if (! $item->exists) {
+                $item->note = $row['note'];
+            }
 
             $item->check_point_id = $checkPoint->id;
             $item->save();

@@ -168,6 +168,54 @@ class CheckPointNormalisationTest extends TestCase
     }
 
     /**
+     * Management writes the item `note` (Direksi/Direksi CS); the employee
+     * edit form never posts it. Saving an edit used to wipe that feedback
+     * because the service copied the absent field straight from the request.
+     */
+    public function test_saving_an_employee_edit_keeps_the_management_note(): void
+    {
+        $user = $this->user();
+        $this->actingAs($user);
+
+        $checkpoint = CheckPoint::create([
+            'user_id' => $user->id,
+            'divisi_id' => 1,
+            'type_check' => 'dikerjakan',
+        ]);
+
+        $note = 'Mohon tambahkan tombol Log Out pada navigasi mobile.';
+
+        $item = $checkpoint->items()->create([
+            'pekerjaan_cp_id' => '1',
+            'deskripsi' => 'Awal',
+            'approve_status' => 'denied',
+            'note' => $note,
+            'urutan' => 0,
+        ]);
+
+        // Exactly what job-row-edit.blade.php posts: no `note` key at all.
+        $this->put(route('checkpoint-user.update', $checkpoint->id), [
+            'user_id' => $user->id,
+            'divisi_id' => 1,
+            'pekerjaan_id' => [0 => '1'],
+            'item_id' => [0 => $item->id],
+            'deskripsi' => [0 => 'Sudah diperbaiki'],
+            'tanggal' => [0 => '2026-10-08'],
+            'approve_status' => [0 => 'proccess'],
+            'original_index' => [0 => 0],
+        ])->assertRedirect();
+
+        $fresh = $item->fresh();
+
+        $this->assertSame('Sudah diperbaiki', $fresh->deskripsi);
+        $this->assertSame(
+            $note,
+            $fresh->note,
+            'the management note must survive an employee edit that does not post it',
+        );
+    }
+
+    /**
      * uploadBukti keys the row by the PekerjaanCp id (there is no
      * pekerjaan_id[] field on that form), so the service must read the key.
      */
