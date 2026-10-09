@@ -17,20 +17,32 @@
                             Kembali</a>
                     </div>
 
-                    <form id="form-cp" method="POST" enctype="multipart/form-data" action="{{ route('checkpoint-user.store') }}">
+                    <form id="form-cp" method="POST" enctype="multipart/form-data" data-max-photos="{{ \App\Services\CheckPointSyncService::MAX_IMAGES_PER_ITEM }}" action="{{ route('checkpoint-user.store') }}">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         <input type="hidden" name="divisi_id" value="{{ Auth::user()->divisi->id }}">
                         <input type="hidden" id="latitude" name="latitude" value="">
                         <input type="hidden" id="longtitude" name="longtitude" value="">
+                        @if($workOrder)
+                        <input type="hidden" name="work_order_id" value="{{ $workOrder->id }}">
+                        @endif
 
                         <div class="mb-6 rounded-xl bg-slate-50 p-4">
+                            @if($workOrder)
+                                <div class="mb-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                                    <i class="ri-user-star-line mt-0.5 text-lg text-amber-600"></i>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-amber-700">Diperintah oleh</p>
+                                        <p class="mt-0.5 text-sm font-semibold text-amber-900">{{ $workOrder->creator_name }}</p>
+                                    </div>
+                                </div>
+                            @endif
                             <label class="label py-0"><span class="label-text font-semibold">Tanggal pekerjaan</span></label>
-                            <input class="input input-bordered mt-2 w-full bg-white font-semibold" type="date" value="{{ $selectedDate }}" readonly>
+                            <input class="input input-bordered mt-2 w-full bg-white font-semibold" type="date" name="tanggal[]" value="{{ $selectedDate }}" readonly>
                         </div>
 
                         <div id="jobs" class="space-y-4">
-                            @include('check.partials.job-row', ['index' => 0, 'job' => null, 'pcp' => $pcp, 'selectedDate' => $selectedDate])
+                            @include('check.partials.job-row', ['index' => 0, 'job' => null, 'pcp' => $pcp, 'selectedDate' => $selectedDate, 'workOrder' => $workOrder])
                         </div>
 
                         <button id="add-job" type="button" class="btn mt-4 w-full border-2 border-dashed border-sky-300 bg-sky-50 text-sky-700 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100">+ Tambah pekerjaan</button>
@@ -41,7 +53,7 @@
         </div>
 
         <template id="job-template">
-            @include('check.partials.job-row', ['index' => null, 'job' => null, 'pcp' => $pcp, 'selectedDate' => $selectedDate])
+            @include('check.partials.job-row', ['index' => null, 'job' => null, 'pcp' => $pcp, 'selectedDate' => $selectedDate, 'workOrder' => $workOrder])
         </template>
 
         @include('check.partials.job-script', ['isEdit' => false])

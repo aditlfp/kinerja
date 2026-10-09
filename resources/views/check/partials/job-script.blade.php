@@ -28,10 +28,12 @@
             row.find('.original-index').attr('name', `original_index[${stableIndex}]`).val(stableIndex);
             row.find('.photo-input').attr('name', `img[${stableIndex}][]`);
             row.find('.existing-images').attr('name', `existing_img[${stableIndex}][]`);
+            row.find('.existing-image').attr('name', `existing_img[${stableIndex}][]`);
             row.find('.deskripsi-input').attr('name', `deskripsi[${stableIndex}]`);
             row.find('.tanggal-input').attr('name', `tanggal[${stableIndex}]`);
             row.find('.approve-input').attr('name', `approve_status[${stableIndex}]`);
             row.find('.job-value').attr('name', `pekerjaan_id[${stableIndex}]`);
+            row.find('.item-id').attr('name', `item_id[${stableIndex}]`);
             row.find('.manual-name').attr('name', `input_manual[${stableIndex}]`);
         }
         function renumber() {
@@ -101,35 +103,82 @@
                 syncRow(row);
             });
             bindDropdown(row);
-            const updatePhotos = files => {
-                const input = row.find('.photo-camera')[0];
+            const updatePhotos = function (files) {
+                const activeRow = this instanceof HTMLElement ? $(this) : this;
+                const input = activeRow.find('.photo-input')[0];
+                const editingPhoto = $(input).data('editing-photo');
+                if (editingPhoto?.length) {
+                    editingPhoto.find('.existing-image').remove();
+                    editingPhoto.remove();
+                    $(input).removeData('editing-photo');
+                    activeRow.removeData('editing-photo');
+                }
+
+                const limit = Number($('#form-cp').data('max-photos')) || 7;
+                const previousCount = input.files.length;
+                const merged = [...input.files, ...files];
+                const trimmed = merged.slice(0, limit);
+
+                const warning = activeRow.find('.photo-limit');
+                if (merged.length > limit) {
+                    warning.text(`Maksimal ${limit} foto per pekerjaan. ${merged.length - limit} foto terakhir tidak dipakai.`).removeClass('hidden');
+                } else {
+                    warning.addClass('hidden').text('');
+                }
+
                 const transfer = new DataTransfer();
-                [...files].forEach(file => transfer.items.add(file));
+                trimmed.forEach(file => transfer.items.add(file));
                 input.files = transfer.files;
 
-                const preview = row.find('.photo-preview').empty();
-                row.find('.photo-placeholder').toggleClass('hidden', input.files.length > 0);
-                [...input.files].forEach(file => {
+                const preview = activeRow.find('.photo-preview');
+                activeRow.find('.photo-placeholder').addClass('hidden');
+                trimmed.slice(previousCount).forEach(file => {
                     if (!file.type.startsWith('image/')) return;
-                    preview.append(`<img src="${URL.createObjectURL(file)}" alt="Preview ${file.name}" class="h-20 w-full rounded-lg object-cover ring-1 ring-slate-200">`);
+                    const item = $('<div class="photo-item group relative"></div>');
+                    item.append($('<img class="h-full w-full rounded-lg object-cover ring-1 ring-slate-200">').attr({ src: URL.createObjectURL(file), alt: `Preview ${file.name}` }));
+                    item.append('<button type="button" class="photo-delete absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white shadow-md" aria-label="Hapus foto"><i class="ri-close-line"></i></button>');
+                    item.append('<button type="button" class="photo-edit absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-white shadow-md" aria-label="Edit foto"><i class="ri-pencil-line"></i></button>');
+                    preview.append(item);
                 });
-                row.find('.photo-names').text([...input.files].map(file => file.name).join(', '));
+                activeRow.find('.photo-names').text(trimmed.map(file => file.name).join(', '));
             };
 
-            row.find('.photo-camera, .photo-gallery').on('change', function () {
-                updatePhotos(this.files);
+            row.find('.photo-camera, .photo-gallery').on('change', function (event) {
+                event.stopPropagation();
+                updatePhotos.call($(this).closest('.job-row'), this.files);
             });
-            row.find('.dropzone').on('click', function (event) {
+            if (!row.find('.photo-input').prop('disabled')) {
+                row.find('.dropzone').on('click', function (event) {
+                    if ($(event.target).closest('.photo-delete, .photo-edit').length) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openPhotoModal(row, row.find('.photo-camera')[0], row.find('.photo-gallery')[0]);
+                });
+            }
+            row.on('click', '.photo-delete', function (event) {
                 event.preventDefault();
-                const camera = row.find('.photo-camera')[0];
-                const gallery = row.find('.photo-gallery')[0];
-                const modal = $('#photo-source-modal');
-
-                openPhotoModal(camera, gallery);
+                event.stopPropagation();
+                $(this).closest('.photo-item').remove();
+                const preview = row.find('.photo-preview');
+                row.find('.photo-placeholder').toggleClass('hidden', preview.children().length > 0);
+            });
+            row.on('click', '.photo-edit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                const item = $(this).closest('.photo-item');
+                row.data('editing-photo', item);
+                row.find('.photo-input').data('editing-photo', item);
+                openPhotoModal(row, row.find('.photo-camera')[0], row.find('.photo-gallery')[0]);
             });
             row.find('.remove-job').on('click', function () {
                 if (jobs.find('.job-row').length > 1) { row.remove(); renumber(); }
             });
+            const manualName = row.find('.manual-name').val();
+            const isWorkOrderRow = Number(row.find('.original-index').val()) >= 1;
+            if (manualName && isWorkOrderRow) {
+                row.find('.job-select').val('manual');
+                row.find('.job-value').val('manual');
+            }
             syncRowLegacy(row);
             syncRow(row);
         }
@@ -226,9 +275,11 @@
         const photoModal = $('#photo-source-modal');
         const photoModalPanel = photoModal.find('.photo-modal-panel');
 
-        const openPhotoModal = (cameraInput, galleryInput) => {
+        // Keep one upload target per row; gallery files must submit as img[index][].
+
+        const openPhotoModal = (row, cameraInput, galleryInput) => {
             photoModal
-                .data({ camera: cameraInput, gallery: galleryInput })
+                .data({ row, camera: cameraInput, gallery: galleryInput })
                 .removeClass('hidden')
                 .addClass('flex');
             $('html, body').addClass('overflow-hidden').css({ overflow: 'hidden', height: '100%', overscrollBehavior: 'none' });
@@ -243,7 +294,7 @@
             photoModalPanel.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
 
             setTimeout(() => {
-                photoModal.removeClass('flex').addClass('hidden').removeData('camera gallery');
+                photoModal.removeClass('flex').addClass('hidden').removeData('row camera gallery');
                 $('html, body').removeClass('overflow-hidden').css({ overflow: '', height: '', overscrollBehavior: '' });
             }, 200);
         };
@@ -255,13 +306,25 @@
         photoModal.find('.photo-modal-close').on('click', closePhotoModal);
 
         photoModal.find('.photo-modal-camera').on('click', function () {
-            photoModal.data('camera').click();
-            closePhotoModal();
+            const row = photoModal.data('row');
+            const editingPhoto = row?.data('editing-photo');
+            const input = photoModal.data('camera');
+            if (input) {
+                $(input).data('editing-photo', editingPhoto);
+                closePhotoModal();
+                input.click();
+            }
         });
 
         photoModal.find('.photo-modal-gallery').on('click', function () {
-            photoModal.data('gallery').click();
-            closePhotoModal();
+            const row = photoModal.data('row');
+            const editingPhoto = row?.data('editing-photo');
+            const input = photoModal.data('gallery');
+            if (input) {
+                $(input).data('editing-photo', editingPhoto);
+                closePhotoModal();
+                input.click();
+            }
         });
 
         $(document).on('keydown', function (event) {
@@ -273,7 +336,12 @@
         $(window).on('resize scroll', closeDropdowns);
         $('#add-job').on('click', function () {
             const row = $($('#job-template').html());
-            row.attr('data-stable-index', rowIndex++);
+            const stableIndex = rowIndex++;
+            row.attr('data-stable-index', stableIndex);
+            row.find('.job-select').val('manual');
+            row.find('.job-value').val('manual');
+            row.find('.job-label').text('Pilih Untuk Ketik manual').removeClass('text-slate-400').addClass('text-slate-700');
+            row.find('.manual-name').val(row.find('.manual-name').attr('data-work-order-description') || '').removeClass('hidden').prop('required', true);
             jobs.append(row);
             bind(row);
             renumber();
@@ -282,27 +350,18 @@
 
     });
 
-    const dropdown = document.querySelector('.job-dropdown');
-    const searchInput = dropdown.querySelector('.job-search');
-    const options = dropdown.querySelectorAll('.job-option');
-    const noResult = dropdown.querySelector('.job-no-result');
-
-    searchInput?.addEventListener('input', function () {
-        const keyword = this.value.toLowerCase().trim();
+    $(document).on('input', '.job-search', function () {
+        const search = $(this);
+        const keyword = search.val().toLowerCase().trim();
+        const dropdown = search.closest('.job-dropdown');
         let found = false;
 
-        options.forEach(option => {
-            const text = option.textContent.toLowerCase();
-
-            const match = text.includes(keyword);
-
-            option.classList.toggle('hidden', !match);
-
-            if (match) {
-                found = true;
-            }
+        dropdown.find('.job-option').each(function () {
+            const match = $(this).text().toLowerCase().includes(keyword);
+            $(this).toggleClass('hidden', !match);
+            found ||= match;
         });
 
-        noResult?.classList.toggle('hidden', found);
+        dropdown.find('.job-no-result').toggleClass('hidden', found);
     });
 </script>

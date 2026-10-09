@@ -44,7 +44,7 @@ class JabatanController extends Controller
         // dd($datas);
         Jabatan::create($jabatan);
 
-        toastr()->success('Jabatan Berhasil Di Buat', [], 'success');
+        toastr()->success('Jabatan Berhasil Di Buat');
         return to_route('admin.jabatan.index');
     }
 
@@ -62,12 +62,12 @@ class JabatanController extends Controller
             'code_jabatan' => $request->code_jabatan,
             'type_jabatan' => $request->type_jabatan,
             'name_jabatan' => $request->name_jabatan,
-            'kerjasama_id' => $request->input('kerjasama_id', [])
+            'kerjasama_id' => $request->input('kerjasama_id')
         ];
 
         $dataJabatan = Jabatan::findOrFail($id);
         $dataJabatan->update($jabatan);
-        toastr()->success('Jabatan Berhasil Di Update', [], 'success');
+        toastr()->success('Jabatan Berhasil Di Update');
         return to_route('admin.jabatan.index');
     }
 
@@ -75,7 +75,7 @@ class JabatanController extends Controller
     {
         $jabatan = Jabatan::findOrFail($id);
         $jabatan->delete();
-        toastr()->warning('Data Jabatan Dihapus', [], 'warning');
+        toastr()->warning('Data Jabatan Dihapus');
         return redirect()->back();
     }
 }

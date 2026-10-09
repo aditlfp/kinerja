@@ -40,40 +40,45 @@
             <main>
                 <div class="px-5 py-5">
                     <div class="p-2 rounded-lg bg-white text-center">
-                        <p class=" mx-10 my-5 font-semibold">Lokasi Pembuatan CP {{ $cex->pekerjaancp ? $cex->pekerjaancp->name : "" }}</p>
-                        @if($cex->latitude && $cex->longtitude)
+                        @php
+                            $items = $cex->items;
+                            $firstItem = $items->first();
+                            $latitude = $firstItem?->latitude;
+                            $longitude = $firstItem?->longtitude;
+                            $jobNames = $items->map(fn ($it) => $it->pekerjaanCp?->name ?? $it->input_manual)->filter()->unique()->implode(', ');
+                        @endphp
+                        <p class=" mx-10 my-5 font-semibold">Lokasi Pembuatan CP {{ $jobNames }}</p>
+                        @if($latitude && $longitude)
                             <div id="map" class="rounded-lg" style="height: 140px;"></div>
                         @else
                             <div class="rounded-lg bg-white flex items-center justify-center font-semibold" style="height: 240px;"><span>~ Tidak Ada Koordinat ~</span></div>
                         @endif
+                        @foreach ($items as $item)
                         <span class="flex flex-col sm:hidden">
-                            
+                            @php $firstImage = $item->images->first()->path ?? null; @endphp
                             <p class=" mx-10 my-5 font-semibold">Bukti</p>
                             <div class="flex justify-center items-center">
-                                @if ($cex->img == 'no-image.jpg')
+                                @if (!$firstImage || $firstImage == 'no-image.jpg')
                                     <x-no-img />
-                                @elseif(Storage::disk('public')->exists('images/' . $cex->img))
-                                    <img class="lazy lazy-image" loading="lazy" src="" alt="" srcset="{{ asset('storage/images/' . $cex->img) }}" width="90px">
+                                @elseif(Storage::disk('public')->exists('images/' . $firstImage))
+                                    <img class="lazy lazy-image" loading="lazy" src="" alt="" srcset="{{ asset('storage/images/' . $firstImage) }}" width="90px">
                                 @else
                                     <x-no-img />
                                 @endif
                             </div>
-                            <p class=" mx-10 my-5 font-semibold text-xs">{{ $cex->deskripsi }}</p>
-                            <div>
-                                <span class="badge badge-info px-2 text-xs text-white overflow-hidden">{{ $cex->type_check }}</span>
-                            </div>
+                            <p class=" mx-10 my-5 font-semibold text-xs">{{ $item->deskripsi }}</p>
                             <div class="flex justify-center items-center">
-                                @if($cex->approve_status == "proccess")
-                                    <span class="badge bg-amber-500 px-2 text-xs text-white overflow-hidden">{{ $cex->approve_status }}</span> 
-                                @elseif($cex->approve_status == "accept")
-                                    <span class="badge bg-emerald-700 px-2 text-xs text-white overflow-hidden">{{ $cex->approve_status }}</span> 
+                                @if($item->approve_status == "proccess")
+                                    <span class="badge bg-amber-500 px-2 text-xs text-white overflow-hidden">{{ $item->approve_status }}</span> 
+                                @elseif($item->approve_status == "accept")
+                                    <span class="badge bg-emerald-700 px-2 text-xs text-white overflow-hidden">{{ $item->approve_status }}</span> 
                                 @else
-                                    <span class="badge bg-red-500 px-2 text-xs text-white overflow-hidden">{{ $cex->approve_status }}</span> 
+                                    <span class="badge bg-red-500 px-2 text-xs text-white overflow-hidden">{{ $item->approve_status }}</span> 
                                 @endif
                             </div>
                             
                             <div class="mt-5 flex flex-col gap-2 items-center justify-center mb-5">
-                                @if ($cex->approve_status == 'proccess')
+                                @if ($item->approve_status == 'proccess')
                                     <div class="flex flex-col gap-2 justify-center items-center mt-2">
                                         <div class="flex flex-col w-full">
                             		        <label class="font-semibold text-sm">Note</label>
@@ -102,6 +107,7 @@
                                 @endif
                             </div>
                         </span>
+                        @endforeach
                     </div>
                     <div class="flex justify-center gap-2 sm:justify-end mx-10 my-5">
                         @if(Auth::user()->role_id == 2)
@@ -115,7 +121,7 @@
         </div>
     </div>
     
-    <span id="data" data-latitude="{{ $cex->latitude }}" data-longtitude="{{ $cex->longtitude }}" data-user="{{ $cex->user->nama_lengkap }}"></span>
+    <span id="data" data-latitude="{{ $latitude }}" data-longtitude="{{ $longitude }}" data-user="{{ $cex->user->nama_lengkap }}"></span>
 
 
 

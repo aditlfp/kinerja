@@ -70,7 +70,7 @@
                         class="reveal-cell group relative flex min-h-[74px] flex-col justify-between overflow-hidden rounded-xl border p-2.5 font-medium transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-12px_rgba(15,23,42,.22)] {{ $state }} {{ $date->isToday() ? 'ring-2 ring-sky-400 ring-offset-2' : '' }}"><span
                             class="text-sm">{{ $date->day }}</span>
                         @if ($item['hasData'])
-                            <i class="ri-check-line text-[13px]"></i>
+                            <x-checkpoint-status-row :counts="$item['counts']" :has-data="true" size="md" />
                         @elseif ($date->isWeekend())
                             <span class="hidden text-[10px] uppercase sm:block">Libur</span>
                         @endif
@@ -89,6 +89,10 @@
                 riwayat</span><span class="flex items-center gap-2"><span
                     class="h-3 w-3 rounded-[4px] border border-slate-200 bg-white"></span>Belum diisi</span><span
                 class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-rose-500"></span>Sabtu &amp;
-                Minggu</span></div>
+                Minggu</span><span class="mx-1 hidden h-4 w-px bg-slate-200 sm:block"></span><span
+                class="flex items-center gap-2"><i class="ri-checkbox-circle-fill text-[13px] text-sky-600"></i>Disetujui</span><span
+                class="flex items-center gap-2"><i class="ri-close-circle-fill text-[13px] text-rose-600"></i>Ditolak</span><span
+                class="flex items-center gap-2"><i class="ri-time-line text-[13px] text-amber-600"></i>Menunggu
+                verifikasi</span></div>
     </div>
 </x-app-layout>

@@ -32,7 +32,7 @@ class ReportBrefController extends Controller
             $brief = $briefid->findById($id);
             return response()->json($brief, 200);
         } catch (\Throwable $th) {
-            toastr()->error($th, [], 'error');
+            toastr()->error($th);
             return redirect()->back();
         }
     }

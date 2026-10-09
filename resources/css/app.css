@@ -60,6 +60,34 @@
   }
 }
 
+@layer components {
+    /* nav-item: base styles in components layer so caller utilities override */
+    .nav-item {
+        @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
+               text-slate-600 transition-all duration-200 ease-in-out
+               hover:bg-slate-100 hover:text-slate-900
+               dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-white;
+    }
+
+    .nav-item--active {
+        @apply bg-slate-700 text-white shadow-sm
+               hover:bg-slate-700 hover:text-white;
+    }
+
+    /* Yellow accent variant (Slip Gaji). Defined here, not in Blade, so
+       Vite HMR picks it up reliably. */
+    .nav-item--accent {
+        @apply hover:bg-yellow-500 hover:text-white
+               dark:hover:bg-yellow-500 dark:hover:text-white;
+    }
+
+    .nav-item--accent.nav-item--active {
+        @apply bg-yellow-500 text-white
+               hover:bg-yellow-500 hover:text-white
+               dark:hover:bg-yellow-500 dark:hover:text-white;
+    }
+}
+
 .required::after {
     content: "*";
     color: red;
@@ -177,3 +205,4 @@ select.tomselected.ts-hidden-accessible,
     background: rgb(186 230 253);
     color: rgb(7 89 133);
 }
+

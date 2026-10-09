@@ -1,5 +1,7 @@
 @php
     $authJabatan = auth()->user()->divisi->jabatan->code_jabatan ?? (auth()->user()->divisi->code_jabatan ?? null);
+    $isMcs = request()->routeIs('mcs.*') || $authJabatan === 'MCS';
+    $homeRoute = $isMcs ? 'mcs.work-order.index' : 'direksi.cp.index';
     $menu = [
         [
             'route' => 'dashboard.index',
@@ -7,35 +9,37 @@
             'icon' => 'ri-dashboard-line',
             'label' => 'Dashboard',
         ],
-        [
+    ];
+
+    if (! $isMcs) {
+        $menu[] = [
             'route' => 'direksi.cp.index',
-            'active' => 'direksi.cp.index',
+            'active' => 'direksi.cp.*',
             'icon' => 'ri-user-line',
             'label' => 'Karyawan',
-        ],
-        [
-            'route' => 'direksi.cp.history',
-            'active' => 'direksi.cp.history*',
-            'icon' => 'ri-history-line',
-            'label' => 'Riwayat',
-        ],
+        ];
+    }
+
+    $menu[] = [
+        'route' => $isMcs ? 'mcs.work-order.index' : 'direksi.work-order.index',
+        'active' => $isMcs ? 'mcs.work-order.*' : 'direksi.work-order.*',
+        'icon' => 'ri-file-list-3-line',
+        'label' => 'Work Order',
     ];
 @endphp
 
 <aside
     class="fixed inset-y-0 left-0 z-40 hidden w-70 flex-col border-r border-slate-200/80 bg-white/85 px-6 py-7 text-slate-600 backdrop-blur-xl lg:flex">
-    <a href="{{ route('direksi.cp.index') }}" class="group mb-12 flex items-center gap-3">
+    <a href="{{ route($homeRoute) }}" class="group mb-12 flex items-center gap-3 overflow-hidden">
         <span
             class="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-xl text-white shadow-[0_8px_20px_rgba(14,165,233,.18)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"><i
                 class="ri-calendar-check-line"></i></span>
         <span>
-            <span class="block text-[10px] font-semibold uppercase tracking-[.18em] text-slate-400">Direksi</span>
+            <span class="block text-[10px] font-semibold uppercase tracking-[.18em] text-slate-400">{{ $isMcs ? 'MCS' : 'Direksi' }}</span>
             <strong
-                class="text-[15px] tracking-tight text-slate-900">{{ request()->routeIs('checkpoint-user.index')
+                class="text-[15px] tracking-tight text-slate-900 overflow-hidden">{{ request()->routeIs('direksi.cp.calendar') || request()->routeIs('mcs.work-order.calendar')
                     ? 'Kalender'
-                    : (request()->routeIs('direksi.cp.history*')
-                        ? 'Riwayat'
-                        : 'Karyawan') }}</strong>
+                    : 'Karyawan' }}</strong>
         </span>
     </a>
 
@@ -69,12 +73,10 @@
         aria-expanded="false"
         class="group grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:border-sky-300 hover:text-sky-600 active:scale-[.96]"><i
             class="ri-menu-3-line text-xl transition-transform duration-300 group-hover:scale-110"></i></button>
-    <div class="flex items-center gap-2 text-sm font-semibold">
-            {{ request()->routeIs('direksi.cp.index')
+    <div class="flex items-center gap-2 text-sm font-semibold overflow-hidden">
+            {{ request()->routeIs('direksi.cp.index') || request()->routeIs('mcs.work-order.index')
             ? 'Karyawan'
-            : (request()->routeIs('direksi.cp.history*')
-                ? 'Riwayat'
-                : 'Kalendar') }}
+            : 'Kalender'}}
     </div>
     <div></div>
 </div>
@@ -85,12 +87,12 @@
 <aside id="direksi-cp-drawer" aria-hidden="true"
     class="fixed inset-y-0 left-0 z-50 flex w-70 max-w-[85vw] -translate-x-full flex-col overflow-y-auto border-r border-slate-200/80 bg-white/95 px-6 py-7 text-slate-600 shadow-[0_24px_60px_-24px_rgba(15,23,42,.35)] backdrop-blur-xl transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] will-change-transform lg:hidden">
     <div class="mb-10 flex items-center justify-between">
-        <a href="{{ route('direksi.cp.index') }}" class="group flex items-center gap-3">
+        <a href="{{ route($homeRoute) }}" class="group flex items-center gap-3">
             <span
                 class="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-xl text-white shadow-[0_8px_20px_rgba(14,165,233,.18)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"><i
                     class="ri-calendar-check-line"></i></span>
             <span>
-                <span class="block text-[10px] font-semibold uppercase tracking-[.18em] text-slate-400">Direksi</span>
+                <span class="block text-[10px] font-semibold uppercase tracking-[.18em] text-slate-400">{{ $isMcs ? 'MCS' : 'Direksi' }}</span>
                 <strong class="text-[15px] tracking-tight text-slate-900">Check Point</strong>
             </span>
         </a>

@@ -93,15 +93,20 @@
                         $no = 1;
                     @endphp
                     @forelse ($cp as $arr)
+                        @foreach ($arr->items as $item)
+                            @php $img = $item->images->first()->path ?? null; @endphp
                             <tr>
                                 <td>{{ $no++ }}</td>
                                 <td class="image-cell">
-                                    <img src="{{ asset('storage/images/' . $arr->img) }}" alt="Before Image" width="120px">
+                                    @if ($img)
+                                        <img src="{{ asset('storage/images/' . $img) }}" alt="Check Point Image" width="120px">
+                                    @endif
                                 </td>
                                 <td style="text-align: center;">{{ $arr->user->nama_lengkap }}</td>
                                 <td style="text-align: center;">{{ $arr->type_check }}</td>
-                                <td style="padding-left: 5px; border-right: 1px solid black;">{{ $arr->deskripsi }}</td>
+                                <td style="padding-left: 5px; border-right: 1px solid black;">{{ $item->deskripsi }}</td>
                             </tr>
+                        @endforeach
                     @empty
                         <tr>
                             <td colspan="8" style="text-align: center">KOSONG</td>

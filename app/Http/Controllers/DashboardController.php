@@ -137,10 +137,11 @@ class DashboardController extends Controller
             $filledDates = CheckPoint::where('user_id', $user->id)
                 ->where(function ($query) use ($weekStart, $now) {
                     $query->whereBetween('created_at', [$weekStart, $now])
-                        ->orWhereJsonContains('tanggal', $weekStart->toDateString());
+                        ->orWhereHas('items', fn ($q) => $q->whereBetween('tanggal', [$weekStart->toDateString(), $now->toDateString()]));
                 })
-                ->get(['tanggal', 'created_at'])
-                ->flatMap(fn($checkpoint) => collect((array) $checkpoint->tanggal)->map(fn($date) => Carbon::parse($date)->toDateString()))
+                ->with('items:id,check_point_id,tanggal')
+                ->get(['id', 'created_at'])
+                ->flatMap(fn ($checkpoint) => $checkpoint->items->pluck('tanggal')->filter()->map(fn ($date) => Carbon::parse($date)->toDateString()))
                 ->merge(CheckPoint::where('user_id', $user->id)->whereBetween('created_at', [$weekStart, $now])->pluck('created_at')->map->toDateString())
                 ->unique();
             $missingCheckpointDates = $dates->reject(fn($date) => $filledDates->contains($date->toDateString()));
@@ -148,19 +149,21 @@ class DashboardController extends Controller
 
         $pendingDireksiCheckpoints = collect();
         if (($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'DIREKSI') {
-            $pendingDireksiCheckpoints = CheckPoint::with('user:id,nama_lengkap')
+            $pendingDireksiCheckpoints = CheckPoint::with(['user:id,nama_lengkap', 'items:id,check_point_id,tanggal,approve_status,pekerjaan_cp_id,input_manual'])
                 ->where('type_check', 'dikerjakan')
                 ->whereYear('created_at', $now->year)
                 ->latest('id')->get()
                 ->flatMap(function (CheckPoint $checkpoint) {
-                    $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
-                    if (!is_array($statuses)) return [];
-                    $jobs = is_array($checkpoint->pekerjaan_cp_id) ? $checkpoint->pekerjaan_cp_id : [];
-                    $manual = is_array($checkpoint->input_manual) ? $checkpoint->input_manual : [];
-                    return collect($statuses)->map(function ($status, $index) use ($checkpoint, $jobs, $manual) {
-                        if ($status !== 'proccess') return null;
-                        return (object) ['id' => $checkpoint->id, 'employee' => $checkpoint->user->nama_lengkap ?? '-', 'date' => data_get((array) $checkpoint->tanggal, $index, optional($checkpoint->created_at)->format('Y-m-d')), 'job' => $jobs[$index] ?? ($manual[$index] ?? 'Pekerjaan')];
-                    })->filter();
+                    return $checkpoint->items
+                        ->where('approve_status', 'proccess')
+                        ->map(function ($item) use ($checkpoint) {
+                            return (object) [
+                                'id' => $checkpoint->id,
+                                'employee' => $checkpoint->user->nama_lengkap ?? '-',
+                                'date' => $item->tanggal?->format('Y-m-d') ?? optional($checkpoint->created_at)->format('Y-m-d'),
+                                'job' => $item->pekerjaan_cp_id ?? ($item->input_manual ?? 'Pekerjaan'),
+                            ];
+                        });
                 })->groupBy('employee')->map(function ($items) {
                     $month = Carbon::parse($items->first()->date)->translatedFormat('F Y');
                     return (object) [
@@ -172,24 +175,21 @@ class DashboardController extends Controller
                 })->values();
         }
 
-        $rejectedCheckpoints = CheckPoint::where('user_id', $user->id)
+        $rejectedCheckpoints = CheckPoint::with('items:id,check_point_id,tanggal,approve_status,note,pekerjaan_cp_id,input_manual')
+            ->where('user_id', $user->id)
             ->latest('id')
-            ->get(['id', 'tanggal', 'created_at', 'approve_status', 'note', 'pekerjaan_cp_id', 'input_manual'])
+            ->get(['id', 'created_at'])
             ->flatMap(function (CheckPoint $checkpoint) {
-                $statuses = is_array($checkpoint->approve_status) ? $checkpoint->approve_status : json_decode($checkpoint->approve_status ?: '[]', true);
-                if (!is_array($statuses)) return [];
-                $notes = is_array($checkpoint->note) ? $checkpoint->note : json_decode($checkpoint->note ?: '[]', true);
-                $notes = is_array($notes) ? $notes : [];
-                $jobs = is_array($checkpoint->pekerjaan_cp_id) ? $checkpoint->pekerjaan_cp_id : [];
-                return collect($statuses)->map(function ($status, $index) use ($checkpoint, $notes, $jobs) {
-                    if ($status !== 'denied') return null;
-                    return (object) [
-                        'id' => $checkpoint->id,
-                        'date' => data_get((array) $checkpoint->tanggal, $index, optional($checkpoint->created_at)->format('Y-m-d')),
-                        'reason' => $notes[$index] ?? 'Bukti pekerjaan perlu diperbaiki.',
-                        'job' => $jobs[$index] ?? null,
-                    ];
-                })->filter();
+                return $checkpoint->items
+                    ->where('approve_status', 'denied')
+                    ->map(function ($item) use ($checkpoint) {
+                        return (object) [
+                            'id' => $checkpoint->id,
+                            'date' => $item->tanggal?->format('Y-m-d') ?? optional($checkpoint->created_at)->format('Y-m-d'),
+                            'reason' => $item->note ?? 'Bukti pekerjaan perlu diperbaiki.',
+                            'job' => $item->pekerjaan_cp_id ?? $item->input_manual,
+                        ];
+                    });
             });
 
         $totcex = CheckPoint::whereBetween('created_at', [$startOfMonth, $endOfMonth])

@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $cekUser = User::where('name', $request->name)->where('status_id', 6)->first();
 
         if($cekUser) {
-            toastr()->error('Akun Anda Belum Di Verifikasi', [], 'error');
+            toastr()->error('Akun Anda Belum Di Verifikasi');
             return redirect()->back();
         }
 

@@ -28,7 +28,7 @@ class PerlengkapanController extends Controller
                 'name' => $name,
             ]);
         }
-        toastr()->success('Perlengkapan Berhasil dibuat', [], 'success');
+        toastr()->success('Perlengkapan Berhasil dibuat');
         return redirect()->to(route('admin.perlengkapan.index'));
     }
 
@@ -45,7 +45,7 @@ class PerlengkapanController extends Controller
         ];
 
         Perlengkapan::findOrFail($id)->update($data);
-        toastr()->success('Data berhasil di Update!', [], 'success');
+        toastr()->success('Data berhasil di Update!');
         return redirect()->to(route('admin.perlengkapan.index'));
     }
 
@@ -53,7 +53,7 @@ class PerlengkapanController extends Controller
     {
         $data = Perlengkapan::findOrFail($id);
         $data->delete();
-        toastr()->warning('Data Terhapus!!', [], 'warning');
+        toastr()->warning('Data Terhapus!!');
         return redirect()->back();
     }
 }

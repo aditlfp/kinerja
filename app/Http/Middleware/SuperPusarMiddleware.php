@@ -19,7 +19,7 @@ class SuperPusarMiddleware
 
         if(Auth::user()->divisi->jabatan->code_jabatan != "SPV-A")
         {
-            toastr()->error('Anda Tidak Memiliki Wewenang', [], 'error');
+            toastr()->error('Anda Tidak Memiliki Wewenang');
             session()->flush();
             Auth::logout();
             return redirect()->to(route('login'));

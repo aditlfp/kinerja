@@ -36,7 +36,7 @@ class DivisiController extends Controller
 
         Divisi::create($devisi);
 
-        toastr()->success('Devisi berhasil dibuat', [], 'success');
+        toastr()->success('Devisi berhasil dibuat');
         return redirect()->to(route('admin.divisi.index'));
     }
 
@@ -52,11 +52,11 @@ class DivisiController extends Controller
     public function addEquipment(Request $request, $divisiId)
     {
         $divisi = Divisi::findOrFail($divisiId);
-        $equipmentIds = $request->input('perlengkapan_id', []);
+        $equipmentIds = $request->input('perlengkapan_id');
 
         $divisi->Perlengkapan()->attach($equipmentIds);
         // dd($divisi);
-        toastr()->success('Devisi berhasil dibuat', [], 'success');
+        toastr()->success('Devisi berhasil dibuat');
         return redirect()->to(route('admin.divisi.index'));
     }
 
@@ -73,7 +73,7 @@ class DivisiController extends Controller
     public function update(Request $request, $id)
     {
         $dev = Divisi::findOrFail($id);
-        $equipmentIds = $request->input('perlengkapan_id', []);
+        $equipmentIds = $request->input('perlengkapan_id');
 
         $devisi = [
             'name' => $request->name,
@@ -87,7 +87,7 @@ class DivisiController extends Controller
         // dd($devisi, $dev);
 
         Divisi::findOrFail($id)->update($devisi);
-        toastr()->success('Data Telah Ter Update', [], 'success');
+        toastr()->success('Data Telah Ter Update');
         return redirect()->to(route('admin.divisi.index'));
     }
 
@@ -95,7 +95,7 @@ class DivisiController extends Controller
     {
         $devisi = Divisi::findOrFail($id);
         $devisi->delete();
-        toastr()->warning('Data Telah Terhapus', [], 'warning');
+        toastr()->warning('Data Telah Terhapus');
         return redirect()->back();
     }
 }

@@ -44,7 +44,7 @@ class PekerjaanCpController extends Controller
 
         ];
         PekerjaanCp::create($pcp);
-        toastr()->success('Data Berhasil Di Tambahkan', [], 'success');
+        toastr()->success('Data Berhasil Di Tambahkan');
         return to_route('admin.pekerjaan-cp.index');
     }
 
@@ -69,7 +69,7 @@ class PekerjaanCpController extends Controller
         ];
         $Datapcp = PekerjaanCp::findOrFail($id);
         $Datapcp->update($pcp);
-        toastr()->success('Data Berhasil Di Edit', [], 'success');
+        toastr()->success('Data Berhasil Di Edit');
         return to_route('admin.pekerjaan-cp.index');
     }
 
@@ -77,7 +77,7 @@ class PekerjaanCpController extends Controller
     {
         $pcpId = PekerjaanCp::findOrFail($id);
         $pcpId->delete();
-        toastr()->warning('Data Berhasil Di Deleted', [], 'warning');
+        toastr()->warning('Data Berhasil Di Deleted');
         return redirect()->back();
     }
 
@@ -89,11 +89,7 @@ class PekerjaanCpController extends Controller
                 $request->file('file')
             );
 
-            toastr()->success(
-                'Data Berhasil Di Upload',
-                [],
-                'success'
-            );
+            toastr()->success('Data Berhasil Di Upload');
 
             return redirect()->back();
         } catch (\Throwable $e) {

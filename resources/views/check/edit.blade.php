@@ -1,27 +1,9 @@
 <x-app-layout>
     @php
-        $ids = array_values((array) $cex->pekerjaan_cp_id);
-        $manuals = array_values((array) $cex->input_manual);
-        $descriptions = array_values((array) $cex->deskripsi);
-        $images = array_values((array) $cex->img);
-        $dates = array_values((array) $cex->tanggal);
-        $manualValues = array_values(array_filter($manuals, fn($value) => filled($value)));
-        $ids = array_values(array_pad($ids, count($descriptions), null));
-        $rows = max(count($ids), count($descriptions), count($images), 1);
-        $manuals = array_fill(0, $rows, null);
-        $manualIndex = 0;
-        for ($rowIndex = 0; $rowIndex < $rows && $manualIndex < count($manualValues); $rowIndex++) {
-            if (empty($ids[$rowIndex])) {
-                $manuals[$rowIndex] = $manualValues[$manualIndex++];
-            }
-        }
-        while ($manualIndex < count($manualValues)) {
-            $ids[] = null;
-            $manuals[] = $manualValues[$manualIndex++];
-            $rows++;
-        }
-        $selectedDate = request('tanggal', $dates[0] ?? optional($cex->created_at)->format('Y-m-d'));
-        $approveStatuses = array_values((array) $cex->approve_status);
+        $items = $cex->items;
+        $selectedDate = request('tanggal', $items->first()?->tanggal?->format('Y-m-d') ?? optional($cex->created_at)->format('Y-m-d'));
+        $firstLatitude = $items->first()?->latitude;
+        $firstLongitude = $items->first()?->longtitude;
     @endphp
     <div class="my-4 mx-auto w-full max-w-4xl px-4 py-6">
         <div
@@ -36,55 +18,52 @@
                         Kembali</a>
                 </div>
                 <form id="form-cp" method="POST" enctype="multipart/form-data"
+                    data-max-photos="{{ \App\Services\CheckPointSyncService::MAX_IMAGES_PER_ITEM }}"
                     action="{{ route('checkpoint-user.update', $cex->id) }}">
                     @csrf @method('PUT')
                     <input type="hidden" name="user_id" value="{{ $cex->user_id }}"><input type="hidden"
                         name="divisi_id" value="{{ $cex->divisi_id }}"><input type="hidden" id="latitude"
-                        name="latitude" value="{{ $cex->latitude }}"><input type="hidden" id="longtitude"
-                        name="longtitude" value="{{ $cex->longtitude }}">
+                        name="latitude" value="{{ $firstLatitude }}"><input type="hidden" id="longtitude"
+                        name="longtitude" value="{{ $firstLongitude }}">
                     <div class="mb-6 rounded-xl bg-slate-50 p-4"><label class="label py-0"><span
                                 class="label-text font-semibold">Tanggal pekerjaan</span></label><input
                             class="input input-bordered mt-2 w-full bg-white font-semibold" type="date"
                             value="{{ $selectedDate }}" readonly><input type="hidden" name="tanggal[]"
                             value="{{ $selectedDate }}"></div>
                     <div id="jobs" class="space-y-4">
-                        @for ($i = 0; $i < $rows; $i++)
-                            @php
-                                $jobId = $ids[$i] ?? null;
-                                $manual = filled($manuals[$i] ?? null) ? $manuals[$i] : null;
-                                $rowImages = is_array($images[$i] ?? null)
-                                    ? $images[$i]
-                                    : ($images[$i] ?? null
-                                        ? [$images[$i]]
-                                        : []);
-                            @endphp
-                            @include(
-                                'check.partials.job-row-edit',
-                                compact(
-                                    'i',
-                                    'jobId',
-                                    'manual',
-                                    'rowImages',
-                                    'pcp',
-                                    'selectedDate',
-                                    'descriptions',
-                                    'approveStatuses'))
-                        @endfor
+                        @forelse ($items as $i => $item)
+                            @include('check.partials.job-row-edit', [
+                                'i' => $i,
+                                'item' => $item,
+                                'pcp' => $pcp,
+                                'selectedDate' => $selectedDate,
+                                'workOrder' => $cex->workOrder,
+                            ])
+                        @empty
+                            @include('check.partials.job-row-edit', [
+                                'i' => 0,
+                                'item' => null,
+                                'pcp' => $pcp,
+                                'selectedDate' => $selectedDate,
+                                'workOrder' => $cex->workOrder,
+                            ])
+                        @endforelse
                     </div>
                     <button id="add-job" type="button"
                         class="btn mt-4 w-full border-2 border-dashed border-sky-300 bg-sky-50 text-sky-700 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100">+
-                        Tambah pekerjaan</button><button id="submit-job" type="submit"
+                        Tambah detail pekerjaan</button><button id="submit-job" type="submit"
                         class="btn mt-5 w-full border-0 bg-sky-500 font-bold text-white shadow-lg transition duration-200 hover:-translate-y-0.5 hover:shadow-lg">Simpan
                         perubahan</button>
                 </form>
             </div>
         </div>
     </div>
-    <template id="job-template">@include('check.partials.job-row', [
-        'index' => null,
-        'job' => null,
+    <template id="job-template">@include('check.partials.job-row-edit', [
+        'i' => 0,
+        'item' => null,
         'pcp' => $pcp,
         'selectedDate' => $selectedDate,
+        'workOrder' => $cex->workOrder,
     ])</template>
     @include('check.partials.job-script', ['isEdit' => true])
 </x-app-layout>

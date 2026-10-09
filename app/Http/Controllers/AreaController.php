@@ -36,7 +36,7 @@ class AreaController extends Controller
         ];
 
         Area::create($area);
-        toastr()->success('Data Area Berhasil Dibuat', [], 'success');
+        toastr()->success('Data Area Berhasil Dibuat');
         return to_route('area.index');
         
     }
@@ -59,10 +59,10 @@ class AreaController extends Controller
 
         // $areaId = Area::findOrFail($id);
         // $areaId->update($area);
-        // toastr()->success('Data Area Berhasil Di Edit', [], 'success');
+        // toastr()->success('Data Area Berhasil Di Edit');
         // return to_route('area.index');
         $dev = Area::findOrFail($id);
-        $equipmentIds = $request->input('subarea_id', []);
+        $equipmentIds = $request->input('subarea_id');
 
         $devisi = [
             'kerjasama_id' => $request->kerjasama_id,
@@ -76,7 +76,7 @@ class AreaController extends Controller
         // dd($devisi, $dev);
 
         $dev->update($devisi);
-        toastr()->success('Data Telah Ter Update', [], 'success');
+        toastr()->success('Data Telah Ter Update');
         return redirect()->to(route('area.index'));
 
     }
@@ -85,7 +85,7 @@ class AreaController extends Controller
     {
         $areaId = Area::findOrFail($id);
         $areaId->delete();
-        toastr()->warning('Data Area Berhasil delete', [], 'warning');
+        toastr()->warning('Data Area Berhasil delete');
         return redirect()->back();
     }
 }

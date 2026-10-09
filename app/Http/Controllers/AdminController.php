@@ -148,25 +148,15 @@ class AdminController extends Controller
                 ->get();
         });
 
-        $check_points_query = CheckPoint::query()
-            ->select([
-                'id',
-                'user_id',
-                'pekerjaan_cp_id',
-                'type_check',
-                'img',
-                'deskripsi',
-                'approve_status',
-                'note',
-                'created_at',
-            ])
-            ->with('user:id,nama_lengkap')
-            ->whereMonth('created_at', $inMonth);
-
-        $cex2 = (clone $check_points_query)
+        $cex2 = CheckPoint::query()
+            ->select(['id', 'user_id', 'type_check', 'work_order_id', 'created_at'])
+            ->with(['user:id,nama_lengkap', 'items.images'])
+            ->whereMonth('created_at', $inMonth)
             ->where('type_check', $type)
+            ->when($filter, fn ($query) => $query->whereHas('user', fn ($q) => $q->where('kerjasama_id', $filter)))
             ->latest()
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         $pcp = Cache::remember('admin.checkpoint.pekerjaan-cp', 300, function () {
             return PekerjaanCp::query()
@@ -174,97 +164,119 @@ class AdminController extends Controller
                 ->get();
         });
 
-        return view('admin.old-check.index', compact('cex2', 'pcp', 'type', 'kerjasama', 'filter'));
+        return view('admin.check.index', compact('cex2', 'pcp', 'type', 'kerjasama', 'filter'));
     }
 
     public function lihatCheck(Request $request, $id)
     {
-        $type = $request->type;
+        $type = $request->type ?? 'dikerjakan';
         $inMonth = Carbon::now()->month;
         $user = User::findOrFail($id);
 
-        // Ambil data berdasarkan user_id dan bulan
-        // $check_points_query = CheckPoint::where('user_id', $id)
-        //     ->whereMonth('created_at', $inMonth);
-        // $pekerjaan_cp_query = PekerjaanCP::where('user_id', $id);
+        $cex2 = CheckPoint::query()
+            ->select(['id', 'user_id', 'type_check', 'work_order_id', 'created_at'])
+            ->with(['items.images'])
+            ->where('user_id', $id)
+            ->whereMonth('created_at', $inMonth)
+            ->where('type_check', $type)
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
-        // Lakukan paginasi
-        // $cek = (clone $check_points_query)->orderBy('created_at', 'asc')->paginate(15);
+        $pcp = Cache::remember('admin.checkpoint.pekerjaan-cp', 300, function () {
+            return PekerjaanCp::query()->select('id', 'name', 'type_check')->get();
+        });
 
-        // Ambil data berdasarkan tipe
-        // $typeHarian = (clone $check_points_query)->where('type_check', 'harian')->get();
-        // $typeMingguan = (clone $check_points_query)->where('type_check', 'mingguan')->get();
-        // $typeBulanan = (clone $check_points_query)->where('type_check', 'bulanan')->get();
-        // $typeIsi = (clone $check_points_query)->where('type_check', 'isidental')->get();
-
-        // $pkHarian = (clone $pekerjaan_cp_query)->where('type_check', 'harian')->get();
-        // $pkMingguan = (clone $pekerjaan_cp_query)->where('type_check', 'mingguan')->get();
-        // $pkBulanan = (clone $pekerjaan_cp_query)->where('type_check', 'bulanan')->get();
-        // $pkIsi = (clone $pekerjaan_cp_query)->where('type_check', 'isidental')->get();
-
-        // $awalMinggu = Carbon::now()->startOfMonth()->subMonth();
-        // $akhirMinggu = Carbon::now()->endOfMonth(); // Mengurangi 2 hari untuk mendapatkan hari Jumat sebagai akhir minggu
-        // if ($type == 'rencana') {
-        //     $cex2 = (clone $check_points_query)
-        //         ->where('type_check', 'rencana')
-        //         ->latest()
-        //         ->first();
-        // } else {
-        //     $cex2 = (clone $check_points_query)
-        //         ->where('type_check', 'dikerjakan')
-        //         ->latest()
-        //         ->first();
-        // }
-
-        // $pcp = (clone $pekerjaan_cp_query)->get();
-        // dd($cex2);
-
-        // dd($cex2);
-
-        return view('admin.check.lihatCP', compact('user', 'type', 'cek', 'cex2', 'pcp', 'typeHarian', 'typeMingguan', 'typeBulanan', 'typeIsi', 'pkHarian', 'pkMingguan', 'pkBulanan', 'pkIsi'));
+        return view('admin.check.lihatCP', compact('user', 'type', 'cex2', 'pcp'));
     }
 
     public function approveCheck(Request $request, $id)
     {
-        $appCheck = [
-            'approve_status' => $request->approve_status,
-            'note' => $request->note
-        ];
-        // dd($appCheck);
-        CheckPoint::findOrFail($id)->update($appCheck);
-        toastr()->success('Check Point Has Approve', [], 'success');
+        $status = $request->input('approve_status');
+        if (is_array($status)) {
+            $status = reset($status);
+        }
+
+        $note = $request->input('note');
+        if (is_array($note)) {
+            $note = reset($note);
+        }
+
+        $checkPoint = CheckPoint::findOrFail($id);
+        $item = $this->resolveCheckPointItem($checkPoint, $request->input('arrKe'));
+
+        if (! $item) {
+            toastr()->error('Pekerjaan tidak ditemukan');
+            return redirect()->back();
+        }
+
+        $item->approve_status = $status ?: 'accept';
+        $item->note = filled($note) ? $note : null;
+        $item->save();
+
+        toastr()->success('Check Point Has Approve');
         return redirect()->back();
     }
 
     public function deniedCheck(Request $request, $id)
     {
-        $appCheck = [
-            'approve_status' => $request->approve_status,
-            'note' => $request->note
-        ];
-        // dd($appCheck);
-        CheckPoint::findOrFail($id)->update($appCheck);
-        toastr()->warning('Check Point Has Denied', [], 'success');
+        $status = $request->input('approve_status');
+        if (is_array($status)) {
+            $status = reset($status);
+        }
+
+        $note = $request->input('note');
+        if (is_array($note)) {
+            $note = reset($note);
+        }
+
+        $checkPoint = CheckPoint::findOrFail($id);
+        $item = $this->resolveCheckPointItem($checkPoint, $request->input('arrKe'));
+
+        if (! $item) {
+            toastr()->error('Pekerjaan tidak ditemukan');
+            return redirect()->back();
+        }
+
+        $item->approve_status = $status ?: 'denied';
+        $item->note = filled($note) ? $note : null;
+        $item->save();
+
+        toastr()->warning('Check Point Has Denied');
         return redirect()->back();
+    }
+
+    /**
+     * Resolve a row reference (item id, or legacy row position) to an item.
+     */
+    private function resolveCheckPointItem(CheckPoint $checkPoint, mixed $reference): ?\App\Models\CheckPointItem
+    {
+        if (! filled($reference)) {
+            return null;
+        }
+
+        $reference = (int) $reference;
+
+        return $checkPoint->items()->whereKey($reference)->first()
+            ?: $checkPoint->items()->orderBy('urutan')->skip($reference)->first();
     }
 
     public function destroyCheck($id)
     {
-
         try {
-            $cek = CheckPoint::findOrFail($id);
-            if ($cek->img != null) {
+            $cek = CheckPoint::with('items.images')->findOrFail($id);
 
-                Storage::disk('public')->delete('images/' . $cek->img);
-
-                $cek->delete();
-                toastr()->warning('Data Telah Dihapus', [], 'warning');
-                return redirect()->back();
-            } else {
-                toastr()->error('Foto Tidak Ditemukan', [], 'error');
+            foreach ($cek->items as $item) {
+                foreach ($item->images as $image) {
+                    Storage::disk('public')->delete('images/' . $image->path);
+                }
             }
+            $cek->delete();
+
+            toastr()->warning('Data Telah Dihapus');
+            return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
-            toastr()->error('Data Tidak Ditemukan', [], 'error');
+            toastr()->error('Data Tidak Ditemukan');
             return redirect()->back();
         }
     }
@@ -488,7 +500,7 @@ class AdminController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Hari Libur', [], 'error');
+            toastr()->error('Mohon Masukkan Hari Libur');
             return redirect()->back();
         }
     }
@@ -751,7 +763,7 @@ class AdminController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Filter Export', [], 'error');
+            toastr()->error('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }
@@ -841,7 +853,7 @@ class AdminController extends Controller
             // dd($check, $request->all());
             User::destroy($check);
 
-            toastr()->success('User berhasil dihapus', [], 'success');
+            toastr()->success('User berhasil dihapus');
             return redirect()->back();
         } else {
             $options = new Options();
@@ -895,7 +907,7 @@ class AdminController extends Controller
             $abs->delete();
         }
 
-        toastr()->warning('Data Sudah Dihapus', [], 'success');
+        toastr()->warning('Data Sudah Dihapus');
         return redirect()->back();
     }
 
@@ -993,7 +1005,7 @@ class AdminController extends Controller
                 $user->delete();
             });
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus: ' . $e->getMessage(), [], 'Error');
+            toastr()->error('Gagal menghapus: ' . $e->getMessage());
             return redirect()->back();
         }
 
@@ -1001,7 +1013,7 @@ class AdminController extends Controller
         Cache::forget('not_active_users');
         Cache::forget('admin.dashboard.inactive-users-count');
 
-        toastr()->warning('User ' . $userName . ' dan semua data terkait berhasil dihapus.', [], 'Dihapus');
+        toastr()->warning('User ' . $userName . ' dan semua data terkait berhasil dihapus.');
         return redirect()->route('admin.index');
     }
 
@@ -1017,7 +1029,7 @@ class AdminController extends Controller
         }
 
         Cache::forget('admin.dashboard.inactive-users');
-        toastr()->warning(count($ids) . ' user berhasil dihapus.', [], 'Dihapus');
+        toastr()->warning(count($ids) . ' user berhasil dihapus.');
         return redirect()->route('admin.index');
     }
 

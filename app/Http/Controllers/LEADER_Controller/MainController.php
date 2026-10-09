@@ -333,7 +333,7 @@ class MainController extends Controller
             $absen->save();
         }
         // dd($request->all(), $absenRecords);
-        toastr()->success('Berhasil Absen Sholat', [], 'Berhasil');
+        toastr()->success('Berhasil Absen Sholat');
         return to_route('dashboard.index');
     }
 }

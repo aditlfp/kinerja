@@ -274,7 +274,7 @@ class HandlingAttendanceToExcelPage extends Controller
             $logoPath = public_path('logo/sac.png');
             $base64 = 'data:image/' . pathinfo($logoPath, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($logoPath));
         } else {
-            toastr()->error('Mohon Masukkan Filter Export', [], 'error');
+            toastr()->error('Mohon Masukkan Filter Export');
 
             return redirect()->back();
         }
@@ -850,7 +850,7 @@ class HandlingAttendanceToExcelPage extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Filter Export', [], 'error');
+            toastr()->error('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }

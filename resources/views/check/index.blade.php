@@ -64,7 +64,6 @@
 
             {{-- Current month --}}
             @foreach ($calendar as $index => $item)
-
                 @php
                     $date = $item['date'];
 
@@ -72,6 +71,8 @@
                         $state = 'border-transparent bg-rose-500 text-white';
                     } elseif ($item['rejected']) {
                         $state = 'border-transparent bg-amber-500 text-white';
+                    } elseif ($item['accepted']) {
+                        $state = 'border-transparent bg-sky-500 text-white';
                     } elseif ($item['hasData']) {
                         $state = 'border-transparent bg-emerald-500 text-white';
                     } else {
@@ -109,15 +110,9 @@
                     </span>
 
                     {{-- Status --}}
-                    @if ($item['rejected'])
+                    @if ($item['hasData'])
 
-                        <i class="ri-close-line text-[11px] opacity-90 sm:text-xs md:text-[13px]"></i>
-
-                    @elseif ($item['hasData'])
-
-                        <i
-                            class="ri-check-line text-[11px] opacity-90 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-0.5 sm:text-xs md:text-[13px]">
-                        </i>
+                        <x-checkpoint-status-row :counts="$item['counts']" :has-data="$item['hasData']" size="md" />
 
                     @elseif ($date->isWeekend())
 
@@ -157,13 +152,20 @@
 
         <div
             class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-xs text-slate-500">
-            <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-emerald-500"></span>Ada
+            <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-sky-500"></span>Ada yang disetujui</span>
+            <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-emerald-500"></span>Ada bukti
                 pekerjaan</span>
-            <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-amber-500"></span>Ditolak</span>
+            <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-amber-500"></span>Ada yang
+                ditolak</span>
             <span class="flex items-center gap-2"><span
                     class="h-3 w-3 rounded-[4px] border border-slate-200 bg-white"></span>Belum diisi</span>
             <span class="flex items-center gap-2"><span class="h-3 w-3 rounded-[4px] bg-rose-500"></span>Sabtu &amp;
                 Minggu</span>
+            <span class="mx-1 hidden h-4 w-px bg-slate-200 sm:block"></span>
+            <span class="flex items-center gap-2"><i class="ri-checkbox-circle-fill text-[13px] text-sky-600"></i>Disetujui</span>
+            <span class="flex items-center gap-2"><i class="ri-close-circle-fill text-[13px] text-rose-600"></i>Ditolak</span>
+            <span class="flex items-center gap-2"><i class="ri-time-line text-[13px] text-amber-600"></i>Menunggu
+                verifikasi</span>
         </div>
     </div>
 

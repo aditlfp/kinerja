@@ -18,7 +18,7 @@ class LeaderMiddleware
     {
         if(Auth::user()->divisi->jabatan->code_jabatan != "CO-CS")
         {
-            toastr()->error('Anda Tidak Memiliki Wewenang', [], 'error');
+            toastr()->error('Anda Tidak Memiliki Wewenang');
             session()->flush();
             Auth::logout();
             return redirect()->to(route('login'));

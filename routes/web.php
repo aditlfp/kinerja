@@ -15,6 +15,7 @@ use App\Http\Controllers\CheckPointController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireksiCheckpointController;
+use App\Http\Controllers\DireksiWorkOrderController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\IzinController;
@@ -52,6 +53,8 @@ use App\Http\Controllers\ListPekerjaanController;
 use App\Http\Controllers\SlipGajiController;
 use App\Http\Controllers\ReportSholatController;
 use App\Http\Controllers\MonevController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NotificationWorkOrderController;
 use App\Http\Controllers\SVP_Controller\Rekap\DashboardRekapController;
 use App\Http\Controllers\SVP_Controller\Rekap\PersonInController as RekapPersonInController;
 use App\Http\Controllers\SVP_Controller\Rekap\CuttingController as RekapCuttingController;
@@ -141,6 +144,32 @@ Route::get('/notifications/{id}', function ($id) {
     };
 })->middleware('auth')->name('notifications.redirect');
 
+use Illuminate\Http\Request;
+
+Route::delete('/notifications/{notification}', function (Request $request, string $notification) {
+    $request->user()->notifications()->whereKey($notification)->firstOrFail()->delete();
+    return back();
+})->middleware('auth')->name('notifications.delete');
+
+Route::post('/notifications/read-all', function (Request $request) {
+    $request->user()
+        ->unreadNotifications
+        ->markAsRead();
+
+    return back();
+})->name('notifications.read-all');
+
+Route::get('/notifications', function (Request $request) {
+    $notifications = $request->user()
+        ->notifications()
+        ->latest()
+        ->paginate(20);
+
+    return view('notifications.index', compact('notifications'));
+})->name('notifications.index');
+
+Route::get('/notifications/{notification}/open', [NotificationWorkOrderController::class, 'open'])->name('notifications.open');
+
 // Only AUTH
 Route::middleware(['auth', 'apdt'])->group(function () {
     Route::view('/scan', 'admin.qrcode.scan');
@@ -207,6 +236,10 @@ Route::middleware(['auth', 'direksi'])->group(function () {
     Route::get('/direksi-jadwal', [JadwalUserController::class, 'index'])->name('direksi_jadwal');
     Route::get('/direksi-user', [LeaderController::class, 'indexUser'])->name('direksi_user');
     Route::get('/direksi-checkpoint', [DireksiCheckpointController::class, 'index'])->name('direksi.cp.index');
+    Route::get('/direksi-work-order', [DireksiWorkOrderController::class, 'index'])->name('direksi.work-order.index');
+    Route::get('/direksi-work-order/{user}/calendar', [DireksiWorkOrderController::class, 'calendar'])->name('direksi.work-order.calendar');
+    Route::get('/direksi-work-order/{user}/create', [DireksiWorkOrderController::class, 'create'])->name('direksi.work-order.create');
+    Route::post('/direksi-work-order', [DireksiWorkOrderController::class, 'store'])->name('direksi.work-order.store');
     Route::get('/direksi-checkpoint/{user}/calendar', [DireksiCheckpointController::class, 'calendar'])->name('direksi.cp.calendar');
     Route::get('/direksi-checkpoint-history', [DireksiCheckpointController::class, 'history'])->name('direksi.cp.history');
     Route::get('/direksi-checkpoint-history/{id}', [DireksiCheckpointController::class, 'historyDetail'])->name('direksi.cp.history.show');
@@ -271,6 +304,14 @@ Route::middleware(['auth', 'apdt'])->group(function () {
         Route::patch('/api/v1/rekap/person-in/{id}/status', [RekapPersonInController::class, 'updateStatus'])->name('api-person-in-status');
         Route::patch('/api/v1/rekap/cutting/{id}/status', [RekapCuttingController::class, 'updateStatus'])->name('api-cutting-status');
         Route::patch('/api/v1/rekap/finished-training/{id}/status', [RekapFinishedTrainingController::class, 'updateStatus'])->name('api-finished-training-status');
+    });
+
+    Route::middleware(['only:MCS'])->group(function () {
+        Route::get('/mcs-work-order', [DireksiWorkOrderController::class, 'index'])->name('mcs.work-order.index');
+        Route::get('/mcs-work-order/{user}/calendar', [DireksiWorkOrderController::class, 'calendar'])->name('mcs.work-order.calendar');
+        Route::get('/mcs-work-order/{user}/create', [DireksiWorkOrderController::class, 'create'])->name('mcs.work-order.create');
+        Route::post('/mcs-work-order', [DireksiWorkOrderController::class, 'store'])->name('mcs.work-order.store');
+        Route::get('/mcs-checkpoint-history/{id}', [DireksiCheckpointController::class, 'historyDetail'])->name('mcs.cp.history.show');
     });
 
     Route::get('/Management/spv-absensi', [MainController::class, 'indexAbsen'])->name('manajemen_absensi');

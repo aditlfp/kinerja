@@ -34,7 +34,7 @@ class RekapSettingsController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
-        toastr()->success('Batas waktu rekap berhasil diperbarui.', [], 'success');
+        toastr()->success('Batas waktu rekap berhasil diperbarui.');
 
         return back();
     }
@@ -43,7 +43,7 @@ class RekapSettingsController extends Controller
     {
         RekapDueDateSetting::query()->delete();
 
-        toastr()->success('Batas waktu rekap dihapus. Pengajuan rekap terbuka kembali.', [], 'success');
+        toastr()->success('Batas waktu rekap dihapus. Pengajuan rekap terbuka kembali.');
 
         return back();
     }

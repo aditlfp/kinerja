@@ -23,6 +23,7 @@ class AdminNewsTest extends TestCase
         // Halaman admin dilindungi middleware auth; izin & berita diuji terpisah.
         $this->withoutMiddleware();
 
+        Schema::dropIfExists('news');
         Schema::create('news', function (Blueprint $table) {
             $table->id();
             $table->string('image');

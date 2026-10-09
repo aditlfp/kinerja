@@ -34,7 +34,7 @@ class RuanganController extends Controller
         ];
 
         Ruangan::create($ruangan);
-        toastr()->success('Data Ruangan Dibuat', [], 'success');
+        toastr()->success('Data Ruangan Dibuat');
         return to_route('admin.ruangan.index');
     }
 
@@ -54,7 +54,7 @@ class RuanganController extends Controller
 
         $ruanganId = Ruangan::findOrFail($id);
         $ruanganId->update($ruangan);
-        toastr()->success('Data Ruangan Ter Update', [], 'success');
+        toastr()->success('Data Ruangan Ter Update');
         return to_route('admin.ruangan.index');
     }
 
@@ -62,7 +62,7 @@ class RuanganController extends Controller
     {
         $ruanganId = Ruangan::findOrFail($id);
         $ruanganId->delete();
-        toastr()->warning('Data Ruangan Deleted', [], 'warning');
+        toastr()->warning('Data Ruangan Deleted');
         return redirect()->back();
     }
     
@@ -70,7 +70,7 @@ class RuanganController extends Controller
     {
         try {
             Excel::import(new RuanganImport,  $request->file);
-            toastr()->success('Data Berhasil Di Upload', [], 'success');
+            toastr()->success('Data Berhasil Di Upload');
             return redirect()->back();
         } catch (\Exception $e) {
             // Handle other exceptions
@@ -86,7 +86,7 @@ class RuanganController extends Controller
                         $duplicateValue = $matches[1];
         
                         // Handle the duplicate value as needed
-                        toastr()->error('Data Gagal Di Upload', [], 'Error');
+                        toastr()->error('Data Gagal Di Upload');
                         return redirect()->back()->with('failures', $duplicateValue);
                     }
                 }

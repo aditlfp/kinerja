@@ -47,16 +47,16 @@ class ClientController extends Controller
         if ($request->hasFile('logo')) {
             $client['logo'] = UploadImage($request, 'logo');
         }else{
-            toastr()->error('Logo harus ditambahkan', [], 'error');
+            toastr()->error('Logo harus ditambahkan');
         }
         // dd($request->all());
         try {
             Client::create($client);
         } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Sudah Ada', [], 'error');
+           toastr()->error('Data Sudah Ada');
            return redirect()->back();
         }
-            toastr()->success('Client Berhasil Ditambahkan', [], 'success');
+            toastr()->success('Client Berhasil Ditambahkan');
             return redirect()->to(route('admin.client.index'));
 
     }
@@ -67,7 +67,7 @@ class ClientController extends Controller
         if ($client != null) {
             return view('admin.client.show', compact('client'));
         }
-        toastr()->error('Data Tidak Ditemukan', [], 'error');
+        toastr()->error('Data Tidak Ditemukan');
         return redirect()->back();
     }
 
@@ -77,7 +77,7 @@ class ClientController extends Controller
         if ($client != null) {
             return view('admin.client.edit', compact('client'));
         }
-        toastr()->error('Data Tidak Ditemukan', [], 'error');
+        toastr()->error('Data Tidak Ditemukan');
         return redirect()->back();
     }
 
@@ -111,10 +111,10 @@ class ClientController extends Controller
          try {
             Client::findOrFail($id)->update($client);
         } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Sudah Ada', [], 'error');
+           toastr()->error('Data Sudah Ada');
            return redirect()->back();
         }
-        toastr()->success('Client berhasil diedit', [], 'success');
+        toastr()->success('Client berhasil diedit');
         return redirect()->to(route('admin.client.index'));
     }
 
@@ -137,13 +137,13 @@ class ClientController extends Controller
             // If we got here, commit the transaction to make the changes permanent.
             DB::commit();
 
-            toastr()->success('Client dan semua data kerjasamanya berhasil dihapus.', [], 'Sukses');
+            toastr()->success('Client dan semua data kerjasamanya berhasil dihapus.');
             return redirect()->route('admin.client.index');
 
         } catch (ModelNotFoundException $e) {
             // This will catch the error from findOrFail if the client doesn't exist.
             DB::rollBack(); // Rollback any changes (though none were made)
-            toastr()->error('Data klien tidak ditemukan.', [], 'Error');
+            toastr()->error('Data klien tidak ditemukan.');
             return redirect()->back();
 
         } catch (\Exception $e) {
@@ -151,7 +151,7 @@ class ClientController extends Controller
             DB::rollBack(); // Rollback any changes made during the transaction.
             // Log the detailed error for debugging
             Log::error('Failed to delete client and kerjasama: ' . $e->getMessage());
-            toastr()->error('Terjadi kesalahan saat menghapus data.', [], 'Error');
+            toastr()->error('Terjadi kesalahan saat menghapus data.');
             return redirect()->back();
         }
     }

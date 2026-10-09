@@ -76,10 +76,10 @@ class PersonOutController extends Controller
             $personOut = PersonOut::findOrFail($id);
             $personOut->delete();
 
-            toastr()->success('Data personil keluar berhasil dihapus.', [], 'success');
+            toastr()->success('Data personil keluar berhasil dihapus.');
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus data personil keluar.', [], 'error');
+            toastr()->error('Gagal menghapus data personil keluar.');
             return back();
         }
     }
@@ -129,14 +129,14 @@ class PersonOutController extends Controller
 
             if ($user->trashed()) {
                 $user->restore();
-                toastr()->success('User berhasil direstore.', [], 'success');
+                toastr()->success('User berhasil direstore.');
             } else {
-                toastr()->success('User sudah dalam kondisi aktif.', [], 'success');
+                toastr()->success('User sudah dalam kondisi aktif.');
             }
 
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal restore user.', [], 'error');
+            toastr()->error('Gagal restore user.');
             return back();
         }
     }

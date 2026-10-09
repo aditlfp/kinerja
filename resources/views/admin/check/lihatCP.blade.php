@@ -40,15 +40,20 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                        @forelse ($cex2 ?? [] as $c2)
-                            @foreach ($c2->pekerjaan_cp_id as $index => $cpId)
+                        @forelse ($cex2 as $c2)
+                            @foreach ($c2->items as $item)
+                                @php
+                                    $cpId = $item->pekerjaan_cp_id;
+                                    $pc = $pcp->firstWhere('id', $cpId);
+                                    $img = $item->images->first()->path ?? null;
+                                    $label = $pc->name ?? ($item->input_manual ?: $cpId);
+                                @endphp
                                 <tr class="hover:bg-blue-50/40">
-                                    <td class="px-4 py-3 sm:px-5">{{ $loop->parent->iteration . '.' . ($index + 1) }}</td>
+                                    <td class="px-4 py-3 sm:px-5">{{ $loop->parent->iteration . '.' . ($loop->iteration) }}</td>
 
                                     @if ($type !== 'rencana')
                                         <td class="px-4 py-3 sm:px-5">
-                                            @php $img = $c2->img[$index] ?? null; @endphp
-                                            @if (empty($cpId) || $cpId == 'no-image.jpg' || !$img)
+                                            @if (!$img)
                                                 <x-no-img class="scale-50" />
                                             @else
                                                 <img src="{{ asset('storage/images/' . $img) }}" width="70" class="rounded-sm" alt="Gambar Bukti">
@@ -57,28 +62,23 @@
                                     @endif
 
                                     <td class="min-w-[120px] px-4 py-3 text-start capitalize sm:px-5">
-                                        @php $pc = $pcp->firstWhere('id', $cpId); @endphp
-                                        {{ $pc ? '~ ' . $pc->name : '~ ' . $cpId }}
+                                        {{ $label ? '~ ' . $label : '~ -' }}
                                     </td>
 
                                     @if ($type !== 'rencana')
-                                        <td class="min-w-[220px] px-4 py-3 text-start capitalize sm:px-5">~ {{ $c2->deskripsi[$index] ?? '' }}</td>
+                                        <td class="min-w-[220px] px-4 py-3 text-start capitalize sm:px-5">~ {{ $item->deskripsi ?? '' }}</td>
                                     @endif
 
-                                    <td class="px-4 py-3 sm:px-5">~ {{ $c2->tanggal[$index] ?? 'Kosong' }}</td>
+                                    <td class="px-4 py-3 sm:px-5">~ {{ $item->tanggal?->format('Y-m-d') ?? 'Kosong' }}</td>
                                     <td class="px-4 py-3 sm:px-5">{{ $pc ? '~ ' . $pc->type_check : '' }}</td>
 
                                     @if ($type !== 'rencana')
                                         <td class="px-4 py-3 sm:px-5">
-                                            @php
-                                                $status = $c2->approve_status[$index] ?? null;
-                                                $note = $c2->note[$index] ?? null;
-                                            @endphp
-                                            @if ($status)
+                                            @if ($item->approve_status)
                                                 <div class="flex flex-col items-center">
-                                                    <span class="rounded-md px-2 py-0.5 text-xs text-white {{ $status === 'accept' ? 'bg-emerald-700' : ($status === 'proccess' ? 'bg-amber-500' : 'bg-red-500') }}">{{ ucfirst($status) }}</span>
-                                                    @if ($note)
-                                                        <p class="text-xs italic">Note: {{ $note }}</p>
+                                                    <span class="rounded-md px-2 py-0.5 text-xs text-white {{ $item->approve_status === 'accept' ? 'bg-emerald-700' : ($item->approve_status === 'proccess' ? 'bg-amber-500' : 'bg-red-500') }}">{{ ucfirst($item->approve_status) }}</span>
+                                                    @if ($item->note)
+                                                        <p class="text-xs italic">Note: {{ $item->note }}</p>
                                                     @endif
                                                 </div>
                                             @endif
@@ -87,9 +87,9 @@
 
                                     <td class="px-4 py-3 sm:px-5">
                                         @if ($type == 'dikerjakan')
-                                            <button data-id="{{ $cpId }}" data-index="{{ $index }}" class="btn btn-info btn-sm btn-nilai">Nilai</button>
+                                            <button data-checkpoint-id="{{ $c2->id }}" data-item-id="{{ $item->id }}" class="btn btn-info btn-sm btn-nilai">Nilai</button>
                                         @else
-                                            <button data-id="{{ $c2->id }}" data-index="{{ $index }}" class="btn btn-error btn-sm btn-hapus">Hapus</button>
+                                            <button data-id="{{ $c2->id }}" data-item-id="{{ $item->id }}" class="btn btn-error btn-sm btn-hapus">Hapus</button>
                                         @endif
                                     </td>
                                 </tr>
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <div>{{ $cek->links() }}</div>
+        <div>{{ $cex2->links() }}</div>
     </div>
 
     @push('scripts')
@@ -134,11 +134,11 @@
             $(function() {
                 $('.btn-nilai, .btn-hapus').click(function() {
                     const isDelete = $(this).hasClass('btn-hapus');
-                    const id = $(this).data('id');
-                    const index = $(this).data('index');
+                    const checkpointId = $(this).data('checkpoint-id') || $(this).data('id');
+                    const itemId = $(this).data('item-id');
 
                     if (isDelete) {
-                        const route = "{{ url('direksi/deleteRencana') }}/" + id;
+                        const route = "{{ url('direksi/deleteRencana') }}/" + checkpointId;
                         const html = `
                             <div class="bg-slate-200 rounded-md p-4 mx-10 flex flex-col">
                                 <div class="flex justify-end">
@@ -147,7 +147,7 @@
                                 <form action="${route}" method="POST" class="flex flex-col items-center gap-4">
                                     @csrf
                                     <p class="text-center text-sm">Yakin ingin menghapus data ini?</p>
-                                    <input type="hidden" name="arrKe" value="${index}">
+                                    <input type="hidden" name="arrKe" value="${itemId}">
                                     <button type="submit" class="btn btn-info btn-sm">Submit</button>
                                 </form>
                             </div>`;
@@ -156,10 +156,14 @@
                         @if ($cex2)
                             const dataCex = @json($cex2);
                             const dataPcp = @json($pcp);
-                            const filteredPc = dataPcp.find(pc => pc.id == id);
-                            const route = "{{ route('direksi.uploadNilai', ' + id+') }}";
-                            const imgSrc = dataCex.img && dataCex.img[index] ? `{{ asset('storage/images') }}/${dataCex.img[index]}` : '';
-                            const deskripsi = dataCex.deskripsi && dataCex.deskripsi[index] ? dataCex.deskripsi[index] : '';
+                            const checkpoint = dataCex.find(c => c.id == checkpointId);
+                            const item = checkpoint ? checkpoint.items.find(i => i.id == itemId) : null;
+                            const filteredPc = item ? dataPcp.find(pc => pc.id == item.pekerjaan_cp_id) : null;
+                            const route = "{{ route('direksi.uploadNilai', ':id') }}".replace(':id', checkpointId);
+                            const firstImage = item && item.images && item.images.length ? item.images[0].path : null;
+                            const imgSrc = firstImage ? `{{ asset('storage/images') }}/${firstImage}` : '';
+                            const label = filteredPc ? filteredPc.name : (item && item.input_manual ? item.input_manual : '');
+                            const deskripsi = item && item.deskripsi ? item.deskripsi : '';
                             const html = `
                             <div class="bg-slate-200 rounded-md p-5 flex flex-col min-w-full sm:min-w-fit sm:max-w-xs mx-auto">
                                 <div class="flex justify-end">
@@ -167,7 +171,8 @@
                                 </div>
                                 <form action="${route}" method="POST" class="flex flex-col items-center gap-4">
                                     @csrf
-                                    <p class="font-semibold text-center">~${filteredPc ? filteredPc.name : ''}~</p>
+                                    @method('PUT')
+                                    <p class="font-semibold text-center">~${label}~</p>
                                     <div class="flex justify-center">
                                         ${imgSrc ? `<img src="${imgSrc}" class="rounded-sm" alt="Gambar Bukti" width="70">` : ''}
                                     </div>
@@ -184,7 +189,8 @@
                                         </label>
                                     </fieldset>
                                     <input type="text" name="note[]" placeholder="note.." class="input input-bordered w-full input-sm text-sm">
-                                    <input type="hidden" name="arrKe" value="${index}">
+                                    <input type="hidden" name="arrKe" value="${itemId}">
+                                    <input type="hidden" name="id" value="${checkpointId}">
                                     <button type="submit" class="btn btn-info btn-sm w-full">Submit</button>
                                 </form>
                             </div>`;

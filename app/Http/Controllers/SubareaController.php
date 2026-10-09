@@ -35,7 +35,7 @@ class SubareaController extends Controller
         $validator = Validator::make($request->all(), $rules, $customMessages);
     
         if ($validator->fails()) {
-            toastr()->error('Formulir tidak lengkap. Mohon isi semua kolom.', [], 'error');
+            toastr()->error('Formulir tidak lengkap. Mohon isi semua kolom.');
             return redirect()->back()->withErrors($validator)->withInput();
         }
         
@@ -46,7 +46,7 @@ class SubareaController extends Controller
                 'name' => $name,
             ]);
         }
-        toastr()->success('Sub Area Berhasil ditambahkan', [], 'success');
+        toastr()->success('Sub Area Berhasil ditambahkan');
         return redirect()->back();
     }
     
@@ -64,7 +64,7 @@ class SubareaController extends Controller
         
         $subId = Subarea::findOrFail($id);
         $subId->update($subData);
-        toastr()->success('Sub Area Berhasil Di Update', [], 'success');
+        toastr()->success('Sub Area Berhasil Di Update');
         return to_route('admin.subarea.index');
     }
     
@@ -72,7 +72,7 @@ class SubareaController extends Controller
     {
         $subId = Subarea::findOrFail($id);
         $subId->delete();
-        toastr()->warning('Sub Area Dihapus Permanent', [], 'warning');
+        toastr()->warning('Sub Area Dihapus Permanent');
     }
     
     public function editSubarea($areaId)
@@ -87,11 +87,11 @@ class SubareaController extends Controller
     public function addSub(Request $request, $areaId)
     {
         $area = Area::findOrFail($areaId);
-        $equipmentIds = $request->input('subarea_id', []);
+        $equipmentIds = $request->input('subarea_id');
 
         $area->Subarea()->attach($equipmentIds);
         // dd($divisi);
-        toastr()->success('Devisi berhasil dibuat', [], 'success');
+        toastr()->success('Devisi berhasil dibuat');
         return redirect()->back();
     }
     

@@ -42,7 +42,7 @@ class ShiftController extends Controller
         ];
 
         Shift::create($shift);
-        toastr()->success('Shift berhasil ditambahkan', [], 'success');
+        toastr()->success('Shift berhasil ditambahkan');
 
         return to_route('admin.shift.index');
     }
@@ -54,7 +54,7 @@ class ShiftController extends Controller
             return view('admin.shift.show', compact('shift'));
         }
 
-        toastr()->error('Data Tidak Ditemukan', [], 'error');
+        toastr()->error('Data Tidak Ditemukan');
 
         return redirect()->back();
     }
@@ -68,7 +68,7 @@ class ShiftController extends Controller
         if ($shift != null) {
             return view('admin.shift.edit', compact('shift', 'jabatan', 'client', 'selectedDays'));
         }
-        toastr()->error('Data tidak ditemukan', [], 'error');
+        toastr()->error('Data tidak ditemukan');
 
         return redirect()->back();
     }
@@ -88,7 +88,7 @@ class ShiftController extends Controller
         ];
 
         Shift::findOrFail($id)->update($shift);
-        toastr()->success('Shift berhasil diupdate', [], 'success');
+        toastr()->success('Shift berhasil diupdate');
 
         return to_route('admin.shift.index');
     }
@@ -106,11 +106,11 @@ class ShiftController extends Controller
         $shift = Shift::find($id);
         if ($shift != null) {
             $shift->delete();
-            toastr()->warning('Data Shift Terhapus', [], 'warning');
+            toastr()->warning('Data Shift Terhapus');
 
             return redirect()->back();
         }
-        toastr()->error('Data Tidak Ditemukan', [], 'error');
+        toastr()->error('Data Tidak Ditemukan');
 
         return redirect()->back();
     }

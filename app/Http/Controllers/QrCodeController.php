@@ -69,7 +69,7 @@ class QrCodeController extends Controller
         
         $qrId->update($qr);
         
-        toastr()->success('Qr Code Has Update & Generate', [], 'success');
+        toastr()->success('Qr Code Has Update & Generate');
         return to_route('qrcode.index');
     }
 
@@ -103,7 +103,7 @@ class QrCodeController extends Controller
             'kerjasama_id' => $request->kerjasama_id,
         ]);
         
-        toastr()->success('QR Code has been generated successfully', [], 'Success');
+        toastr()->success('QR Code has been generated successfully');
         return redirect()->route('qrcode.index');
 
     }
@@ -113,20 +113,20 @@ class QrCodeController extends Controller
         $qrId = QrCode::findOrFail($id);
         Storage::disk('public')->delete('images/'.$qrId->qr_code);
         $qrId->delete();
-        toastr()->warning('Qr Code Has Deleted', [], 'warning');
+        toastr()->warning('Qr Code Has Deleted');
         return redirect()->back();
     }
     
     public function exportPDF(Request $request)
     {
-        $selectedItems = $request->input('selected_items', []);
+        $selectedItems = $request->input('selected_items');
         
         if($request->has(['type_export']) && $request->type_export == 1 && $selectedItems){
             $qr = QrCode::whereIn('id', $selectedItems)->get();
         }elseif($request->has(['kerjasama_id']) && $request->type_export == 0){
             $qr = QrCode::where('kerjasama_id', $request->kerjasama_id)->get();
         }else{
-            toastr()->error('Mohon Masukkan Filter Export', [], 'error');
+            toastr()->error('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
         

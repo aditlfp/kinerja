@@ -65,7 +65,7 @@ class LemburController extends Controller
 
     // dd($lembur);
     Lembur::create($lembur);
-    toastr()->success('Berhasil Absen Lembur', [], 'succes');
+    toastr()->success('Berhasil Absen Lembur');
     return redirect()->to(route('dashboard.index'));
 
     }
@@ -78,10 +78,10 @@ class LemburController extends Controller
             $lembur->jam_selesai = Carbon::now()->format('H:i:s');
             $lembur->save();
 
-            toastr()->success('Berhasil Mengakhiri Lembur', [], 'succes');
+            toastr()->success('Berhasil Mengakhiri Lembur');
             return redirect()->to(route('dashboard.index'));
         } else {
-            toastr()->success('Gagal Mengakhiri Lembur', [], 'errorr');
+            toastr()->success('Gagal Mengakhiri Lembur');
             return redirect()->back();
         }
     }
@@ -91,13 +91,13 @@ class LemburController extends Controller
         $lembur = Lembur::findOrFail($id);
         if ($lembur != null) {
             if ($lembur->image == null) {
-                toastr()->error('Image Tidak Ditemukan', [], 'error');
+                toastr()->error('Image Tidak Ditemukan');
             }
                 if ($lembur->image) {
                     Storage::disk('public')->delete('images/'.$lembur->image);
                 }
         }
-        toastr()->warning('Data Berhasil Dihapus !', [], 'warning');
+        toastr()->warning('Data Berhasil Dihapus !');
         return redirect()->back();
     }
 

@@ -18,7 +18,7 @@ class MitraMiddleware
     {
         if(Auth::user()->divisi->jabatan->code_jabatan != "MITRA")
         {
-            toastr()->error('Anda Tidak Memiliki Wewenang', [], 'error');
+            toastr()->error('Anda Tidak Memiliki Wewenang');
             session()->flush();
             Auth::logout();
             return redirect()->to(route('login'));
