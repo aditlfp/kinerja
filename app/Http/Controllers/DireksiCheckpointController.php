@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\CheckPoint;
+use App\Models\CheckPointMessage;
 use App\Models\Kerjasama;
 use App\Models\PekerjaanCp;
 use App\Models\User;
 use App\Models\WorkOrder;
+use App\Notifications\CheckPointReplyNotification;
 use App\Notifications\WorkOrderNotification;
 use App\Services\CheckPointCalendarService;
 use Carbon\Carbon;
@@ -169,6 +171,24 @@ class DireksiCheckpointController extends Controller
         $item->save();
 
         $user = User::where('id', $checkpoint->user_id)->first();
+
+        // The verdict note also opens (or continues) the conversation thread,
+        // so the employee can answer it in context instead of a dead-end note.
+        if (filled($item->note)) {
+            $item->messages()->create([
+                'user_id' => auth()->id(),
+                'sender_role' => CheckPointMessage::ROLE_MANAGEMENT,
+                'body' => $item->note,
+            ]);
+
+            $user?->notify(new CheckPointReplyNotification(
+                title: 'Catatan baru pada bukti pekerjaan',
+                message: 'Direksi menanggapi bukti pekerjaan Anda.',
+                checkPointId: (int) $checkpoint->id,
+                itemId: (int) $item->id,
+            ));
+        }
+
         $workOrder = $checkpoint->work_order_id ?? null;
         if ($workOrder != null) {
             $user->notify(

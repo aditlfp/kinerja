@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\RekapSettingsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CheckPointController;
+use App\Http\Controllers\CheckPointMessageController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireksiCheckpointController;
@@ -193,6 +194,7 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
     Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
+    Route::post('checkpoint-item/{item}/messages', [CheckPointMessageController::class, 'store'])->name('checkpoint-item.messages.store');
     Route::get('editBukti-checkpoint-user', [CheckPointController::class, 'editBukti'])->name('editBukti-checkpoint-user');
     Route::post('uploadBukti-checkpoint-user', [CheckPointController::class, 'uploadBukti'])->name('uploadBukti-checkpoint-user');
 
