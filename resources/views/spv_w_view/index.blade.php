@@ -132,8 +132,16 @@
         </style>
     @endpush
 
-    <x-main-div>
-        <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4">
+                <a href="{{ route('dashboard.index') }}"
+                    class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    <i class="ri-arrow-left-line"></i>
+                    Kembali ke Dashboard
+                </a>
+            </div>
+
             <div
                 class="mb-4 overflow-hidden bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -429,7 +437,7 @@
                 </div>
             </section>
         </div>
-    </x-main-div>
+    </div>
 
     <script>
         const SPVW_MODE_STORAGE_KEY = 'spvw_rekap_mode';

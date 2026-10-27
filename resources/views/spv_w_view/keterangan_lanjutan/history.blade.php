@@ -5,7 +5,7 @@
             ? $url . (str_contains($url, '?') ? '&' : '?') . 'client_id=' . $spvwClientId
             : $url;
     @endphp
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full max-w-6xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
             <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center justify-between gap-3">
@@ -123,5 +123,5 @@
                 {{ $keteranganLanjutans->links() }}
             </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

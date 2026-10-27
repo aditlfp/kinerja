@@ -3,7 +3,7 @@
         $spvwClientId = request('client_id', session('spvw.selected_client_id'));
     @endphp
 
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full max-w-3xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
             <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center gap-3">
@@ -243,7 +243,7 @@
                 </div>
             </div>
         </div>
-    </x-main-div>
+    </div>
 
     <script>
         function overtimeForm() {

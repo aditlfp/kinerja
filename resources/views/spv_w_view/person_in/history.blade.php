@@ -3,7 +3,7 @@
         $spvwClientId = request('client_id', session('spvw.selected_client_id'));
     @endphp
 
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
             <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -298,7 +298,7 @@
                         class="ri-send-plane-fill"></i>Ajukan Semua</button>
             </div>
         </div>
-    </x-main-div>
+    </div>
     <input type="checkbox" id="modal-edit" class="modal-toggle" />
     <div class="modal">
         <div class="modal-box max-h-[90vh] w-11/12 max-w-2xl overflow-y-auto rounded-lg p-4 sm:p-6">

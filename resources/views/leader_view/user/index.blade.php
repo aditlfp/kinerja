@@ -8,7 +8,7 @@
             <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
                 <p class="border-l-4 border-sky-500 text-center text-lg font-bold uppercase sm:text-2xl">
                 List Karyawan,<br>
-                {{ auth()->id() == 175 ? 'Semua Mitra' : Auth::user()->kerjasama->client->panggilan ?: Auth::user()->kerjasama->client->name }}
+                {{ auth()->id() == 175 ? 'Semua Mitra' : (Auth::user()->kerjasama->client->panggilan ?: Auth::user()->kerjasama->client->name) }}
             </p>
 
             <div class="flex flex-col items-center mx-2 my-2 sm:justify-center justify-start">

@@ -3,7 +3,7 @@
         $spvwClientId = request('client_id', session('spvw.selected_client_id'));
     @endphp
 
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
             <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -358,7 +358,7 @@
                 </button>
             </div>
         </div>
-    </x-main-div>
+    </div>
 
     <div x-data="{ open: false, detail: {} }" x-show="open" @detail-modal.window="open = true; detail = $event.detail"
         @keydown.escape.window="open = false" x-cloak class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">

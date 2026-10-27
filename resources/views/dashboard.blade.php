@@ -827,6 +827,8 @@
         </div>
 
 
+
+
         {{-- toggle --}}
         <div id="mainToggle"
             class="relative flex items-center justify-evenly
@@ -868,7 +870,13 @@
         <div id="dashboardPanels" class="overflow-hidden">
             <div id="dashboardPanelTrack" class="flex w-[300%] transition-transform duration-300 ease-in-out">
                 {{-- menu informasi --}}
-                <section class="w-1/3 shrink-0"></section>
+                <section class="w-1/3 shrink-0">
+                    @if (auth()->user()->kerjasama_id == 1)
+                        <div class="px-6 py-2">
+                            <x-notification-dropdown />
+                        </div>
+                    @endif
+                </section>
 
                 {{-- menu utama --}}
                 <section class="w-1/3 shrink-0">
