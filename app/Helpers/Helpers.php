@@ -227,3 +227,21 @@ function capitalizeWords($string)
 {
     return ucwords(strtolower($string));
 }
+
+if (! function_exists('monthBounds')) {
+    /**
+     * Inclusive [start, end] bounds for the month of the given date.
+     *
+     * Keeps date filters sargable (whereBetween) instead of
+     * whereYear()/whereMonth(), which wrap the column in functions and
+     * force a full scan even when the column is indexed.
+     */
+    function monthBounds($date): array
+    {
+        $d = $date instanceof \Carbon\CarbonInterface
+            ? $date
+            : \Carbon\Carbon::parse($date);
+
+        return [$d->copy()->startOfMonth()->startOfDay(), $d->copy()->endOfMonth()->endOfDay()];
+    }
+}

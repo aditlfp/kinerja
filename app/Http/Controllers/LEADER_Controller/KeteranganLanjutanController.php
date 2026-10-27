@@ -30,7 +30,7 @@ class KeteranganLanjutanController extends Controller
             if ($request->has('month') && $request->month) {
                 try {
                     $date = \Carbon\Carbon::createFromFormat('Y-m', $request->month);
-                    $query->whereYear('created_at', $date->year)->whereMonth('created_at', $date->month);
+                    $query->whereBetween('created_at', monthBounds($date));
                 } catch (\Throwable $e) {
                     // ignore invalid month format
                 }

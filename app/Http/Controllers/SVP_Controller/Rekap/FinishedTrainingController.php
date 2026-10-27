@@ -24,8 +24,7 @@ class FinishedTrainingController extends RekapController
             })
             ->when($request->month, function ($q) use ($request) {
                 $date = Carbon::createFromFormat('Y-m', $request->month);
-                $q->whereYear('date_finish_train', $date->year)
-                    ->whereMonth('date_finish_train', $date->month);
+                $q->whereBetween('date_finish_train', monthBounds($date));
             })
             ->orderByDesc('date_finish_train')
             ->get()

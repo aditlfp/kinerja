@@ -12,7 +12,9 @@
                 @php
                     $jobId = $item->pekerjaan_cp_id;
                     $manual = $item->input_manual;
-                    $status = $item->approve_status;
+                    $status = $item?->approve_status;
+                    $isDenied = $status === 'denied';
+                    $isAccepted = $status === 'accept';
                     $rowImages = $item->images->pluck('path')->all();
                 @endphp
 
@@ -30,24 +32,12 @@
                     @endif
                     <p class="mt-3 whitespace-pre-line text-sm text-slate-600">
                         {{ $item->deskripsi ?: 'Tidak ada deskripsi.' }}</p>
-                    @if ($status === 'denied')
-                        <div class="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700 capitalize">
-                            <strong>Ditolak:</strong>
-                            {{ $item->note ?? 'Bukti pekerjaan perlu diperbaiki.' }}</div>
-                    @elseif ($status === 'accept')
-                        <div class="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700 capitalize">
-                            <strong>Di Setujui:</strong>
-                            Bukti pekerjaan telah disetujui
-                        </div>
-                    @else
-                        <div class="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 capitalize">
-                            <strong>Menunggu:</strong>
-                            Bukti pekerjaan menunggu di approve
-                        </div>
-                    @endif
+                    <x-checkpoint-status-badge :status="$status" :label="$isAccepted ? 'Disetujui' : null" />
                     <p class="mt-4 text-xs text-slate-400">
                         {{ $item->tanggal?->format('Y-m-d') ?? optional($checkpoint->created_at)->format('Y-m-d') }}
                     </p>
+
+                    @include('check.partials.item-thread', ['item' => $item, 'viewerRole' => 'employee'])
                 </article>
             @endforeach
         </div>

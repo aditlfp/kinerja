@@ -260,8 +260,7 @@ class FinishedTrainingController extends Controller
             ->when($request->filled('month'), function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_finish_train', $date->year)
-                        ->whereMonth('date_finish_train', $date->month);
+                    $q->whereBetween('date_finish_train', monthBounds($date));
                 } catch (\Throwable $th) {
                     // ignore invalid month
                 }

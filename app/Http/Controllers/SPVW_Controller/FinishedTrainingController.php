@@ -254,8 +254,7 @@ class FinishedTrainingController extends Controller
             ->when($request->filled('month'), function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_finish_train', $date->year)
-                        ->whereMonth('date_finish_train', $date->month);
+                    $q->whereBetween('date_finish_train', monthBounds($date));
                 } catch (\Throwable $th) {
                     // ignore invalid month
                 }
@@ -282,7 +281,6 @@ class FinishedTrainingController extends Controller
     private function allowedUsersQuery()
     {
         return User::where('role_id', '!=', 2)
-            ->where('kerjasama_id', '!=', 1)
             ->when(!empty($this->allowedTargetJabatanIds()), fn($q) => $q->whereIn('jabatan_id', $this->allowedTargetJabatanIds()))
             ->when($this->selectedClientId() > 0, fn($q) => $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
     }
@@ -376,8 +374,17 @@ class FinishedTrainingController extends Controller
     private function allowedTargetJabatanIds(): array
     {
         $authJabatanId = (int) (auth()->user()->jabatan_id ?? 0);
-        if ($authJabatanId === 35) return [8, 11, 16, 17, 18];
-        if ($authJabatanId === 20) return [9, 10, 34, 36];
-        return [];
+
+        $allowed = match ($authJabatanId) {
+            35 => [8, 11, 16, 17, 18],
+            20 => [9, 10, 34, 36],
+            default => [],
+        };
+
+        // The supervisor's own account must stay selectable inside their own
+        // mitra, even when their jabatan is not one they manage.
+        return $authJabatanId > 0
+            ? array_values(array_unique([...$allowed, $authJabatanId]))
+            : $allowed;
     }
 }

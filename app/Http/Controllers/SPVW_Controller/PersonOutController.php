@@ -29,7 +29,6 @@ class PersonOutController extends Controller
         $users = User::select(['id', 'name', 'nama_lengkap'])
             ->where('id', '!=', auth()->user()->id)
             ->where('role_id', '!=', 2)
-            ->where('kerjasama_id', '!=', 1)
             ->when(!empty($this->allowedTargetJabatanIds()), fn($q) => $q->whereIn('jabatan_id', $this->allowedTargetJabatanIds()))
             ->when($this->selectedClientId() > 0, fn($q) => $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())))
             ->orderBy('nama_lengkap')
@@ -64,8 +63,7 @@ class PersonOutController extends Controller
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
 
-                    $q->whereYear('out_date', $date->year)
-                        ->whereMonth('out_date', $date->month);
+                    $q->whereBetween('out_date', monthBounds($date));
                 } catch (\Throwable $th) {
                     // ignore invalid month
                 }
@@ -83,7 +81,6 @@ class PersonOutController extends Controller
                 return PersonOut::whereHas('user', function ($q) use ($allowedJabatanIds) {
                     $q->withTrashed()
                         ->where('role_id', '!=', 2)
-                        ->where('kerjasama_id', '!=', 1)
                         ->when(!empty($allowedJabatanIds), fn($uq) => $uq->whereIn('jabatan_id', $allowedJabatanIds))
                         ->when($this->selectedClientId() > 0, fn($uq) => $uq->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
                 })->where(function ($q) {
@@ -166,7 +163,6 @@ class PersonOutController extends Controller
         $users = User::select(['id', 'name', 'nama_lengkap'])
             ->where('id', '!=', auth()->user()->id)
             ->where('role_id', '!=', 2)
-            ->where('kerjasama_id', '!=', 1)
             ->when(!empty($this->allowedTargetJabatanIds()), fn($q) => $q->whereIn('jabatan_id', $this->allowedTargetJabatanIds()))
             ->when($this->selectedClientId() > 0, fn($q) => $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())))
             ->orderBy('nama_lengkap')
@@ -290,7 +286,6 @@ class PersonOutController extends Controller
         $personOuts = PersonOut::whereHas('user', function ($q) use ($allowedJabatanIds) {
             $q->withTrashed()
                 ->where('role_id', '!=', 2)
-                ->where('kerjasama_id', '!=', 1)
                 ->when(!empty($allowedJabatanIds), fn($uq) => $uq->whereIn('jabatan_id', $allowedJabatanIds))
                 ->when($this->selectedClientId() > 0, fn($uq) => $uq->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
         })
@@ -365,8 +360,17 @@ class PersonOutController extends Controller
     private function allowedTargetJabatanIds(): array
     {
         $authJabatanId = (int) (auth()->user()->jabatan_id ?? 0);
-        if ($authJabatanId === 35) return [8, 11, 16, 17, 18];
-        if ($authJabatanId === 20) return [9, 10, 34, 36];
-        return [];
+
+        $allowed = match ($authJabatanId) {
+            35 => [8, 11, 16, 17, 18],
+            20 => [9, 10, 34, 36],
+            default => [],
+        };
+
+        // The supervisor's own account must stay selectable inside their own
+        // mitra, even when their jabatan is not one they manage.
+        return $authJabatanId > 0
+            ? array_values(array_unique([...$allowed, $authJabatanId]))
+            : $allowed;
     }
 }

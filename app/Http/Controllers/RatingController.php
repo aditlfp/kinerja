@@ -91,10 +91,11 @@ class RatingController extends Controller
 
     }
     public function rateKerja($id) {
-        $i = Carbon::now()->month;
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
         $user = User::findOrFail($id);
-        $absensi = Absensi::where('user_id', $id)->whereMonth('tanggal_absen', $i)->paginate(100);
-        $laporan = Laporan::where('user_id', $id)->whereMonth('created_at', $i)->paginate(200);
+        $absensi = Absensi::where('user_id', $id)->whereBetween('tanggal_absen', [$monthStart, $monthEnd])->paginate(100);
+        $laporan = Laporan::where('user_id', $id)->whereBetween('created_at', [$monthStart, $monthEnd])->paginate(200);
         $rating = Rating::where('user_id', $id)->get();
         return view('rating.riwayat-kerja', compact('absensi', 'laporan', 'rating', 'user'));
     }

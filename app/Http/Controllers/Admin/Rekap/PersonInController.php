@@ -19,8 +19,10 @@ class PersonInController extends Controller
                 ->where('status', 'Di Ajukan')
                 ->when($request->month, function ($q) use ($request) {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_in', $date->year)
-                        ->whereMonth('date_in', $date->month);
+                    $q->whereBetween('date_in', [
+                        $date->copy()->startOfMonth()->toDateString(),
+                        $date->copy()->endOfMonth()->toDateString(),
+                    ]);
                 })
                 ->orderByDesc('date_in')
                 ->get();

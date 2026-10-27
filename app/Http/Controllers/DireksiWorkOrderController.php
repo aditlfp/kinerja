@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\WorkOrder;
-use App\Notifications\WorkOrderNotification;
+use App\Http\Requests\StoreWorkOrderRequest;
+use App\Services\WorkOrderService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class DireksiWorkOrderController extends Controller
 {
+    public function __construct(private readonly WorkOrderService $workOrderService)
+    {
+    }
+
     /**
      * Jabatan codes that use the MCS (Manager Cleaning Service) work-order flow.
      */
@@ -60,11 +65,11 @@ class DireksiWorkOrderController extends Controller
             ->select(['id', 'nama_lengkap', 'devisi_id', 'jabatan_id', 'kerjasama_id'])
             ->whereNotIn('name', ['admin', 'user']);
 
-        // if ($this->isMcs()) {
-        //     $managedJabatanIds = [9, 10, 12, 16, 19, 20, 21, 22, 23, 30, 31, 32, 34, 36, 37, 40, 41];
+        if ($this->isMcs()) {
+            $managedJabatanIds = [9, 10, 12, 16, 19, 20, 21, 22, 23, 30, 31, 32, 34, 36, 37, 40, 41];
 
-        //     return $query->whereHas('divisi', fn ($d) => $d->whereIn('jabatan_id', $managedJabatanIds));
-        // }
+            return $query->whereHas('divisi', fn ($divisi) => $divisi->whereIn('jabatan_id', $managedJabatanIds));
+        }
 
         return $query->whereNot('devisi_id', 18)->where('kerjasama_id', 1);
     }
@@ -114,24 +119,10 @@ class DireksiWorkOrderController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreWorkOrderRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
-            'tanggal' => ['required', 'date', 'after_or_equal:today'],
-            'deskripsi' => ['required', 'string', 'max:5000'],
-        ]);
-
-        $workOrder = WorkOrder::create($data + ['created_by' => Auth::id()]);
-        $user = User::where('id', $data['user_id'])->first();
-
-        $user->notify(
-            new WorkOrderNotification(
-                workOrderId: $workOrder->id,
-                title: 'Pekerjaan Baru',
-                message: 'Ada pekerjaan baru yang perlu kamu proses.'
-            )
-        );
+        $data = $request->validated();
+        $user = $this->workOrderService->store($data, $request->user())->user;
 
         return redirect()->route($this->prefix() . '.work-order.calendar', ['user' => $data['user_id']])
             ->with('success', 'Pekerjaan berhasil dikirim ke ' . $user->name . '.');

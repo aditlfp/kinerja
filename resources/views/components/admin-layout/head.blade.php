@@ -1755,4 +1755,8 @@
         })();
     </script>
 
+    {{-- Dropdown kustom untuk semua <select> native (progressive enhancement). --}}
+    <link rel="stylesheet" href="{{ URL::asset('css/nselect.css') }}?v={{ filemtime(public_path('css/nselect.css')) }}">
+    <script defer src="{{ URL::asset('js/nselect.js') }}?v={{ filemtime(public_path('js/nselect.js')) }}"></script>
+
 </head>

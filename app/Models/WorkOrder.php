@@ -40,7 +40,9 @@ class WorkOrder extends Model
      */
     public function getCreatorNameAttribute(): string
     {
-        return $this->creator?->nama_lengkap ?: User::where('name', 'DIREKTUR')->first()->nama_lengkap;
+        return $this->creator?->nama_lengkap
+            ?: User::where('name', 'DIREKTUR')->value('nama_lengkap')
+            ?: 'Direksi';
     }
 
     public function checkPoints()

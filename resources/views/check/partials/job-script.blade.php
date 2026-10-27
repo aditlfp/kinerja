@@ -103,11 +103,31 @@
                 syncRow(row);
             });
             bindDropdown(row);
+            // The staged list is the single source of truth for what gets
+            // uploaded. A file input is replaced on every new selection, so
+            // reading input.files here used to drop everything picked before
+            // and duplicate what was just picked (the change event hands over
+            // the same list the input now holds).
+            const rebuildFileInput = (row) => {
+                const staged = row.data('photo-files') || [];
+                const transfer = new DataTransfer();
+                staged.forEach((file) => transfer.items.add(file));
+                row.find('.photo-input')[0].files = transfer.files;
+                row.find('.photo-names').text(staged.map((file) => file.name).join(', '));
+            };
+
             const updatePhotos = function (files) {
                 const activeRow = this instanceof HTMLElement ? $(this) : this;
                 const input = activeRow.find('.photo-input')[0];
                 const editingPhoto = $(input).data('editing-photo');
+                const staged = activeRow.data('photo-files') || [];
+
                 if (editingPhoto?.length) {
+                    // Retaking a staged photo replaces it in place; a saved
+                    // photo only leaves the existing_img[] list.
+                    const stagedItems = activeRow.find('.photo-preview .photo-item[data-staged]');
+                    const position = stagedItems.index(editingPhoto);
+                    if (position > -1) staged.splice(position, 1);
                     editingPhoto.find('.existing-image').remove();
                     editingPhoto.remove();
                     $(input).removeData('editing-photo');
@@ -115,32 +135,30 @@
                 }
 
                 const limit = Number($('#form-cp').data('max-photos')) || 7;
-                const previousCount = input.files.length;
-                const merged = [...input.files, ...files];
-                const trimmed = merged.slice(0, limit);
+                const picked = Array.from(files).filter((file) => file.type.startsWith('image/'));
+                const accepted = picked.slice(0, Math.max(limit - staged.length, 0));
 
+                staged.push(...accepted);
+                activeRow.data('photo-files', staged);
+                rebuildFileInput(activeRow);
+
+                const overflow = picked.length - accepted.length;
                 const warning = activeRow.find('.photo-limit');
-                if (merged.length > limit) {
-                    warning.text(`Maksimal ${limit} foto per pekerjaan. ${merged.length - limit} foto terakhir tidak dipakai.`).removeClass('hidden');
+                if (overflow > 0) {
+                    warning.text(`Maksimal ${limit} foto per pekerjaan. ${overflow} foto terakhir tidak dipakai.`).removeClass('hidden');
                 } else {
                     warning.addClass('hidden').text('');
                 }
 
-                const transfer = new DataTransfer();
-                trimmed.forEach(file => transfer.items.add(file));
-                input.files = transfer.files;
-
                 const preview = activeRow.find('.photo-preview');
                 activeRow.find('.photo-placeholder').addClass('hidden');
-                trimmed.slice(previousCount).forEach(file => {
-                    if (!file.type.startsWith('image/')) return;
-                    const item = $('<div class="photo-item group relative"></div>');
+                accepted.forEach((file) => {
+                    const item = $('<div class="photo-item group relative" data-staged="1"></div>');
                     item.append($('<img class="h-full w-full rounded-lg object-cover ring-1 ring-slate-200">').attr({ src: URL.createObjectURL(file), alt: `Preview ${file.name}` }));
                     item.append('<button type="button" class="photo-delete absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white shadow-md" aria-label="Hapus foto"><i class="ri-close-line"></i></button>');
                     item.append('<button type="button" class="photo-edit absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-white shadow-md" aria-label="Edit foto"><i class="ri-pencil-line"></i></button>');
                     preview.append(item);
                 });
-                activeRow.find('.photo-names').text(trimmed.map(file => file.name).join(', '));
             };
 
             row.find('.photo-camera, .photo-gallery').on('change', function (event) {
@@ -158,7 +176,15 @@
             row.on('click', '.photo-delete', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                $(this).closest('.photo-item').remove();
+                const item = $(this).closest('.photo-item');
+                const staged = row.data('photo-files') || [];
+                const position = row.find('.photo-preview .photo-item[data-staged]').index(item);
+                if (position > -1) {
+                    staged.splice(position, 1);
+                    row.data('photo-files', staged);
+                    rebuildFileInput(row);
+                }
+                item.remove();
                 const preview = row.find('.photo-preview');
                 row.find('.photo-placeholder').toggleClass('hidden', preview.children().length > 0);
             });
@@ -305,15 +331,87 @@
 
         photoModal.find('.photo-modal-close').on('click', closePhotoModal);
 
+        // "Ambil foto" must never be a dead end. Ways it can fail here: no
+        // camera on the device, an insecure origin, or a WebView that swallows
+        // input.click(). In every case the same button opens the gallery,
+        // because a photo still has to get attached.
+        const notifyPhoto = (message) => {
+            if (window.toastr?.info) window.toastr.info(message);
+        };
+
+        // A picker that opens blurs the window; a swallowed click does nothing
+        // at all. Only the latter counts as dead, so an open camera is never
+        // interrupted.
+        const watchForDeadPicker = (input, onDead) => {
+            let opened = false;
+            let timer = null;
+            const markOpened = () => { opened = true; };
+            const settle = () => {
+                clearTimeout(timer);
+                window.removeEventListener('blur', markOpened);
+            };
+            timer = setTimeout(() => {
+                window.removeEventListener('blur', markOpened);
+                if (!opened && input.files.length === 0) onDead();
+            }, 1800);
+            window.addEventListener('blur', markOpened);
+            input.addEventListener('change', settle, { once: true });
+            input.addEventListener('cancel', settle, { once: true });
+        };
+
+        // Last resort: when even the gallery tap is swallowed, stop hiding the
+        // control and let the person tap the native file input itself.
+        const revealNativePicker = (galleryInput) => {
+            notifyPhoto('Pemilih berkas diblokir peramban ini. Ketuk tombol di bawah untuk memilih foto.');
+            galleryInput.removeClass('hidden').attr('aria-label', 'Pilih foto');
+        };
+
+        const openGalleryInstead = (input) => {
+            const row = $(input).data('photo-row');
+            const gallery = row?.find('.photo-gallery')[0];
+            if (!gallery) return;
+            // A retake that falls back must still replace the photo it was
+            // opened for, so carry the marker over to the gallery input.
+            $(gallery).data('editing-photo', $(input).data('editing-photo'));
+            notifyPhoto('Kamera tidak dapat dibuka, memilih foto dari galeri.');
+            watchForDeadPicker(gallery, () => revealNativePicker($(gallery)));
+            gallery.click();
+        };
+
+        // false = this device reports no camera, null = unknown, keep trying.
+        const cameraLooksAvailable = async () => {
+            if (!navigator.mediaDevices?.enumerateDevices) return null;
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                return devices.some((device) => device.kind === 'videoinput');
+            } catch (error) {
+                return null;
+            }
+        };
+
+        // Probed once at load. The check must NOT sit between the tap and
+        // input.click(): an await there breaks the user-gesture chain and
+        // strict WebViews then refuse the click outright.
+        let cameraStatus = null;
+        cameraLooksAvailable().then((value) => { cameraStatus = value; });
+
         photoModal.find('.photo-modal-camera').on('click', function () {
             const row = photoModal.data('row');
             const editingPhoto = row?.data('editing-photo');
             const input = photoModal.data('camera');
-            if (input) {
-                $(input).data('editing-photo', editingPhoto);
-                closePhotoModal();
-                input.click();
+            if (!input) return;
+
+            $(input).data('editing-photo', editingPhoto);
+            if (row) $(input).data('photo-row', row);
+            closePhotoModal();
+
+            if (cameraStatus === false) {
+                openGalleryInstead(input);
+                return;
             }
+
+            watchForDeadPicker(input, () => openGalleryInstead(input));
+            input.click();
         });
 
         photoModal.find('.photo-modal-gallery').on('click', function () {

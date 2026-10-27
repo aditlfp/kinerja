@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Cache;
  * Every row is
  *
  *   ['date' => Carbon, 'hasData' => bool, 'recordId' => int|null,
- *    'accepted' => bool, 'rejected' => bool, 'total' => int,
+ *    'accepted' => bool, 'rejected' => bool, 'hasNote' => bool, 'total' => int,
  *    'counts' => ['accept' => int, 'denied' => int, 'process' => int]]
+ *
+ * `hasNote` marks a day with a Direksi evaluation note, which stays editable
+ * even when the weekly reporting window is closed.
  *
  * The per-day maps are cached per user; the cache key matches the
  * `Cache::forget('checkpoint-calendar:'.$id)` calls made after writes. Typed
@@ -31,7 +34,7 @@ class CheckPointCalendarService
      *
      * @param  string|null  $type  Optional `type_check` filter (Direksi); when
      *                             given the query skips the cache.
-     * @return Collection<int, array{date: Carbon, hasData: bool, recordId: int|null, accepted: bool, rejected: bool, total: int, counts: array{accept: int, denied: int, process: int}}>
+     * @return Collection<int, array{date: Carbon, hasData: bool, recordId: int|null, accepted: bool, rejected: bool, hasNote: bool, total: int, counts: array{accept: int, denied: int, process: int}}>
      */
     public function forMonth(int $userId, Carbon $start, Carbon $end, ?string $type = null): Collection
     {
@@ -49,6 +52,7 @@ class CheckPointCalendarService
                 'recordId' => $maps['records']->get($key),
                 'accepted' => $counts['accept'] > 0,
                 'rejected' => $counts['denied'] > 0,
+                'hasNote' => $maps['notes']->has($key),
                 'total' => array_sum($counts),
                 'counts' => $counts,
             ]);
@@ -92,7 +96,7 @@ class CheckPointCalendarService
      * Per-user maps keyed by Y-m-d: which batch owns a day and the per-status
      * item counts for that day.
      *
-     * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>}
+     * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
     private function dateMaps(int $userId, ?string $type): array
     {
@@ -108,21 +112,22 @@ class CheckPointCalendarService
     }
 
     /**
-     * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>}
+     * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
     private function queryDateMaps(int $userId, ?string $type): array
     {
         $records = collect();
         $counts = collect();
+        $notes = collect();
 
         // Select only the columns the calendar consumes; items are eager
         // loaded so this stays at two queries no matter how many batches exist.
         CheckPoint::query()
-            ->with('items:id,check_point_id,tanggal,approve_status')
+            ->with('items:id,check_point_id,tanggal,approve_status,note')
             ->where('user_id', $userId)
             ->when($type, fn ($query) => $query->where('type_check', $type))
             ->get()
-            ->each(function (CheckPoint $checkPoint) use ($records, $counts): void {
+            ->each(function (CheckPoint $checkPoint) use ($records, $counts, $notes): void {
                 if ($checkPoint->items->isEmpty()) {
                     $records->put($checkPoint->created_at->toDateString(), $checkPoint->id);
 
@@ -144,10 +149,14 @@ class CheckPointCalendarService
                         'denied' => $existing['denied'] + $dayCounts['denied'],
                         'process' => $existing['process'] + $dayCounts['process'],
                     ]);
+
+                    if ($dayItems->contains(fn ($item) => filled($item->note))) {
+                        $notes->put($date, true);
+                    }
                 }
             });
 
-        return ['records' => $records, 'counts' => $counts];
+        return ['records' => $records, 'counts' => $counts, 'notes' => $notes];
     }
 
     private function cacheKey(int $userId): string

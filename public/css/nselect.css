@@ -1,0 +1,240 @@
+/* nselect — satu skin dropdown kustom untuk semua <select> native.
+   Progressive enhancement: select asli tetap ada di DOM (d sembunyikan
+   secara visual), jadi submit form, onchange, jQuery dan Alpine tetap
+   berjalan tanpa perubahan. Dimuat SETELAH css app: rule unlayered
+   mengalahkan @layer utilities, jadi class bawaan (daisyUI .select,
+   border/bg Tailwind yang disalin ke wrapper) netral. */
+
+.ns {
+    position: relative;
+    display: block;
+    border: 0 !important;
+    background: transparent !important;
+    background-image: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.ns[data-disabled] {
+    opacity: .6;
+}
+
+/* Kontrol asli: disembunyikan tapi tetap di-submit & tetap bisa
+   difokus browser untuk pesan validasi (bukan display:none). */
+.ns > select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    pointer-events: none;
+    appearance: none;
+}
+
+.ns > .ns-t {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .625rem .75rem;
+    border: 1px solid rgba(226, 232, 240, .9);
+    border-radius: .75rem;
+    background: rgba(248, 250, 252, .6);
+    color: rgb(51 65 85);
+    font: inherit;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color .5s cubic-bezier(.22, 1, .36, 1),
+        background-color .5s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .5s cubic-bezier(.22, 1, .36, 1);
+}
+
+.ns > .ns-t:hover:not(:disabled) {
+    border-color: rgb(203 213 225);
+    background: #fff;
+}
+
+.ns > .ns-t:focus-visible,
+.ns[data-open] > .ns-t {
+    outline: none;
+    border-color: rgb(125 211 252);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(186, 230, 253, .55);
+}
+
+.ns > .ns-t:disabled {
+    cursor: not-allowed;
+}
+
+.ns-l {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ns-c {
+    display: grid;
+    flex: none;
+    place-items: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 999px;
+    background: #fff;
+    color: rgb(148 163 184);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
+    transition: transform .5s cubic-bezier(.22, 1, .36, 1), color .5s cubic-bezier(.22, 1, .36, 1);
+}
+
+.ns[data-open] .ns-c {
+    transform: rotate(180deg);
+    color: rgb(2 132 199);
+}
+
+.ns-p {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    padding: .375rem;
+    border: 1px solid rgba(226, 232, 240, .9);
+    border-radius: .875rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .06), 0 28px 60px -30px rgba(15, 23, 42, .45);
+    animation: nselectPop .22s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.ns-p ul {
+    max-height: 15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.ns-o {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .625rem;
+    border-radius: .625rem;
+    color: rgb(71 85 105);
+    font-size: .8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color .25s cubic-bezier(.22, 1, .36, 1), color .25s cubic-bezier(.22, 1, .36, 1);
+    animation: nselectOption .18s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.ns-o + .ns-o {
+    margin-top: 2px;
+}
+
+.ns-o:hover,
+.ns-o[data-active] {
+    background: rgb(241 245 249);
+}
+
+.ns-o[aria-selected="true"] {
+    background: rgb(240 249 255);
+    color: rgb(2 132 199);
+    font-weight: 600;
+}
+
+.ns-x {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ns-chk {
+    display: grid;
+    flex: none;
+    place-items: center;
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-left: auto;
+    border-radius: 999px;
+    background: #fff;
+    color: rgb(2 132 199);
+    box-shadow: 0 0 0 1px rgba(186, 230, 253, .9), 0 1px 2px rgba(15, 23, 42, .06);
+    opacity: 0;
+    transform: scale(.6);
+    transition: opacity .3s cubic-bezier(.22, 1, .36, 1), transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.ns-o[aria-selected="true"] .ns-chk {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ns-o.ns-disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.ns-o.ns-disabled:hover,
+.ns-o.ns-disabled[data-active] {
+    background: transparent;
+}
+
+.ns-g {
+    padding: .5rem .625rem .25rem;
+    color: rgb(148 163 184);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+@keyframes nselectPop {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes nselectOption {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ns-p,
+    .ns-o {
+        animation: none;
+    }
+}

@@ -64,14 +64,14 @@ class MainController extends Controller
             $query->when(
                 $filter,
                 fn($q) => $q->whereDate('tanggal_absen', $filter),
-                fn($q) => $q->whereMonth('tanggal_absen', Carbon::now()->month)
+                fn($q) => $q->whereBetween('tanggal_absen', monthBounds(Carbon::now()))
             );
         } else {
             // For all other users:
             // - The filter is treated as a month selector.
             // - Default to the current month if no filter is provided.
-            $targetMonth = $filter ? Carbon::parse($filter)->month : Carbon::now()->month;
-            $query->whereMonth('tanggal_absen', $targetMonth);
+            $targetMonth = $filter ? Carbon::parse($filter) : Carbon::now();
+            $query->whereBetween('tanggal_absen', monthBounds($targetMonth));
         }
 
         // --- 5. Apply Role-Based and User-Specific Filters ---
@@ -146,7 +146,7 @@ class MainController extends Controller
     public function indexUser(Request $request)
     {
         // 1. Eager load relationships to prevent N+1 queries
-        $authUser = Auth::user()->load(['divisi.jabatan']);
+        $authUser = Auth::user()->load(['divisi.jabatan', 'kerjasama.client']);
 
         // 2. Get filter inputs
         $filterDivisi = $request->input('divisi');
@@ -154,14 +154,21 @@ class MainController extends Controller
 
         // 3. Optimize queries for dropdowns (select only what's needed)
         $divisi = Divisi::orderBy('name', 'asc')->pluck('name', 'id');
-        $mitra = Kerjasama::select('kerjasamas.*') // 1. Select columns only from the main table
-            ->join('clients', 'kerjasamas.client_id', '=', 'clients.id') // 2. Join the tables
-            ->orderBy('clients.name', 'asc') // 3. Order by the joined table's column
-            ->with('client:id,name') // 4. Still eager load the relationship for the model
+        $mitra = Kerjasama::query()
+            ->select('kerjasamas.id', 'kerjasamas.client_id')
+            ->join('clients', 'kerjasamas.client_id', '=', 'clients.id')
+            ->orderBy('clients.name', 'asc')
+            ->with('client:id,name,panggilan')
             ->get();
 
-        // 4. Start with a base query
-        $query = User::query();
+        // 4. Base query with eager-loaded relations and only the columns the view needs.
+        // This removes the N+1 on `$i->divisi->jabatan` and `$i->kerjasama->client`
+        // that previously fired up to 4 queries per row.
+        $baseQuery = fn() => User::query()
+            ->select(['id', 'name', 'nama_lengkap', 'email', 'image', 'devisi_id', 'kerjasama_id', 'jabatan_id'])
+            ->with(['divisi:id,name,jabatan_id', 'divisi.jabatan:id,code_jabatan', 'kerjasama:id,client_id', 'kerjasama.client:id,name,panggilan']);
+
+        $query = $baseQuery();
 
         // 5. Apply permission-based filtering and ordering using guard clauses
         // This flattens the nested if/else structure, making it much easier to read.
@@ -188,6 +195,7 @@ class MainController extends Controller
         // CO-CS Role
         if ($authUser->divisi->jabatan->code_jabatan === "CO-CS" || $authUser->jabatan_id == 20) {
             $query->whereHas('divisi.jabatan', fn($q) => $q->whereIn('code_jabatan', ['OCS', 'CO-CS']))
+                ->where('kerjasama_id', Auth::user()->kerjasama_id)
                 ->orderBy('nama_lengkap', 'asc');
         }
         // MITRA Role
@@ -220,7 +228,7 @@ class MainController extends Controller
 
             // Special Jabatan (ID 35) that can filter by Mitra
             if ($authUser->jabatan_id == 35) {
-                $query->orderBy('kerjasama_id', 'asc')->orderBy('nama_lengkap', 'asc');
+                $query->where('kerjasama_id', Auth::user()->kerjasama_id)->orderBy('kerjasama_id', 'asc')->orderBy('nama_lengkap', 'asc');
 
                 // Apply the mitra filter specifically for this role
                 if ($filterMitra) {
@@ -294,45 +302,25 @@ class MainController extends Controller
 
     public function storeAbsenSholat(Request $request)
     {
-        $absenRecords = Absensi::whereIn('user_id', $request->user)->where('tanggal_absen', Carbon::now()->format('Y-m-d'))->orderBy('user_id', 'asc')->get();
-        foreach ($absenRecords as $absen) {
-            if (Carbon::now()->format('H:i:s') >= '11:20:00' && Carbon::now()->format('H:i:s') <= '14:10:00') {
-                $img = $request->fotoSholat;
+        $now = Carbon::now();
+        $time = $now->format('H:i:s');
+        $field = match (true) {
+            $time >= '11:20:00' && $time <= '14:10:00' => ['fotoDzuhur', 'dzuhur'],
+            $time >= '17:20:00' && $time <= '18:45:00' => ['fotoMagrib', 'magrib'],
+            default => null,
+        };
 
-                $folderPath = "public/images/";
-                $image_parts = explode(";base64,", $img);
-                $image_type_aux = explode("image/", $image_parts[0]);
-                $image_type = $image_type_aux[1];
-                $formatName = uniqid() . '-data';
-                $image_base64 = base64_decode($image_parts[1]);
-                $fileName = $formatName . '.png';
-                $file = $folderPath . $fileName;
-                Storage::put($file, $image_base64);
+        if ($field) {
+            $imageParts = explode(';base64,', (string) $request->fotoSholat, 2);
+            abort_unless(count($imageParts) === 2, 422, 'Foto tidak valid.');
+            $fileName = uniqid('', true) . '-data.png';
+            Storage::put('public/images/' . $fileName, base64_decode($imageParts[1], true));
 
-                $absen->fotoDzuhur = $fileName;
-
-                $absen->dzuhur = 1;
-            } else if (Carbon::now()->format('H:i:s') >= '17:20:00' && Carbon::now()->format('H:i:s') <= '18:45:00') {
-                $img = $request->fotoSholat;
-
-                $folderPath = "public/images/";
-                $image_parts = explode(";base64,", $img);
-                $image_type_aux = explode("image/", $image_parts[0]);
-                $image_type = $image_type_aux[1];
-                $formatName = uniqid() . '-data';
-                $image_base64 = base64_decode($image_parts[1]);
-                $fileName = $formatName . '.png';
-                $file = $folderPath . $fileName;
-                Storage::put($file, $image_base64);
-
-                $absen->fotoMagrib = $fileName;
-
-                $absen->magrib = 1;
-            }
-            // dd($request->all(), $absen);
-            $absen->save();
+            Absensi::whereIn('user_id', $request->user)
+                ->where('tanggal_absen', $now->format('Y-m-d'))
+                ->update([$field[0] => $fileName, $field[1] => 1]);
         }
-        // dd($request->all(), $absenRecords);
+
         toastr()->success('Berhasil Absen Sholat');
         return to_route('dashboard.index');
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AbsensiRequest;
+use App\Http\Requests\StoreAbsensiRequest;
 use App\Models\Absensi;
 use App\Models\Client;
 use App\Models\Divisi;
@@ -17,28 +18,30 @@ use Carbon\CarbonPeriod;
 use GuzzleHttp\Client as HTTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http as httped;
 use Illuminate\Support\Facades\Log;
 // use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Services\AbsensiService;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 class AbsensiController extends Controller
 {
+    public function __construct(private readonly AbsensiService $absensiService) {}
+
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::user()->loadMissing(['divisi.jabatan', 'divisi.perlengkapan:id,name', 'kerjasama.client:id,name']);
         $now = Carbon::now();
         $today = $now->format('Y-m-d');
         $todayName = $now->translatedFormat('l'); // Nama hari dalam bahasa lokal
 
-        // Eager load only necessary fields
-        $dev = Divisi::with(['perlengkapan:id,name'])
-            ->where('id', $user->devisi_id)
-            ->get(['id']);
+        // Gunakan relasi divisi dari user yang sudah di-eager load
+        $dev = $user->divisi ? collect([$user->divisi]) : collect();
 
         // $client = Client::all();
 
@@ -62,18 +65,16 @@ class AbsensiController extends Controller
         }
 
         // Absensi dan jadwal user
-        $absensi = Absensi::with(['user', 'kerjasama', 'shift'])
+        $absensi = Absensi::query()
+            ->select(['id', 'user_id', 'shift_id', 'absensi_type_pulang', 'tanggal_absen', 'masuk', 'terus', 'tukar'])
+            ->with(['shift:id,shift_name,jam_start,jam_end'])
             ->where('user_id', $user->id)
-            ->latest()
+            ->latest('id')
             ->limit(5)
-            ->get(['absensi_type_pulang', 'tanggal_absen', 'masuk', 'terus', 'tukar']);
+            ->get();
 
-        // $jadwal = JadwalUser::where('user_id', $user->id)
-        //     ->latest()
-        //     ->get();
-
-        // Shift direksi
-        $dirShift = Shift::firstWhere('shift_name', 'DIREKSI');
+        // Shift direksi (di-cache karena konstan)
+        $dirShift = Cache::rememberForever('shift.direksi', fn () => Shift::firstWhere('shift_name', 'DIREKSI'));
 
         // Users belum absen hari ini
         $absenUserIdsToday = Absensi::where('tanggal_absen', $today)
@@ -81,7 +82,8 @@ class AbsensiController extends Controller
             ->unique()
             ->values();
 
-        $userL = User::where('kerjasama_id', $user->kerjasama_id)
+        $userL = User::select(['id', 'name', 'nama_lengkap', 'kerjasama_id', 'devisi_id'])
+            ->where('kerjasama_id', $user->kerjasama_id)
             ->whereNotIn('id', $absenUserIdsToday)
             ->whereNotIn('devisi_id', [2, 3, 4, 7, 8, 12, 14, 18, 20, 24, 26])
             ->where('id', '!=', $user->id)
@@ -107,13 +109,16 @@ class AbsensiController extends Controller
             $liburNasional = false;
 
             try {
-                $loginResponse = httped::timeout(30)->get('https://raw.githubusercontent.com/guangrei/APIHariLibur_V2/main/holidays.json');
+                $year = $now->year;
+                $holidayDates = Cache::remember("holidays.national.{$year}", 86400, function () {
+                    $response = httped::timeout(5)->get('https://raw.githubusercontent.com/guangrei/APIHariLibur_V2/main/holidays.json');
+                    return collect($response->json() ?? [])->keys()->all();
+                });
 
-                $holidayDates = collect($loginResponse->json() ?? [])->keys();
-                $liburNasional = $holidayDates->contains($today);
+                $liburNasional = in_array($today, $holidayDates, true);
                 $tesLib = $liburNasional ? $today : '';
             } catch (\Exception $e) {
-                // Handle error or log it if necessary
+                // Fallback graceful jika API offline
             }
 
             $afaLib = in_array($hLib, ['Minggu', 'Sabtu']) || ($liburNasional && $user->devisi_id != 26);
@@ -129,13 +134,14 @@ class AbsensiController extends Controller
         }
 
         $lokLok = Lokasi::query()
+            ->select(['id', 'client_id', 'latitude', 'longtitude', 'radius'])
             ->with('client:id,name')
             ->whereHas('client')
             ->get(['id', 'client_id', 'latitude', 'longtitude', 'radius']);
 
-        $penempatan = Kerjasama::query()
+        $penempatan = Cache::remember('absensi.penempatan', 300, fn () => Kerjasama::query()
             ->with('client:id,name')
-            ->get(['id', 'client_id']);
+            ->get(['id', 'client_id']));
 
         $matchedShifts = collect(); // default kosong
 
@@ -162,45 +168,44 @@ class AbsensiController extends Controller
 
     public function getShift($cli, $jab)
     {
-        $dev = Divisi::with(['jabatan', 'perlengkapan'])->get();
-        $shiftFirst = Shift::with(['jabatan'])->where('is_active', true)->orderBy('jam_start', 'asc');
-        $todayName = Carbon::now()->translatedFormat('l'); // Nama hari dalam bahasa lokal
-        $shift1 = $shiftFirst->where('jam_start', '>=', '04:00')->where('client_id', $cli)->where('jabatan_id', $jab)->get();
-        $shift2 = $shiftFirst->where('jam_start', '>=', '11:00')->where('client_id', $cli)->where('jabatan_id', $jab)->get();
-        $shift3 = $shiftFirst->where('jam_start', '>=', '16:00')->where('client_id', $cli)->where('jabatan_id', $jab)->get();
+        $dev = Divisi::select('id', 'name')->with(['jabatan:id,name', 'perlengkapan:id,name'])->get();
+        $todayName = Carbon::now()->translatedFormat('l');
+        $currentTime = Carbon::now()->format('H:i');
 
-        if (Carbon::now()->format('H:i') >= '04:00' && Carbon::now()->format('H:i') < '11:00') {
-            $shift = $shift1;
-        } elseif (Carbon::now()->format('H:i') >= '11:00' && Carbon::now()->format('H:i') < '24:00') {
-            $shift = $shift2;
-        } else {
-            $shift = $shift3;
-        }
+        $startTime = match (true) {
+            $currentTime >= '04:00' && $currentTime < '11:00' => '04:00',
+            $currentTime >= '11:00' && $currentTime < '24:00' => '11:00',
+            default => '16:00',
+        };
 
-        $matchedShifts = collect(); // default kosong
+        $shift = Shift::with(['jabatan:id,name'])
+            ->where('is_active', true)
+            ->where('jam_start', '>=', $startTime)
+            ->where('client_id', $cli)
+            ->where('jabatan_id', $jab)
+            ->orderBy('jam_start', 'asc')
+            ->get();
 
-        if (!is_string($shift)) {
+        if ($shift->isNotEmpty()) {
             $matchedShifts = $shift->filter(function ($s) use ($todayName) {
                 if (empty($s->hari)) {
                     return false;
                 }
-
-                $daysFromDb = json_decode($s->hari, true);
-
-                return in_array($todayName, $daysFromDb);
+                $days = json_decode($s->hari, true);
+                return is_array($days) && in_array($todayName, $days, true);
             });
+
+            if ($matchedShifts->isNotEmpty()) {
+                $shift = $matchedShifts->values();
+            }
         }
-
-        $shift = $matchedShifts->isNotEmpty() ? $matchedShifts : $shift;
-
-        // dd($shift);
 
         return response()->json(['shift' => $shift, 'dev' => $dev]);
     }
 
-    public function store(Request $request)
+    public function store(StoreAbsensiRequest $request)
     {
-        $rules = [
+        /*
             'user_id' => 'required',
             'kerjasama_id' => 'required',
             'shift_id' => 'required',
@@ -239,20 +244,12 @@ class AbsensiController extends Controller
             // dd($request->all());
         }
 
-        // Melakukan validasi
-        $validator = Validator::make($request->all(), $rules, $customMessages);
-
-        // dd($request->all());
-        if ($validator->fails()) {
-            toastr()->error('Formulir tidak lengkap. Mohon isi semua kolom.');
-
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        */
         $user = Auth::user()->id;
         $absensi = Absensi::latest()
             ->where('user_id', $user)
             ->whereNotNull('absensi_type_pulang')
-            ->whereDate('created_at', Carbon::now()->format('Y-m-d'))
+            ->whereBetween('created_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()])
             ->get();
         if (Auth::user()->kerjasama_id != 1 || !in_array(Auth::user()->devisi_id, [2, 3, 7, 8, 12, 14, 18])) {
             // Check if image was uploaded
@@ -320,7 +317,11 @@ class AbsensiController extends Controller
 
         if ($canBypassRadius || $isUmg || $radius <= $radiusMitra) {
             try {
-                DB::beginTransaction();
+                if ($absensi && count($absensi) > 2) {
+                    toastr()->error('Tidak Dapat Absensi Lebih 2x');
+                    return redirect()->back();
+                }
+
                 if ($absensi) {
                     if (count($absensi) <= 2) {
                         $absensi = new Absensi();
@@ -345,8 +346,7 @@ class AbsensiController extends Controller
                             'tukar_id' => $tukar_id,
                         ];
 
-                        $absensi->create($absensiData);
-                        DB::commit();
+                        $this->absensiService->create($absensiData);
                         toastr()->success('Berhasil Absen Hari Ini');
 
                         $users = Auth::user();
@@ -380,8 +380,7 @@ class AbsensiController extends Controller
                         'tukar_id' => $tukar_id,
                     ];
 
-                    $absensi->create($absensiData);
-                    DB::commit();
+                    $this->absensiService->create($absensiData);
                     toastr()->success('Berhasil Absen Hari Ini');
 
                     $users = Auth::user();
@@ -1029,9 +1028,11 @@ class AbsensiController extends Controller
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->orderBy('tanggal_absen', 'desc')
                 ->paginate(50);
-            $point = (clone $baseQuery)->whereNotNull('point_id')->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
-            $absenTiga = (clone $baseQuery)->whereMonth('created_at', $month)->whereYear('created_at', $year)->whereNotNull('absensi_type_masuk')->whereNotNull('absensi_type_pulang')->get();
-            $telat = (clone $baseQuery)->whereMonth('created_at', $month)->whereYear('created_at', $year)->where('keterangan', 'telat')->paginate(50);
+            $monthStart = Carbon::create($year, $month, 1)->startOfMonth();
+            $monthEnd = Carbon::create($year, $month, 1)->endOfMonth();
+            $point = (clone $baseQuery)->whereNotNull('point_id')->whereBetween('created_at', [$monthStart, $monthEnd])->get();
+            $absenTiga = (clone $baseQuery)->whereBetween('created_at', [$monthStart, $monthEnd])->whereNotNull('absensi_type_masuk')->whereNotNull('absensi_type_pulang')->get();
+            $telat = (clone $baseQuery)->whereBetween('created_at', [$monthStart, $monthEnd])->where('keterangan', 'telat')->paginate(50);
 
             // Effective days for filtered month
             $date = Carbon::createFromDate($year, $month, 1);

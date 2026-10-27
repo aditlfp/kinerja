@@ -23,8 +23,7 @@ class PersonOutController extends RekapController
             })->when($request->month, function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('out_date', $date->year)
-                        ->whereMonth('out_date', $date->month);
+                    $q->whereBetween('out_date', monthBounds($date));
                 } catch (\Exception $e) {
                     throw $e;
                 }

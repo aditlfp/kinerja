@@ -24,8 +24,7 @@ class CuttingController extends RekapController
             })
             ->when($request->month, function ($q) use ($request) {
                 $date = Carbon::createFromFormat('Y-m', $request->month);
-                $q->whereYear('date_cut', $date->year)
-                    ->whereMonth('date_cut', $date->month);
+                $q->whereBetween('date_cut', monthBounds($date));
             })
             ->orderByDesc('date_cut')
             ->get();

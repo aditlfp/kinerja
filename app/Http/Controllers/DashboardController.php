@@ -151,7 +151,7 @@ class DashboardController extends Controller
         if (($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'DIREKSI') {
             $pendingDireksiCheckpoints = CheckPoint::with(['user:id,nama_lengkap', 'items:id,check_point_id,tanggal,approve_status,pekerjaan_cp_id,input_manual'])
                 ->where('type_check', 'dikerjakan')
-                ->whereYear('created_at', $now->year)
+                ->whereBetween('created_at', [$now->copy()->startOfYear(), $now->copy()->endOfYear()])
                 ->latest('id')->get()
                 ->flatMap(function (CheckPoint $checkpoint) {
                     return $checkpoint->items
@@ -213,15 +213,12 @@ class DashboardController extends Controller
         // data untuk dashboard mitra
         if ($user->jabatan->code_jabatan == "MITRA") {
             $jumlahKaryawan = User::where('kerjasama_id', $user->kerjasama_id)->count();
-            $jumlahAbsensiHariIni = Absensi::whereHas('user', function ($query) use ($user) {
-                $query->where('kerjasama_id', $user->kerjasama_id);
-            })->whereBetween('created_at', [$dayStart, $dayEnd])->count();
-            $jumlahIzinHariIni = Izin::whereHas('user', function ($query) use ($user) {
-                $query->where('kerjasama_id', $user->kerjasama_id);
-            })->whereBetween('updated_at', [$dayStart, $dayEnd])->count();
-            $jumlahLemburHariIni = Lembur::whereHas('user', function ($query) use ($user) {
-                $query->where('kerjasama_id', $user->kerjasama_id);
-            })->whereBetween('created_at', [$dayStart, $dayEnd])->count();
+            $jumlahAbsensiHariIni = Absensi::where('kerjasama_id', $user->kerjasama_id)
+                ->whereBetween('created_at', [$dayStart, $dayEnd])->count();
+            $jumlahIzinHariIni = Izin::where('kerjasama_id', $user->kerjasama_id)
+                ->whereBetween('updated_at', [$dayStart, $dayEnd])->count();
+            $jumlahLemburHariIni = Lembur::where('kerjasama_id', $user->kerjasama_id)
+                ->whereBetween('created_at', [$dayStart, $dayEnd])->count();
 
             return view('mitra_view.index', compact(
                 'jumlahKaryawan',

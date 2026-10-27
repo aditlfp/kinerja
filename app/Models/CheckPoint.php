@@ -55,6 +55,22 @@ class CheckPoint extends Model
         return $dates->isEmpty() ? collect([$this->created_at]) : $dates;
     }
 
+    /**
+     * True when a reviewer (Direksi/Manager CS) left an evaluation note on any
+     * job row. Those rows stay editable after the weekly window closes.
+     */
+    public function hasEvaluationNotes(): bool
+    {
+        if ($this->relationLoaded('items')) {
+            return $this->items->contains(fn (CheckPointItem $item) => $item->hasEvaluationNote());
+        }
+
+        return $this->items()
+            ->whereNotNull('note')
+            ->where('note', '!=', '')
+            ->exists();
+    }
+
     public function divisi()
     {
         return $this->belongsTo(Divisi::class);

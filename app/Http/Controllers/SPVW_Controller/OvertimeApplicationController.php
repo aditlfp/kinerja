@@ -27,7 +27,6 @@ class OvertimeApplicationController extends Controller
         $allowedJabatanIds = $this->allowedTargetJabatanIds();
         $users = User::select(['id', 'name', 'nama_lengkap'])
             ->where('role_id', '!=', 2)
-            ->where('kerjasama_id', '!=', 1)
             ->when(!empty($allowedJabatanIds), fn($q) => $q->whereIn('jabatan_id', $allowedJabatanIds))
             ->when($this->selectedClientId() > 0, fn($q) => $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())))
             ->orderBy('nama_lengkap')
@@ -66,8 +65,8 @@ class OvertimeApplicationController extends Controller
         $overtimes = Overtime::with(['user:id,name,nama_lengkap', 'createdBy:id,nama_lengkap'])
             ->select(['id', 'user_id', 'date_overtime', 'desc', 'type_overtime', 'type_overtime_manual', 'foto_bukti', 'created_by_user_id', 'status', 'created_at'])
             ->whereHas('user', function ($q) use ($allowedJabatanIds) {
-                $q->where('role_id', '!=', 2)
-                    ->where('kerjasama_id', '!=', 1)
+                $q                    ->where('role_id', '!=', 2)
+
                     ->when(!empty($allowedJabatanIds), fn($userQuery) => $userQuery->whereIn('jabatan_id', $allowedJabatanIds))
                     ->when($this->selectedClientId() > 0, fn($userQuery) => $userQuery->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
             })
@@ -77,8 +76,7 @@ class OvertimeApplicationController extends Controller
             ->when($request->month, function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_overtime', $date->year)
-                        ->whereMonth('date_overtime', $date->month);
+                    $q->whereBetween('date_overtime', monthBounds($date));
                 } catch (\Throwable $th) {
                     // Ignore invalid month and keep base query
                 }
@@ -108,7 +106,6 @@ class OvertimeApplicationController extends Controller
         $allowedJabatanIds = $this->allowedTargetJabatanIds();
         $users = User::select(['id', 'name', 'nama_lengkap'])
             ->where('role_id', '!=', 2)
-            ->where('kerjasama_id', '!=', 1)
             ->when(!empty($allowedJabatanIds), fn($q) => $q->whereIn('jabatan_id', $allowedJabatanIds))
             ->when($this->selectedClientId() > 0, fn($q) => $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())))
             ->orderBy('nama_lengkap')
@@ -213,8 +210,8 @@ class OvertimeApplicationController extends Controller
 
         $allowedJabatanIds = $this->allowedTargetJabatanIds();
         $overtimes = Overtime::whereHas('user', function ($q) use ($allowedJabatanIds) {
-            $q->where('role_id', '!=', 2)
-                ->where('kerjasama_id', '!=', 1)
+            $q                ->where('role_id', '!=', 2)
+
                 ->when(!empty($allowedJabatanIds), fn($userQuery) => $userQuery->whereIn('jabatan_id', $allowedJabatanIds))
                 ->when($this->selectedClientId() > 0, fn($userQuery) => $userQuery->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
         })
@@ -257,8 +254,8 @@ class OvertimeApplicationController extends Controller
         $allowedJabatanIds = $this->allowedTargetJabatanIds();
 
         return Overtime::whereHas('user', function ($q) use ($allowedJabatanIds) {
-            $q->where('role_id', '!=', 2)
-                ->where('kerjasama_id', '!=', 1)
+            $q                ->where('role_id', '!=', 2)
+
                 ->when(!empty($allowedJabatanIds), fn($userQuery) => $userQuery->whereIn('jabatan_id', $allowedJabatanIds))
                 ->when($this->selectedClientId() > 0, fn($userQuery) => $userQuery->whereHas('kerjasama', fn($k) => $k->where('client_id', $this->selectedClientId())));
         })
@@ -293,14 +290,16 @@ class OvertimeApplicationController extends Controller
     {
         $authJabatanId = (int) (auth()->user()->jabatan_id ?? 0);
 
-        if ($authJabatanId === 35) {
-            return [8, 11, 16, 17, 18];
-        }
+        $allowed = match ($authJabatanId) {
+            35 => [8, 11, 16, 17, 18],
+            20 => [9, 10, 34, 36],
+            default => [],
+        };
 
-        if ($authJabatanId === 20) {
-            return [9, 10, 34, 36];
-        }
-
-        return [];
+        // The supervisor's own account must stay selectable inside their own
+        // mitra, even when their jabatan is not one they manage.
+        return $authJabatanId > 0
+            ? array_values(array_unique([...$allowed, $authJabatanId]))
+            : $allowed;
     }
 }

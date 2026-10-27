@@ -52,8 +52,7 @@ class PersonOutController extends Controller
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
 
-                    $q->whereYear('out_date', $date->year)
-                        ->whereMonth('out_date', $date->month);
+                    $q->whereBetween('out_date', monthBounds($date));
                 } catch (\Throwable $th) {
                     // ignore invalid month
                 }
@@ -112,23 +111,23 @@ class PersonOutController extends Controller
 
             abort_unless($this->visibleUsers()->whereKey($validated['user_id'])->exists(), 403);
 
-                if ($request->hasFile('img')) {
-                    try {
-                        $validated['img'] = UploadImageV2($request, 'img');
-                        if (empty($validated['img'])) {
-                            return redirect()->back()->withInput()->with('toast', [
-                                'type' => 'error',
-                                'message' => 'Gagal mengunggah gambar. Silakan coba lagi.',
-                            ]);
-                        }
-                    } catch (\Exception $e) {
-                        report($e);
+            if ($request->hasFile('img')) {
+                try {
+                    $validated['img'] = UploadImageV2($request, 'img');
+                    if (empty($validated['img'])) {
                         return redirect()->back()->withInput()->with('toast', [
                             'type' => 'error',
                             'message' => 'Gagal mengunggah gambar. Silakan coba lagi.',
                         ]);
                     }
-               }
+                } catch (\Exception $e) {
+                    report($e);
+                    return redirect()->back()->withInput()->with('toast', [
+                        'type' => 'error',
+                        'message' => 'Gagal mengunggah gambar. Silakan coba lagi.',
+                    ]);
+                }
+            }
 
             $validated['created_by_user_id'] = auth()->id();
             PersonOut::create($validated);
@@ -137,17 +136,14 @@ class PersonOutController extends Controller
                 'type' => 'success',
                 'message' => 'Berhasil mengajukan data!',
             ]);
-        } catch (QueryException $th) {
-            if ((int) $th->getCode() === 23000 && str_contains(strtolower($th->getMessage()), 'person_outs_user_id_unique')) {
-                return redirect()->back()->withInput()->with('toast', [
-                    'type' => 'error',
-                    'message' => 'User ini sudah pernah diajukan pada data personil keluar. Silakan edit data yang sudah ada.',
-                ]);
-            }
-
-            throw $th;
+        } catch (\Illuminate\Validation\ValidationException $th) {
+            return redirect()->back()->withInput()->with('toast', [
+                'type' => 'error',
+                'message' => collect($th->errors())->flatten()->first(),
+            ]);
         } catch (\Throwable $th) {
             report($th);
+
             return redirect()->back()->withInput()->with('toast', [
                 'type' => 'error',
                 'message' => 'Terjadi kesalahan saat menyimpan data personil keluar. Silakan coba lagi.',

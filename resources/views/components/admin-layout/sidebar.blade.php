@@ -113,6 +113,7 @@
             'items' => [
                 ['label' => 'Data Checkpoint', 'icon' => 'task_alt', 'url' => route('admin.cp.index'), 'patterns' => ['admin.cp.index']],
                 ['label' => 'Data Pekerjaan CP', 'icon' => 'checklist', 'url' => route('admin.pekerjaan-cp.index'), 'patterns' => ['admin.pekerjaan-cp.index']],
+                ['label' => 'Pengaturan', 'icon' => 'settings', 'url' => route('admin.cp.settings'), 'patterns' => ['admin.cp.settings']],
             ],
         ],
         [
@@ -166,7 +167,7 @@
      agar drawer tetap tertutup di mobile walau JavaScript belum jalan. --}}
 <aside :class="{ 'translate-x-0': mobileSidebarOpen, '-translate-x-full': !mobileSidebarOpen }"
     :data-drawer-open="mobileSidebarOpen ? 'true' : null"
-    class="admin-drawer fixed inset-y-0 left-0 z-10 flex w-60 flex-col overflow-hidden border-r border-(--md-sys-color-outline-variant) bg-(--md-sys-color-surface-container-low) lg:translate-x-0">
+    class="admin-drawer fixed inset-y-0 left-0 z-50 flex w-60 flex-col overflow-hidden border-r border-(--md-sys-color-outline-variant) bg-(--md-sys-color-surface-container-low) lg:translate-x-0">
 
     {{-- Header --}}
     <div class="flex h-16 shrink-0 items-center gap-3 px-4">

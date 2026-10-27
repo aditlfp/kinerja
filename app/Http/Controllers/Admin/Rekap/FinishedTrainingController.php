@@ -23,8 +23,10 @@ class FinishedTrainingController extends Controller
                 })
                 ->when($request->month, function ($q) use ($request) {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_finish_train', $date->year)
-                        ->whereMonth('date_finish_train', $date->month);
+                    $q->whereBetween('date_finish_train', [
+                        $date->copy()->startOfMonth()->toDateString(),
+                        $date->copy()->endOfMonth()->toDateString(),
+                    ]);
                 })
                 ->orderByDesc('date_finish_train')
                 ->get()

@@ -55,9 +55,16 @@ class CheckPointSyncService
                 'latitude' => $row['latitude'],
                 'longtitude' => $row['longtitude'],
                 'approve_status' => $row['approve_status'],
-                'note' => $row['note'],
                 'urutan' => $urutan,
             ]);
+
+            // `note` is management feedback (Direksi/Manager CS) and the
+            // employee edit form never posts it, so only a brand-new row takes
+            // the submitted value — an existing row keeps the note it has.
+            // Copying it from the request used to erase the feedback on save.
+            if (! $item->exists) {
+                $item->note = $row['note'];
+            }
 
             $item->check_point_id = $checkPoint->id;
             $item->save();
@@ -74,6 +81,41 @@ class CheckPointSyncService
                 $item->images->each(fn ($image) => Storage::disk('public')->delete('images/' . $image->path));
                 $item->delete();
             });
+    }
+
+    /**
+     * Update only the rows that carry a Direksi evaluation note.
+     *
+     * While the weekly window is closed an employee may still fix the work that
+     * was commented on, and nothing else: rows without a note keep their values,
+     * no row is added and no row is removed.
+     */
+    public function syncEvaluatedRows(CheckPoint $checkPoint, Request $request): void
+    {
+        $submitted = $this->normalise($request);
+
+        $existing = $checkPoint->items()->with('images')->get()->keyBy('id');
+
+        foreach ($submitted as $row) {
+            $item = $row['id'] !== null ? $existing->get($row['id']) : null;
+
+            if (! $item || ! $item->hasEvaluationNote()) {
+                continue;
+            }
+
+            $item->fill([
+                'pekerjaan_cp_id' => $row['pekerjaan_cp_id'],
+                'input_manual' => $row['input_manual'],
+                'deskripsi' => $row['deskripsi'],
+                'tanggal' => $row['tanggal'],
+                'latitude' => $row['latitude'],
+                'longtitude' => $row['longtitude'],
+                'approve_status' => $row['approve_status'],
+            ]);
+            $item->save();
+
+            $this->syncImages($item, $row['keep_images'], $row['new_images']);
+        }
     }
 
     /**

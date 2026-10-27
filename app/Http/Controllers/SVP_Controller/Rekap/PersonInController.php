@@ -20,8 +20,7 @@ class PersonInController extends RekapController
             ->whereIn('jabatan_id', $this->allowedSeeData())
             ->when($request->month, function ($q) use ($request) {
                 $date = Carbon::createFromFormat('Y-m', $request->month);
-                $q->whereYear('date_in', $date->year)
-                    ->whereMonth('date_in', $date->month);
+                $q->whereBetween('date_in', monthBounds($date));
             })
             ->orderByDesc('date_in')
             ->get();

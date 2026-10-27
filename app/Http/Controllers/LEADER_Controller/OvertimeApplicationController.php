@@ -73,8 +73,7 @@ class OvertimeApplicationController extends Controller
             ->when($request->month, function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_overtime', $date->year)
-                        ->whereMonth('date_overtime', $date->month);
+                    $q->whereBetween('date_overtime', monthBounds($date));
                 } catch (\Throwable $th) {
                     // Ignore invalid month and keep base query
                 }

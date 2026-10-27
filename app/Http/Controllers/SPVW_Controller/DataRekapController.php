@@ -24,25 +24,34 @@ class DataRekapController extends Controller
 
         $authClientKabupaten = auth()->user()->kerjasama?->client?->kabupaten;
         $allowedKabupaten = $this->nearbyKabupatenTerms($authClientKabupaten);
+        $ownClientId = (int) (auth()->user()->kerjasama?->client_id ?? 0);
 
         $clients = Client::query()
             ->select(['id', 'name'])
-            ->where('id', '!=', 1)
             ->when($allowedKabupaten, fn($query) => $query->where(function ($q) use ($allowedKabupaten) {
                 foreach ($allowedKabupaten as $kabupaten) {
                     $q->orWhere('kabupaten', 'like', "%{$kabupaten}%");
                 }
             }))
-            ->when(in_array((int) (auth()->user()->jabatan_id ?? 0), [35, 20], true), function ($query) {
+            ->when(in_array((int) (auth()->user()->jabatan_id ?? 0), [35, 20], true), function ($query) use ($ownClientId) {
                 $allowedJabatanIds = ((int) (auth()->user()->jabatan_id ?? 0) == 35)
                     ? [8, 11, 16, 17, 18]
                     : [9, 10, 34, 36];
 
-                $query->whereHas('kerjasama', function ($kerjasamaQuery) use ($allowedJabatanIds) {
-                    $kerjasamaQuery->whereIn('id', User::query()
-                        ->select('kerjasama_id')
-                        ->whereIn('jabatan_id', $allowedJabatanIds)
-                        ->whereNotNull('kerjasama_id'));
+                $query->where(function ($visibility) use ($allowedJabatanIds, $ownClientId) {
+                    $visibility->whereHas('kerjasama', function ($kerjasamaQuery) use ($allowedJabatanIds) {
+                        $kerjasamaQuery->whereIn('id', User::query()
+                            ->select('kerjasama_id')
+                            ->whereIn('jabatan_id', $allowedJabatanIds)
+                            ->whereNotNull('kerjasama_id'));
+                    });
+
+                    // A supervisor must always be able to pick the mitra they
+                    // are assigned to, even when none of its staff holds a
+                    // jabatan they may review yet.
+                    if ($ownClientId > 0) {
+                        $visibility->orWhere('id', $ownClientId);
+                    }
                 });
             })
             ->orderBy('name')

@@ -4,6 +4,7 @@
         $selectedDate = request('tanggal', $items->first()?->tanggal?->format('Y-m-d') ?? optional($cex->created_at)->format('Y-m-d'));
         $firstLatitude = $items->first()?->latitude;
         $firstLongitude = $items->first()?->longtitude;
+        $windowLocked = $windowLocked ?? false;
     @endphp
     <div class="my-4 mx-auto w-full max-w-4xl px-4 py-6">
         <div
@@ -17,6 +18,18 @@
                         <i class="ri-arrow-left-s-line"></i>
                         Kembali</a>
                 </div>
+                @if ($windowLocked)
+                    <div class="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-amber-800">
+                        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-600">
+                            <i class="ri-lock-2-line text-lg"></i>
+                        </span>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold">Pekan laporan sudah ditutup</p>
+                            <p class="mt-0.5 text-xs leading-5 text-amber-700">Hanya pekerjaan yang punya catatan
+                                evaluasi Direksi yang masih bisa diperbaiki. Pekerjaan lain hanya bisa dibaca.</p>
+                        </div>
+                    </div>
+                @endif
                 <form id="form-cp" method="POST" enctype="multipart/form-data"
                     data-max-photos="{{ \App\Services\CheckPointSyncService::MAX_IMAGES_PER_ITEM }}"
                     action="{{ route('checkpoint-user.update', $cex->id) }}">
@@ -38,6 +51,7 @@
                                 'pcp' => $pcp,
                                 'selectedDate' => $selectedDate,
                                 'workOrder' => $cex->workOrder,
+                                'windowLocked' => $windowLocked,
                             ])
                         @empty
                             @include('check.partials.job-row-edit', [
@@ -46,12 +60,16 @@
                                 'pcp' => $pcp,
                                 'selectedDate' => $selectedDate,
                                 'workOrder' => $cex->workOrder,
+                                'windowLocked' => $windowLocked,
                             ])
                         @endforelse
                     </div>
-                    <button id="add-job" type="button"
-                        class="btn mt-4 w-full border-2 border-dashed border-sky-300 bg-sky-50 text-sky-700 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100">+
-                        Tambah detail pekerjaan</button><button id="submit-job" type="submit"
+                    @unless ($windowLocked)
+                        <button id="add-job" type="button"
+                            class="btn mt-4 w-full border-2 border-dashed border-sky-300 bg-sky-50 text-sky-700 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-100">+
+                            Tambah detail pekerjaan</button>
+                    @endunless
+                    <button id="submit-job" type="submit"
                         class="btn mt-5 w-full border-0 bg-sky-500 font-bold text-white shadow-lg transition duration-200 hover:-translate-y-0.5 hover:shadow-lg">Simpan
                         perubahan</button>
                 </form>
@@ -64,6 +82,7 @@
         'pcp' => $pcp,
         'selectedDate' => $selectedDate,
         'workOrder' => $cex->workOrder,
+        'windowLocked' => $windowLocked,
     ])</template>
     @include('check.partials.job-script', ['isEdit' => true])
 </x-app-layout>

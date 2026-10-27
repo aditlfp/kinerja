@@ -20,6 +20,71 @@
                         class="mr-1.5 ri-arrow-left-line"></i> Kembali</a>
             </div>
         </section>
+
+        @php
+            // Days that still hold evidence direksi has not reviewed. The
+            // calendar rows already carry their per-day status counts, so this
+            // costs no extra query — it just makes those days findable without
+            // scanning the whole grid for the amber marker.
+            $pendingDays = $calendar
+                ->filter(fn ($item) => $item['hasData'] && $item['recordId'] && $item['counts']['process'] > 0)
+                ->values();
+            $pendingTotal = (int) $pendingDays->sum(fn ($item) => $item['counts']['process']);
+        @endphp
+
+        <section
+            class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5" data-pending-days>
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <h2 class="flex items-center gap-2 text-sm font-bold text-gray-900">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600">
+                        <i class="ri-time-line"></i>
+                    </span>
+                    Tanggal Belum Di Approve
+                    @if ($pendingDays->isNotEmpty())
+                        <span
+                            class="rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-white">{{ $pendingTotal }}</span>
+                    @endif
+                </h2>
+                <span class="text-xs font-semibold text-gray-500">{{ $start->translatedFormat('F Y') }}</span>
+            </div>
+
+            @if ($pendingDays->isEmpty())
+                <p
+                    class="mt-3 flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5 text-xs text-emerald-700">
+                    <i class="ri-checkbox-circle-line text-base"></i>
+                    {{ $totalRecords > 0
+                        ? 'Semua bukti pekerjaan bulan ini sudah di-approve Direksi.'
+                        : 'Belum ada bukti pekerjaan yang diisi bulan ini.' }}
+                </p>
+            @else
+                <p class="mt-2 text-xs text-gray-500">
+                    {{ $pendingTotal }} bukti pekerjaan pada {{ $pendingDays->count() }} tanggal belum
+                    di-approve Direksi. Klik tanggal untuk meninjau.
+                </p>
+
+                <div class="mt-3 flex flex-wrap gap-2">
+                    @foreach ($pendingDays as $item)
+                        <a href="{{ route('direksi.cp.history.show', $item['recordId']) }}"
+                            data-pending-date="{{ $item['date']->toDateString() }}"
+                            data-pending-date-count="{{ $item['counts']['process'] }}"
+                            title="Tinjau bukti {{ $item['date']->translatedFormat('l, d F Y') }}"
+                            class="group inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-800 transition duration-300 hover:border-amber-300 hover:bg-amber-100 active:scale-[.98]">
+                            <span
+                                class="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-amber-500 text-[11px] font-bold tabular-nums text-white">{{ $item['date']->day }}</span>
+                            <span>{{ $item['date']->translatedFormat('d M') }}</span>
+                            <span
+                                class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-amber-700">{{ $item['counts']['process'] }}
+                                bukti</span>
+                            <i
+                                class="ri-arrow-right-s-line text-sm text-amber-500 transition group-hover:translate-x-0.5"></i>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
+        </section>
+
         <section
     class="w-full rounded-2xl border border-gray-100 bg-white p-2.5 shadow-xs sm:p-4 md:p-5">
 

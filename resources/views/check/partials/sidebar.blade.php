@@ -1,3 +1,9 @@
+@inject('checkReportWindow', \App\Services\CheckPointReportWindow::class)
+@php
+    $checkpointLocked = $checkReportWindow->blocks();
+    $checkpointNextOpen = $checkReportWindow->nextOpenAt();
+@endphp
+
 <aside
     class="fixed inset-y-0 left-0 z-40 hidden w-70 flex-col border-r border-slate-200/80 bg-white/85 px-6 py-7 text-slate-600 backdrop-blur-xl lg:flex">
     <a href="{{ route('checkpoint-user.index') }}" class="group mb-12 flex items-center gap-3">
@@ -33,11 +39,7 @@
                 Kalender
             </a>
 
-            <a href="{{ route('checkpoint-user.create') }}"
-                class="group flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium transition duration-300 hover:bg-slate-50 hover:text-sky-600 {{ request()->routeIs('checkpoint-user.create') ? 'bg-sky-50 font-semibold text-sky-700' : '' }}">
-                <i class="ri-add-line text-base text-slate-400 group-hover:text-sky-500"></i>
-                Tambah pekerjaan
-            </a>
+            @include('check.partials.sidebar-add-link')
             <a href="{{ route('checkpoint-user.history') }}"
                 class="group flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium transition duration-300 hover:bg-slate-50 hover:text-sky-600 {{ request()->routeIs('checkpoint-user.history') ? 'bg-sky-50 font-semibold text-sky-700' : '' }}">
                 <i class="ri-history-line text-base text-slate-400 group-hover:text-sky-500"></i>
@@ -47,7 +49,7 @@
     </div>
     <div class="mt-auto">
         <div class="mb-4 border-t border-slate-200/80 pt-5 text-xs leading-5 text-slate-400"><i
-                class="ri-information-line mr-1 text-sky-500"></i>Pilih tanggal untuk mengisi pekerjaan.</div>
+                class="ri-information-line mr-1 text-sky-500"></i>{{ $checkpointLocked ? 'Laporan pekan ini ditutup. Dibuka '.$checkpointNextOpen->translatedFormat('d M').'.' : 'Pilih tanggal untuk mengisi pekerjaan.' }}</div>
         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit"
                 class="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[13px] font-medium text-slate-500 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:bg-rose-50 hover:text-rose-600"><i
                     class="ri-logout-box-r-line text-lg transition-transform duration-300 group-hover:translate-x-0.5"></i>Logout</button>
@@ -120,11 +122,7 @@
                 Kalender
             </a>
 
-            <a href="{{ route('checkpoint-user.create') }}"
-                class="group flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium transition duration-300 hover:bg-slate-50 hover:text-sky-600 {{ request()->routeIs('checkpoint-user.create') ? 'bg-sky-50 font-semibold text-sky-700' : '' }}">
-                <i class="ri-add-line text-base text-slate-400 group-hover:text-sky-500"></i>
-                Tambah pekerjaan
-            </a>
+            @include('check.partials.sidebar-add-link')
             <a href="{{ route('checkpoint-user.history') }}"
                 class="group flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium transition duration-300 hover:bg-slate-50 hover:text-sky-600 {{ request()->routeIs('checkpoint-user.history') ? 'bg-sky-50 font-semibold text-sky-700' : '' }}">
                 <i class="ri-history-line text-base text-slate-400 group-hover:text-sky-500"></i>
@@ -135,7 +133,7 @@
 
     <div class="mt-auto pt-8">
         <div class="mb-4 border-t border-slate-200/80 pt-5 text-xs leading-5 text-slate-400"><i
-                class="ri-information-line mr-1 text-sky-500"></i>Pilih tanggal untuk mengisi pekerjaan.</div>
+                class="ri-information-line mr-1 text-sky-500"></i>{{ $checkpointLocked ? 'Laporan pekan ini ditutup. Dibuka '.$checkpointNextOpen->translatedFormat('d M').'.' : 'Pilih tanggal untuk mengisi pekerjaan.' }}</div>
         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit"
                 class="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[13px] font-medium text-slate-500 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:bg-rose-50 hover:text-rose-600"><i
                     class="ri-logout-box-r-line text-lg transition-transform duration-300 group-hover:translate-x-0.5"></i>Logout</button>

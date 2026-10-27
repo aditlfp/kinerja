@@ -79,8 +79,10 @@ class AdminController extends Controller
         $client = Client::count();
 
         $izin = Izin::where('approve_status', 'process')
-            ->whereMonth('created_at', $now->month)
-            ->whereYear('created_at', $now->year)
+            ->whereBetween('created_at', [
+                $now->copy()->startOfMonth()->startOfDay(),
+                $now->copy()->endOfMonth()->endOfDay(),
+            ])
             ->count();
 
         $expiringContractsQuery = function () use ($today, $twoMonthsFromNow) {
@@ -138,7 +140,8 @@ class AdminController extends Controller
     public function checkPoint(Request $request)
     {
         $type = $request->type ?? 'dikerjakan';
-        $inMonth = Carbon::now()->month;
+        $inMonthStart = Carbon::now()->startOfMonth()->startOfDay();
+        $inMonthEnd = Carbon::now()->endOfMonth()->endOfDay();
         $filter = $request->filterKerjasama;
 
         $kerjasama = Cache::remember('admin.checkpoint.kerjasama-options', 300, function () {
@@ -150,8 +153,12 @@ class AdminController extends Controller
 
         $cex2 = CheckPoint::query()
             ->select(['id', 'user_id', 'type_check', 'work_order_id', 'created_at'])
-            ->with(['user:id,nama_lengkap', 'items.images'])
-            ->whereMonth('created_at', $inMonth)
+            ->with([
+                'user:id,nama_lengkap',
+                'items:id,check_point_id,pekerjaan_cp_id,approve_status,note,urutan',
+                'items.images:id,check_point_item_id,path,urutan',
+            ])
+            ->whereBetween('created_at', [$inMonthStart, $inMonthEnd])
             ->where('type_check', $type)
             ->when($filter, fn ($query) => $query->whereHas('user', fn ($q) => $q->where('kerjasama_id', $filter)))
             ->latest()
@@ -170,14 +177,18 @@ class AdminController extends Controller
     public function lihatCheck(Request $request, $id)
     {
         $type = $request->type ?? 'dikerjakan';
-        $inMonth = Carbon::now()->month;
+        $inMonthStart = Carbon::now()->startOfMonth()->startOfDay();
+        $inMonthEnd = Carbon::now()->endOfMonth()->endOfDay();
         $user = User::findOrFail($id);
 
         $cex2 = CheckPoint::query()
             ->select(['id', 'user_id', 'type_check', 'work_order_id', 'created_at'])
-            ->with(['items.images'])
+            ->with([
+                'items:id,check_point_id,pekerjaan_cp_id,approve_status,note,urutan',
+                'items.images:id,check_point_item_id,path,urutan',
+            ])
             ->where('user_id', $id)
-            ->whereMonth('created_at', $inMonth)
+            ->whereBetween('created_at', [$inMonthStart, $inMonthEnd])
             ->where('type_check', $type)
             ->latest()
             ->paginate(20)
@@ -264,7 +275,7 @@ class AdminController extends Controller
     public function destroyCheck($id)
     {
         try {
-            $cek = CheckPoint::with('items.images')->findOrFail($id);
+            $cek = CheckPoint::with('items.images:id,check_point_item_id,path,urutan')->findOrFail($id);
 
             foreach ($cek->items as $item) {
                 foreach ($item->images as $image) {
@@ -462,15 +473,12 @@ class AdminController extends Controller
         if ($request->has(['libur']) && $libur != null) {
             $dataAbsen = User::with([
                 'absensi' => function ($query) use ($currentMonth, $currentYear) {
-                    $query->whereMonth('tanggal_absen', $currentMonth)->whereYear('tanggal_absen', $currentYear);
+                    $query->whereBetween('tanggal_absen', [
+                        sprintf('%04d-%02d-01', $currentYear, $currentMonth),
+                        Carbon::create($currentYear, $currentMonth, 1)->endOfMonth()->toDateString(),
+                    ]);
                 }
             ])->get();
-
-            $dataUser = User::all();
-            $all = Absensi::all();
-            $user = Absensi::all();
-            $aku = Absensi::where('keterangan', 'masuk')->get();
-            $absen = Absensi::orderBy('absensi_type_masuk', 'asc')->where('keterangan', 'masuk')->get();
 
             $path = 'logo/sac.png';
             $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -483,7 +491,7 @@ class AdminController extends Controller
             $options->set('defaultFont', 'Arial');
 
             $pdf = new Dompdf($options);
-            $html = view('admin.absen.export', compact('absen', 'all', 'base64', 'user', 'dataUser', 'totalHari', 'dataAbsen', 'currentMonth', 'currentYear', 'libur'))->render();
+            $html = view('admin.absen.export', compact('base64', 'totalHari', 'dataAbsen', 'currentMonth', 'currentYear', 'libur'))->render();
             $pdf->loadHtml($html);
 
             $pdf->setPaper('A4', 'landscape');
@@ -539,7 +547,6 @@ class AdminController extends Controller
 
         $tanggalSekarang = Carbon::now();
 
-        $user = Absensi::select('created_at')->get();
         $str1 = $this->str;
         $end1 = $this->ended;
         $starte = Carbon::createFromFormat('Y-m-d', $str1);
@@ -558,7 +565,7 @@ class AdminController extends Controller
             $expPDF = User::query()
                 ->with([
                     'absensi' => function ($query) use ($str1, $end1) {
-                        $query->whereBetween('tanggal_absen', [$str1, $end1]);
+                        $query->whereBetween('tanggal_absen', [$str1, $end1])->with('point');
                     },
                     'jadwalUser' => function ($query) use ($str1, $end1) {
                         $query->whereBetween('created_at', [$str1, $end1]);
@@ -746,7 +753,7 @@ class AdminController extends Controller
             $options->set('defaultFont', 'Arial');
 
             $pdf = new Dompdf($options);
-            $html = view('admin.absen.exportV2', compact('point', 'starte', 'ende', 'dailyData', 'expPDF', 'izin', 'jdwl', 'base64', 'totalHari', 'user', 'currentYear', 'currentMonth', 'libur', 'str1', 'end1', 'mitra', 'kerjasama', 'kantor', 'liburCount', 'hae', 'calendarHeaders', 'processedUsers'))->render();
+            $html = view('admin.absen.exportV2', compact('point', 'starte', 'ende', 'dailyData', 'expPDF', 'izin', 'jdwl', 'base64', 'totalHari', 'currentYear', 'currentMonth', 'libur', 'str1', 'end1', 'mitra', 'kerjasama', 'kantor', 'liburCount', 'hae', 'calendarHeaders', 'processedUsers'))->render();
             $pdf->loadHtml($html);
 
             $pdf->setPaper('A4', 'landscape');
@@ -770,7 +777,6 @@ class AdminController extends Controller
 
     public function exp(Request $request)
     {
-        $all = Absensi::all();
         $kerjasamaId = $request->kerjasama_id;
         $kerjasama = Kerjasama::firstWhere('id', $kerjasamaId);
         $izin = Izin::orderBy('updated_at', 'desc')->where('kerjasama_id', $kerjasamaId)->where('approve_status', 'accept')->get();
@@ -787,7 +793,7 @@ class AdminController extends Controller
         $options->set('defaultFont', 'Arial');
 
         $pdf = new Dompdf($options);
-        $html = view('admin.absen.export-izin', compact('izin', 'all', 'base64', 'kerjasama'))->render();
+        $html = view('admin.absen.export-izin', compact('izin', 'base64', 'kerjasama'))->render();
         $pdf->loadHtml($html);
         $pdf->setPaper('A4', 'landscape');
         $pdf->render();
@@ -818,8 +824,9 @@ class AdminController extends Controller
         $exportType = $request->input('export_type');
 
         // dd($request->all());
-        $temps = TempUser::all();
+        $temps = TempUser::query()->get(['data']);
         $users = User::whereIn('id', $check)->get(); // fetch all needed users at once
+        $usersByName = $users->keyBy('name');
 
         foreach ($temps as $temp) {
             // Clean JSON
@@ -835,8 +842,7 @@ class AdminController extends Controller
             $username = $decoded['username'] ?? null;
 
             if ($username) {
-                // Cari user yang cocok di koleksi $users
-                $user = $users->firstWhere('name', $username);
+                $user = $usersByName->get($username);
 
                 if ($user) {
                     // Masukkan data dari JSON (misal 'password') ke field temporary di objek $user
@@ -917,20 +923,24 @@ class AdminController extends Controller
 
         // sacpocom_absensi
         $absensiTables = ['absensis', 'lemburs', 'izins', 'laporans', 'overtimes', 'finished_trainings', 'performance_cuts'];
-        $absensiCount = 0;
-        foreach ($absensiTables as $t) {
-            $absensiCount += DB::connection('mysql')->table($t)->where('user_id', $id)->count();
-        }
+        $absensiCount = collect($absensiTables)
+            ->map(fn ($table) => "SELECT COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
+            ->pipe(fn ($queries) => DB::connection('mysql')->select(
+                implode(' UNION ALL ', $queries->all()),
+                array_fill(0, $queries->count(), $id)
+            ))
+            ->sum('total');
 
         // sacpocom_edata — employes match by user_id OR name == nama_lengkap
-        $employesByUserId = DB::connection('mysql2')->table('employes')
-            ->where('user_id', $id)->count();
-        $employesByName = DB::connection('mysql2')->table('employes')
-            ->where('name', $user->nama_lengkap)->count();
-
-        // sacpocom_edata — slip_gajis by user_id
-        $slipGajiCount = DB::connection('mysql2')->table('slip_gajis')
-            ->where('user_id', $id)->count();
+        $edataCounts = DB::connection('mysql2')->select(
+            'SELECT (SELECT COUNT(*) FROM employes WHERE user_id = ?) AS employes_user_id,
+                    (SELECT COUNT(*) FROM employes WHERE name = ?) AS employes_by_name,
+                    (SELECT COUNT(*) FROM slip_gajis WHERE user_id = ?) AS slip_gaji',
+            [$id, $user->nama_lengkap, $id]
+        )[0];
+        $employesByUserId = (int) $edataCounts->employes_user_id;
+        $employesByName = (int) $edataCounts->employes_by_name;
+        $slipGajiCount = (int) $edataCounts->slip_gaji;
 
         // sacpocom_rekap — semua tabel yang pakai user_id
         $rekapTables = [
@@ -941,14 +951,16 @@ class AdminController extends Controller
             'user_settings',
             'pending_syncs',
         ];
-        $rekapCounts = [];
-        foreach ($rekapTables as $table) {
-            $count = DB::connection('mysql3')->table($table)
-                ->where('user_id', $id)->count();
-            if ($count > 0) {
-                $rekapCounts[$table] = $count;
-            }
-        }
+        $rekapRows = collect($rekapTables)
+            ->map(fn ($table) => "SELECT '{$table}' AS table_name, COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
+            ->pipe(fn ($queries) => DB::connection('mysql3')->select(
+                implode(' UNION ALL ', $queries->all()),
+                array_fill(0, $queries->count(), $id)
+            ));
+        $rekapCounts = collect($rekapRows)
+            ->filter(fn ($row) => (int) $row->total > 0)
+            ->mapWithKeys(fn ($row) => [$row->table_name => (int) $row->total])
+            ->all();
 
         return response()->json([
             'user'             => ['id' => $user->id, 'name' => $user->name, 'nama_lengkap' => $user->nama_lengkap],

@@ -14,9 +14,25 @@
     if (! $isMcs) {
         $menu[] = [
             'route' => 'direksi.cp.index',
-            'active' => 'direksi.cp.*',
+            // The note history shares the `direksi.cp.*` namespace so the layout
+            // keeps the sidebar, but it is its own menu entry — listing the
+            // screens explicitly keeps "Karyawan" from lighting up there.
+            'active' => [
+                'direksi.cp.index',
+                'direksi.cp.calendar',
+                'direksi.cp.history',
+                'direksi.cp.history.show',
+                'direksi.cp.history.approve',
+            ],
             'icon' => 'ri-user-line',
             'label' => 'Karyawan',
+        ];
+
+        $menu[] = [
+            'route' => 'direksi.cp.notes',
+            'active' => 'direksi.cp.notes',
+            'icon' => 'ri-chat-quote-line',
+            'label' => 'Catatan',
         ];
     }
 
@@ -37,9 +53,11 @@
         <span>
             <span class="block text-[10px] font-semibold uppercase tracking-[.18em] text-slate-400">{{ $isMcs ? 'MCS' : 'Direksi' }}</span>
             <strong
-                class="text-[15px] tracking-tight text-slate-900 overflow-hidden">{{ request()->routeIs('direksi.cp.calendar') || request()->routeIs('mcs.work-order.calendar')
-                    ? 'Kalender'
-                    : 'Karyawan' }}</strong>
+                class="text-[15px] tracking-tight text-slate-900 overflow-hidden">{{ request()->routeIs('direksi.cp.notes')
+                    ? 'Catatan'
+                    : (request()->routeIs('direksi.cp.calendar') || request()->routeIs('mcs.work-order.calendar')
+                        ? 'Kalender'
+                        : 'Karyawan') }}</strong>
         </span>
     </a>
 
@@ -74,9 +92,11 @@
         class="group grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:border-sky-300 hover:text-sky-600 active:scale-[.96]"><i
             class="ri-menu-3-line text-xl transition-transform duration-300 group-hover:scale-110"></i></button>
     <div class="flex items-center gap-2 text-sm font-semibold overflow-hidden">
-            {{ request()->routeIs('direksi.cp.index') || request()->routeIs('mcs.work-order.index')
-            ? 'Karyawan'
-            : 'Kalender'}}
+            {{ request()->routeIs('direksi.cp.notes')
+                ? 'Catatan'
+                : (request()->routeIs('direksi.cp.index') || request()->routeIs('mcs.work-order.index')
+                    ? 'Karyawan'
+                    : 'Kalender') }}
     </div>
     <div></div>
 </div>

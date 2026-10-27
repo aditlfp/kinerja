@@ -105,8 +105,11 @@
         </div>
 
         <!-- Input kamera -->
+        {{-- `multiple` must stay off this one: with it set, mobile browsers
+             ignore `capture` and open the ordinary file picker instead of the
+             camera. Each capture appends to the ones already staged. --}}
         <input class="photo-input photo-camera hidden" type="file" name="img[][]" accept="image/*"
-            capture="environment" multiple>
+            capture="environment">
 
         <!-- Input galeri -->
         <input class="photo-gallery hidden" type="file" accept="image/*" multiple>

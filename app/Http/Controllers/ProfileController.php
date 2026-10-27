@@ -13,7 +13,9 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -207,7 +209,7 @@ class ProfileController extends Controller
             ]);
         } else {
             // Use database locking to prevent race condition in contract number generation
-            $noLastKontrak = \DB::transaction(function () {
+            $noLastKontrak = DB::transaction(function () {
                 $lastNo = Kontrak::latest('id')->lockForUpdate()->value('no_srt');
                 $lastNumber = is_string($lastNo) && preg_match('/^(\d{3})\//', $lastNo, $matches)
                     ? (int) $matches[1]
@@ -250,6 +252,7 @@ class ProfileController extends Controller
             ];
 
             Kontrak::create($kontrak);
+            Cache::forget('navbar.kontrak.' . $user->id);
 
             toastr()->success('Form Pengajuan berhasil dikirim');
 
@@ -353,6 +356,12 @@ class ProfileController extends Controller
         ];
 
         $kontrak->update($updateData);
+        if ($kontrak->nama_pk_kda) {
+            $owner = User::where('nama_lengkap', $kontrak->nama_pk_kda)->first();
+            if ($owner) {
+                Cache::forget('navbar.kontrak.' . $owner->id);
+            }
+        }
 
         toastr()->success('Form kontrak berhasil dikirim');
 

@@ -8,10 +8,12 @@ use App\Http\Controllers\Admin\Rekap\FinishedTrainingController as AdminRekapFin
 use App\Http\Controllers\Admin\Rekap\OvertimesController as AdminRekapOvertimesController;
 use App\Http\Controllers\Admin\Rekap\PersonInController as AdminRekapPersonInController;
 use App\Http\Controllers\Admin\Rekap\PersonOutController as AdminRekapPersonOutController;
+use App\Http\Controllers\Admin\CheckpointSettingsController;
 use App\Http\Controllers\Admin\RekapSettingsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CheckPointController;
+use App\Http\Controllers\CheckPointMessageController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireksiCheckpointController;
@@ -129,7 +131,7 @@ Route::get('/notifications/{id}', function ($id) {
 
     $notif->markAsRead();
 
-    return match ($notif->data['type']) {
+    return match ($notif->data['type'] ?? null) {
         'overtime' =>
         redirect()->route('manajemen_rekap_indexOvertimes', $notif->data['kerjasama_id']),
         'person_out' =>
@@ -193,6 +195,12 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
     Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
+    Route::post('checkpoint-item/{item}/messages', [CheckPointMessageController::class, 'store'])->name('checkpoint-item.messages.store');
+    // Opening the thread is what counts as reading it, so the read stamp comes
+    // from the page itself; the confirmation checklist is answered per message.
+    Route::post('checkpoint-item/{item}/messages/read', [CheckPointMessageController::class, 'read'])->name('checkpoint-item.messages.read');
+    Route::post('checkpoint-item/{item}/message/{message}/confirm', [CheckPointMessageController::class, 'confirm'])->name('checkpoint-item.messages.confirm');
+    Route::delete('checkpoint-item/message/{message}', [CheckPointMessageController::class, 'destroy'])->name('checkpoint-item.messages.destroy');
     Route::get('editBukti-checkpoint-user', [CheckPointController::class, 'editBukti'])->name('editBukti-checkpoint-user');
     Route::post('uploadBukti-checkpoint-user', [CheckPointController::class, 'uploadBukti'])->name('uploadBukti-checkpoint-user');
 
@@ -244,6 +252,7 @@ Route::middleware(['auth', 'direksi'])->group(function () {
     Route::get('/direksi-checkpoint-history', [DireksiCheckpointController::class, 'history'])->name('direksi.cp.history');
     Route::get('/direksi-checkpoint-history/{id}', [DireksiCheckpointController::class, 'historyDetail'])->name('direksi.cp.history.show');
     Route::patch('/direksi-checkpoint-history/{id}/approve', [DireksiCheckpointController::class, 'updateApproval'])->name('direksi.cp.history.approve');
+    Route::get('/direksi-checkpoint-notes', [DireksiCheckpointController::class, 'notes'])->name('direksi.cp.notes');
     Route::get('/direksi-lihat-check/{id}', [AdminController::class, 'lihatCheck'])->name('direksi.cp.show');
     Route::put('/direksi-nilai-cp/{id}', [CheckPointController::class, 'uploadNilai'])->name('direksi.uploadNilai');
     Route::delete('/direksi-delete-rk/{id}', [CheckPointController::class, 'deleteRencana'])->name('direksi.deleteRencana');
@@ -463,7 +472,8 @@ Route::middleware(['auth', 'leader', 'apdt'])->group(function () {
     Route::get('/LEADER/leader-user', [LeaderController::class, 'indexUser'])->name('lead_user');
 
     Route::resource('/LEADER/leader-jadwal', JadwalUserController::class);
-    Route::post('/LEADER/jadwal-store-new', [JadwalUserController::class, 'storeJadwal'])->name("storeJadwalLeader");
+    Route::get('/LEADER/leader-jadwal-export-bulanan', [JadwalUserController::class, 'exportBulanan'])->name('leader-jadwal.export');
+    Route::post('/LEADER/jadwal-store-new', [JadwalUserController::class, 'storeMonthly'])->name("storeJadwalLeader");
     Route::get('/LEADER/leader-jadwal-new', [JadwalUserController::class, 'processDate'])->name('store.processDate');
     Route::get('/LEADER/leader-jadwal-export', [JadwalUserController::class, 'exportJadwal'])->name('lead_jadwal_export');
 
@@ -598,6 +608,9 @@ Route::middleware(['auth', 'admin', 'apdt'])->group(function () {
     Route::get('/admin-checkpoint-koordinat/{id}', [CheckPointController::class, "show"])->name('admin.cp.map');
 
     Route::get('/admin-checkpoint', [AdminController::class, 'checkPoint'])->name('admin.cp.index');
+    Route::get('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'index'])->name('admin.cp.settings');
+    Route::post('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'update'])->name('admin.cp.settings.update');
+    Route::delete('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'reset'])->name('admin.cp.settings.reset');
     Route::patch('/admin-check-approve/{id}', [AdminController::class, 'approveCheck'])->name('admin.cp.approve');
     Route::patch('/admin-check-denied/{id}', [AdminController::class, 'deniedCheck'])->name('admin.cp.denied');
     Route::get('/admin-lihat-check/{id}', [AdminController::class, 'lihatCheck'])->name('admin.cp.show');

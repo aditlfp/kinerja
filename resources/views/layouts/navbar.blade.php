@@ -22,10 +22,15 @@
                     default => $defaultImg,
                 };
 
-                $userKontrak = \App\Models\Kontrak::where(
-                    'nama_pk_kda',
-                    $user->nama_lengkap
-                )->latest()->first();
+                $userKontrak = \Illuminate\Support\Facades\Cache::remember(
+                    'navbar.kontrak.' . $user->id,
+                    600,
+                    fn () => \App\Models\Kontrak::query()
+                        ->select(['id', 'nama_pk_kda', 'ttd', 'ttd_atasan', 'created_at'])
+                        ->where('nama_pk_kda', $user->nama_lengkap)
+                        ->latest('created_at')
+                        ->first()
+                );
 
                 $hasSignedContract =
                     $userKontrak &&

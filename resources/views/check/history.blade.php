@@ -11,6 +11,74 @@
                 </div>
             </div>
 
+            @php
+            // Tanggal yang bukti pekerjaannya masih menunggu verifikasi Direksi.
+            // Baris kalender sudah membawa hitungan per status, jadi daftar ini
+            // tidak menambah query apa pun.
+                $pendingDays = $calendar
+                    ->filter(fn ($item) => $item['hasData'] && $item['recordId'] && $item['counts']['process'] > 0)
+                    ->values();
+                $pendingTotal = (int) $pendingDays->sum(fn ($item) => $item['counts']['process']);
+                $monthHasData = $calendar->contains(fn ($item) => $item['hasData']);
+            @endphp
+
+            <section
+                class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] sm:p-5"
+                data-pending-days>
+
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <h2 class="flex items-center gap-2 text-sm font-bold text-slate-900">
+                        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600">
+                            <i class="ri-time-line"></i>
+                        </span>
+                        Tanggal Belum Di Approve
+                        @if ($pendingDays->isNotEmpty())
+                            <span
+                                class="rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-white">{{ $pendingTotal }}</span>
+                        @endif
+                    </h2>
+                    <span class="text-xs font-semibold text-slate-500">{{ $start->translatedFormat('F Y') }}</span>
+                </div>
+
+                @if ($pendingDays->isEmpty())
+                    <p
+                        class="mt-3 flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5 text-xs text-emerald-700">
+                        <i class="ri-checkbox-circle-line text-base"></i>
+                        {{ $monthHasData
+                            ? 'Semua bukti pekerjaan bulan ini sudah di-approve Direksi.'
+                            : 'Belum ada bukti pekerjaan yang diisi bulan ini.' }}
+                    </p>
+                @else
+                    <p class="mt-2 text-xs text-slate-500">
+                        {{ $pendingTotal }} bukti pekerjaan pada {{ $pendingDays->count() }} tanggal belum
+                        di-approve Direksi. Klik tanggal untuk membuka pekerjaannya.
+                    </p>
+
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        @foreach ($pendingDays as $item)
+                            <a href="{{ route('checkpoint-user.edit', [
+                                'checkpoint_user' => $item['recordId'],
+                                'tanggal' => $item['date']->format('Y-m-d'),
+                            ]) }}"
+                                data-pending-date="{{ $item['date']->toDateString() }}"
+                                data-pending-date-count="{{ $item['counts']['process'] }}"
+                                title="Buka pekerjaan {{ $item['date']->translatedFormat('l, d F Y') }}"
+                                class="group inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-800 transition duration-300 hover:border-amber-300 hover:bg-amber-100 active:scale-[.98]">
+                                <span
+                                    class="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-amber-500 text-[11px] font-bold tabular-nums text-white">{{ $item['date']->day }}</span>
+                                <span>{{ $item['date']->translatedFormat('d M') }}</span>
+                                <span
+                                    class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-amber-700">{{ $item['counts']['process'] }}
+                                    bukti</span>
+                                <i
+                                    class="ri-arrow-right-s-line text-sm text-amber-500 transition group-hover:translate-x-0.5"></i>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+
+            </section>
+
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] sm:p-7">
                 <div class="grid grid-cols-7 gap-1.5 pb-3 text-center text-[11px] font-semibold uppercase tracking-[.12em] text-slate-400">
                     @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $day)<div>{{ $day }}</div>@endforeach

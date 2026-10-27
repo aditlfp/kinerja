@@ -21,7 +21,21 @@
                         <div class="flex min-w-0 items-center gap-3">
                             <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-sky-50 text-lg text-sky-600 transition duration-300 group-hover:bg-sky-500 group-hover:text-white"><i class="ri-user-line"></i></span>
                             <div class="min-w-0">
-                                <h2 class="truncate font-semibold capitalize text-slate-900">{{ strtolower($employee->nama_lengkap) }}</h2>
+                                @php $pendingCount = (int) ($pendingCounts[$employee->id] ?? 0); @endphp
+                                <div class="flex min-w-0 items-center gap-2">
+                                    <h2 class="truncate font-semibold capitalize text-slate-900">{{ strtolower($employee->nama_lengkap) }}</h2>
+                                    @if ($pendingCount > 0)
+                                        {{-- Evidence this employee has sent in the browsed
+                                             month that direksi has not reviewed yet. Amber is
+                                             the app's "menunggu tinjauan" colour (see the
+                                             conversation chips). --}}
+                                        <span data-pending-count="{{ $pendingCount }}"
+                                            title="{{ $pendingCount }} bukti pekerjaan menunggu tinjauan {{ $start->translatedFormat('F Y') }}"
+                                            class="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-white ring-1 ring-amber-200">
+                                            <i class="ri-time-line"></i>{{ $pendingCount }}
+                                        </span>
+                                    @endif
+                                </div>
                                 <p class="mt-0.5 truncate text-xs text-slate-500">{{ $employee->jabatan->name_jabatan ?? '-' }}</p>
                             </div>
                         </div>

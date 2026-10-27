@@ -98,11 +98,6 @@
 							@endfor
                                     
 							@php
-								$startDate = $user->min('created_at')->startOfMonth();
-								$endDate = $user->max('created_at')->endOfMonth();
-								
-								$period = Carbon\CarbonPeriod::create($startDate, $endDate);
-								$numberOfDays = $period->count();
 								$m = $data->absensi->where('keterangan', 'masuk')->count();
 								$z = $data->absensi->where('keterangan', 'izin')->count();
 								$t = $data->absensi->where('keterangan', 'telat')->count();

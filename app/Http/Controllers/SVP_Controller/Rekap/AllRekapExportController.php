@@ -70,12 +70,14 @@ class AllRekapExportController extends RekapController
                 $filterJabatan($q);
             });
             if (!$includeAllStatus) $overtimesQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
-            $overtimesQuery = $overtimesQuery->join('users', 'overtimes.user_id', '=', 'users.id');
+            // Selecting only the recap table's columns keeps the joined user's
+            // id/created_at from overwriting the row's own values.
+            $overtimesQuery = $overtimesQuery->join('users', 'overtimes.user_id', '=', 'users.id')
+                ->select('overtimes.*');
             if ($startDate && $endDate) {
                 $overtimesQuery->whereBetween('date_overtime', [$startDate, $endDate]);
             } else {
-                $overtimesQuery->whereYear('date_overtime', $date->year)
-                    ->whereMonth('date_overtime', $date->month);
+                $overtimesQuery->whereBetween('date_overtime', monthBounds($date));
             }
             $overtimes = $overtimesQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -91,8 +93,7 @@ class AllRekapExportController extends RekapController
             if ($startDate && $endDate) {
                 $personInsQuery->whereBetween('date_in', [$startDate, $endDate]);
             } else {
-                $personInsQuery->whereYear('date_in', $date->year)
-                    ->whereMonth('date_in', $date->month);
+                $personInsQuery->whereBetween('date_in', monthBounds($date));
             }
             $personIns = $personInsQuery->orderBy('date_in')->get();
 
@@ -109,11 +110,12 @@ class AllRekapExportController extends RekapController
                 $filterJabatan($q);
             });
             if (!$includeAllStatus) $personOutsQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
-            $personOutsQuery = $personOutsQuery->join('users', 'person_outs.user_id', '=', 'users.id');
+            $personOutsQuery = $personOutsQuery->join('users', 'person_outs.user_id', '=', 'users.id')
+                ->select('person_outs.*');
             if ($startDate && $endDate) {
                 $personOutsQuery->whereBetween('out_date', [$startDate, $endDate]);
             } else {
-                $personOutsQuery->whereYear('out_date', $date->year);
+                $personOutsQuery->whereBetween('out_date', monthBounds($date));
             }
             $personOuts = $personOutsQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -128,12 +130,12 @@ class AllRekapExportController extends RekapController
                     $filterJabatan($q);
                 });
             if (!$includeAllStatus) $cuttingsQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
-            $cuttingsQuery = $cuttingsQuery->join('users', 'performance_cuts.user_id', '=', 'users.id');
+            $cuttingsQuery = $cuttingsQuery->join('users', 'performance_cuts.user_id', '=', 'users.id')
+                ->select('performance_cuts.*');
             if ($startDate && $endDate) {
                 $cuttingsQuery->whereBetween('date_cut', [$startDate, $endDate]);
             } else {
-                $cuttingsQuery->whereYear('date_cut', $date->year)
-                    ->whereMonth('date_cut', $date->month);
+                $cuttingsQuery->whereBetween('date_cut', monthBounds($date));
             }
             $cuttings = $cuttingsQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -148,12 +150,12 @@ class AllRekapExportController extends RekapController
                     $filterJabatan($q);
                 });
             if (!$includeAllStatus) $finishedTrainingsQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
-            $finishedTrainingsQuery = $finishedTrainingsQuery->join('users', 'finished_trainings.user_id', '=', 'users.id');
+            $finishedTrainingsQuery = $finishedTrainingsQuery->join('users', 'finished_trainings.user_id', '=', 'users.id')
+                ->select('finished_trainings.*');
             if ($startDate && $endDate) {
                 $finishedTrainingsQuery->whereBetween('date_finish_train', [$startDate, $endDate]);
             } else {
-                $finishedTrainingsQuery->whereYear('date_finish_train', $date->year)
-                    ->whereMonth('date_finish_train', $date->month);
+                $finishedTrainingsQuery->whereBetween('date_finish_train', monthBounds($date));
             }
             $finishedTrainings = $finishedTrainingsQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -161,17 +163,20 @@ class AllRekapExportController extends RekapController
                 ->orderBy('date_finish_train')
                 ->get();
 
-            // Build keterangan_lanjutan query
+            // Build keterangan_lanjutan query. A note belongs to the mitra, not
+            // to the author's jabatan: filtering by the author's position hid
+            // every note written by a role outside the viewer's list.
             $keteranganQuery = KeteranganLanjutan::with([
-                'user:id,nama_lengkap,kerjasama_id,jabatan_id',
+                'user' => fn($q) => $q->withTrashed()
+                    ->select('id', 'nama_lengkap', 'kerjasama_id', 'jabatan_id'),
                 'user.kerjasama:id,client_id',
                 'user.kerjasama.client:id,name',
                 'user.jabatan:id,name_jabatan',
                 'createdBy:id,nama_lengkap'
-            ])->whereHas('user', function ($q) use ($clientId, $filterJabatan) {
-                $q->whereHas('kerjasama', fn($k) => $k->where('client_id', $clientId));
-                $filterJabatan($q);
-            })->join('users', 'keterangan_lanjutans.user_id', '=', 'users.id');
+            ])->whereHas('user', fn($q) => $q->withTrashed()
+                ->whereHas('kerjasama', fn($k) => $k->where('client_id', $clientId))
+            )->join('users', 'keterangan_lanjutans.user_id', '=', 'users.id')
+                ->select('keterangan_lanjutans.*');
             if ($startDate && $endDate) {
                 $keterangan = $keteranganQuery->whereBetween('keterangan_lanjutans.created_at', [$startDate, $endDate])
                     ->orderBy('users.kerjasama_id')
@@ -179,8 +184,7 @@ class AllRekapExportController extends RekapController
                     ->orderBy('keterangan_lanjutans.created_at')
                     ->get();
             } else {
-                $keterangan = $keteranganQuery->whereYear('keterangan_lanjutans.created_at', $date->year)
-                    ->whereMonth('keterangan_lanjutans.created_at', $date->month)
+                $keterangan = $keteranganQuery->whereBetween('keterangan_lanjutans.created_at', monthBounds($date))
                     ->orderBy('users.kerjasama_id')
                     ->orderBy('users.jabatan_id')
                     ->orderBy('keterangan_lanjutans.created_at')
@@ -225,18 +229,29 @@ class AllRekapExportController extends RekapController
                 $authClientKabupaten = auth()->user()->kerjasama?->client?->kabupaten;
                 $allowedKabupaten = $this->nearbyKabupatenTerms($authClientKabupaten);
                 $allowedJabatanIds = $this->allowedSeeData();
+                $ownClientId = (int) (auth()->user()->kerjasama?->client_id ?? 0);
 
                 $clientsQuery
-                    ->where('client_id', '!=', 1)
                     ->when($allowedKabupaten, fn($query) => $query->whereHas('client', fn($client) => $client->where(function ($q) use ($allowedKabupaten) {
                         foreach ($allowedKabupaten as $kabupaten) {
                             $q->orWhere('kabupaten', 'like', "%{$kabupaten}%");
                         }
                     })))
-                    ->when(!empty($allowedJabatanIds), fn($query) => $query->whereIn('id', User::query()
-                        ->select('kerjasama_id')
-                        ->whereIn('jabatan_id', $allowedJabatanIds)
-                        ->whereNotNull('kerjasama_id')));
+                    ->when(!empty($allowedJabatanIds), function ($query) use ($allowedJabatanIds, $ownClientId) {
+                        $query->where(function ($visibility) use ($allowedJabatanIds, $ownClientId) {
+                            $visibility->whereIn('id', User::query()
+                                ->select('kerjasama_id')
+                                ->whereIn('jabatan_id', $allowedJabatanIds)
+                                ->whereNotNull('kerjasama_id'));
+
+                            // The supervisor's own mitra is exported even when
+                            // no one there holds a jabatan in allowedSeeData();
+                            // the data queries below still apply that filter.
+                            if ($ownClientId > 0) {
+                                $visibility->orWhere('client_id', $ownClientId);
+                            }
+                        });
+                    });
             }
 
             $clients = $clientsQuery
@@ -272,12 +287,12 @@ class AllRekapExportController extends RekapController
             if (!$includeAllStatus) {
                 $overtimesQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
             }
-            $overtimesQuery = $overtimesQuery->join('users', 'overtimes.user_id', '=', 'users.id');
+            $overtimesQuery = $overtimesQuery->join('users', 'overtimes.user_id', '=', 'users.id')
+                ->select('overtimes.*');
             if ($startDate && $endDate) {
                 $overtimesQuery->whereBetween('date_overtime', [$startDate, $endDate]);
             } else {
-                $overtimesQuery->whereYear('date_overtime', $date->year)
-                    ->whereMonth('date_overtime', $date->month);
+                $overtimesQuery->whereBetween('date_overtime', monthBounds($date));
             }
             $overtimes = $overtimesQuery
                 ->orderBy('users.kerjasama_id')
@@ -292,8 +307,7 @@ class AllRekapExportController extends RekapController
             if ($startDate && $endDate) {
                 $personInsQuery->whereBetween('date_in', [$startDate, $endDate]);
             } else {
-                $personInsQuery->whereYear('date_in', $date->year)
-                    ->whereMonth('date_in', $date->month);
+                $personInsQuery->whereBetween('date_in', monthBounds($date));
             }
             $personIns = $personInsQuery
                 ->orderBy('client_id')
@@ -321,7 +335,7 @@ class AllRekapExportController extends RekapController
             if ($startDate && $endDate) {
                 $personOutsQuery->whereBetween('out_date', [$startDate, $endDate]);
             } else {
-                $personOutsQuery->whereYear('out_date', $date->year);
+                $personOutsQuery->whereBetween('out_date', monthBounds($date));
             }
 
             $personOutsQuery->select('person_outs.*');
@@ -346,12 +360,12 @@ class AllRekapExportController extends RekapController
             if (!$includeAllStatus) {
                 $cuttingsQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
             }
-            $cuttingsQuery = $cuttingsQuery->join('users', 'performance_cuts.user_id', '=', 'users.id');
+            $cuttingsQuery = $cuttingsQuery->join('users', 'performance_cuts.user_id', '=', 'users.id')
+                ->select('performance_cuts.*');
             if ($startDate && $endDate) {
                 $cuttingsQuery->whereBetween('date_cut', [$startDate, $endDate]);
             } else {
-                $cuttingsQuery->whereYear('date_cut', $date->year)
-                    ->whereMonth('date_cut', $date->month);
+                $cuttingsQuery->whereBetween('date_cut', monthBounds($date));
             }
             $cuttings = $cuttingsQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -372,12 +386,12 @@ class AllRekapExportController extends RekapController
             if (!$includeAllStatus) {
                 $finishedTrainingsQuery->whereNotIn('status', ['Di Tolak', 'Pending']);
             }
-            $finishedTrainingsQuery = $finishedTrainingsQuery->join('users', 'finished_trainings.user_id', '=', 'users.id');
+            $finishedTrainingsQuery = $finishedTrainingsQuery->join('users', 'finished_trainings.user_id', '=', 'users.id')
+                ->select('finished_trainings.*');
             if ($startDate && $endDate) {
                 $finishedTrainingsQuery->whereBetween('date_finish_train', [$startDate, $endDate]);
             } else {
-                $finishedTrainingsQuery->whereYear('date_finish_train', $date->year)
-                    ->whereMonth('date_finish_train', $date->month);
+                $finishedTrainingsQuery->whereBetween('date_finish_train', monthBounds($date));
             }
             $finishedTrainings = $finishedTrainingsQuery->orderBy('users.kerjasama_id')
                 ->orderBy('users.jabatan_id')
@@ -386,17 +400,18 @@ class AllRekapExportController extends RekapController
                 ->get();
 
             $keteranganQuery = KeteranganLanjutan::with([
-                'user:id,nama_lengkap,kerjasama_id,jabatan_id',
+                'user' => fn($q) => $q->withTrashed()
+                    ->select('id', 'nama_lengkap', 'kerjasama_id', 'jabatan_id'),
                 'user.kerjasama:id,client_id',
                 'user.kerjasama.client:id,name',
                 'user.jabatan:id,name_jabatan',
                 'createdBy:id,nama_lengkap',
             ])
-                ->whereHas('user', function ($q) use ($clients) {
-                    $q->whereHas('kerjasama', fn($k) => $k->whereIn('client_id', $clients))
-                        ->whereIn('jabatan_id', $this->allowedSeeData());
-                })
-                ->join('users', 'keterangan_lanjutans.user_id', '=', 'users.id');
+                ->whereHas('user', fn($q) => $q->withTrashed()
+                    ->whereHas('kerjasama', fn($k) => $k->whereIn('client_id', $clients))
+                )
+                ->join('users', 'keterangan_lanjutans.user_id', '=', 'users.id')
+                ->select('keterangan_lanjutans.*');
             if ($startDate && $endDate) {
                 $keterangan = $keteranganQuery->whereBetween('keterangan_lanjutans.created_at', [$startDate, $endDate])
                     ->orderBy('users.kerjasama_id')
@@ -404,8 +419,7 @@ class AllRekapExportController extends RekapController
                     ->oldest('keterangan_lanjutans.created_at')
                     ->get();
             } else {
-                $keterangan = $keteranganQuery->whereYear('keterangan_lanjutans.created_at', $date->year)
-                    ->whereMonth('keterangan_lanjutans.created_at', $date->month)
+                $keterangan = $keteranganQuery->whereBetween('keterangan_lanjutans.created_at', monthBounds($date))
                     ->orderBy('users.kerjasama_id')
                     ->orderBy('users.jabatan_id')
                     ->oldest('keterangan_lanjutans.created_at')

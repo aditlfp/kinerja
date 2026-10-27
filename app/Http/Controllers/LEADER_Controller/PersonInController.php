@@ -289,8 +289,7 @@ class PersonInController extends Controller
             ->when($request->filled('month'), function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_in', $date->year)
-                        ->whereMonth('date_in', $date->month);
+                    $q->whereBetween('date_in', monthBounds($date));
                 } catch (\Throwable $th) {
                     // Ignore invalid month and keep base query
                 }

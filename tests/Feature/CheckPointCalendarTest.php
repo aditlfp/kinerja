@@ -182,7 +182,7 @@ class CheckPointCalendarTest extends TestCase
             'urutan' => 0,
         ]);
 
-        $expectedKeys = ['date', 'hasData', 'recordId', 'accepted', 'rejected', 'total', 'counts'];
+        $expectedKeys = ['date', 'hasData', 'recordId', 'accepted', 'rejected', 'hasNote', 'total', 'counts'];
 
         $index = $this->get(route('checkpoint-user.index', ['month' => '2026-10']));
         $history = $this->get(route('checkpoint-user.history', ['month' => '2026-10']));

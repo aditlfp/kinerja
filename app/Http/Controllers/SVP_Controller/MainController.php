@@ -30,14 +30,13 @@ class MainController extends Controller
         $absenQue = Absensi::latest();
 
         if ($filter) {
-            $absenQ = $absenQue->whereMonth('tanggal_absen', $filter2->month);
-            if($filterMitra){
+            $absenQ = $absenQue->whereBetween('tanggal_absen', monthBounds($filter2));
+            if ($filterMitra) {
                 $absenQ = $absenQ->where('kerjasama_id', $filterMitra);
             }
             $absen = $absenQ->paginate(50)->appends($request->except('page'));;
-        }else{
-            $mon = Carbon::now()->month;
-            $absen = Absensi::orderBy('tanggal_absen', 'desc')->orderBy('kerjasama_id', 'desc')->whereMonth('tanggal_absen', $mon)->latest()->paginate(31);
+        } else {
+            $absen = Absensi::orderBy('tanggal_absen', 'desc')->orderBy('kerjasama_id', 'desc')->whereBetween('tanggal_absen', monthBounds(Carbon::now()))->latest()->paginate(31);
         }
 
         return view('spv_view/absen/index', compact('absen', 'mitra', 'filterMitra', 'filter'));
@@ -68,7 +67,7 @@ class MainController extends Controller
             ->map->count()
             ->sortKeys();
         $user = $baseUser->paginate(15);
-        return view('spv_view/user/index', compact('user', 'jabatanCounts'));
+        return view('spv_view.user.index', compact('user', 'jabatanCounts'));
     }
 
     public function indexLembur()

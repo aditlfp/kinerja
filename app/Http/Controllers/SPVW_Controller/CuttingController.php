@@ -257,8 +257,7 @@ class CuttingController extends Controller
             ->when($request->filled('month'), function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_cut', $date->year)
-                        ->whereMonth('date_cut', $date->month);
+                    $q->whereBetween('date_cut', monthBounds($date));
                 } catch (\Throwable $th) {
                     // Ignore invalid month and keep base query
                 }
@@ -384,8 +383,17 @@ class CuttingController extends Controller
     private function allowedTargetJabatanIds(): array
     {
         $authJabatanId = (int) (auth()->user()->jabatan_id ?? 0);
-        if ($authJabatanId === 35) return [8, 11, 16, 17, 18];
-        if ($authJabatanId === 20) return [9, 10, 34, 36];
-        return [];
+
+        $allowed = match ($authJabatanId) {
+            35 => [8, 11, 16, 17, 18],
+            20 => [9, 10, 34, 36],
+            default => [],
+        };
+
+        // The supervisor's own account must stay selectable inside their own
+        // mitra, even when their jabatan is not one they manage.
+        return $authJabatanId > 0
+            ? array_values(array_unique([...$allowed, $authJabatanId]))
+            : $allowed;
     }
 }

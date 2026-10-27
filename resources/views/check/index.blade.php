@@ -1,4 +1,11 @@
 <x-app-layout>
+    @inject('checkReportWindow', \App\Services\CheckPointReportWindow::class)
+    @php
+        $reportLocked = $checkReportWindow->blocks();
+        $lockMessage = $checkReportWindow->message();
+        $nextOpenAt = $checkReportWindow->nextOpenAt();
+    @endphp
+
     <div class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-8 lg:px-12">
         <div class="mt-10 mb-9 flex items-center justify-center gap-6">
             <div class="w-full flex justify-between items-center gap-2">
@@ -13,9 +20,100 @@
                 </div>
                 <a href="{{ route('checkpoint-user.index', ['month' => $nextMonth]) }}" aria-label="Bulan berikutnya"
                     class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:border-sky-300 hover:text-sky-600 active:scale-[.96]"><i
-                        class="ri-arrow-right-s-line text-xl"></i></a>
+                        class="ri-arrow-right-s-line text-xl"></i>                </a>
             </div>
         </div>
+
+        @if ($reportLocked || session('checkpoint_locked'))
+            <div
+                class="mb-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-amber-800">
+                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-600">
+                    <i class="ri-lock-2-line text-lg"></i>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-sm font-bold">Laporan pekan ini sudah ditutup</p>
+                    <p class="mt-0.5 text-xs leading-5 text-amber-700">
+                        {{ session('checkpoint_locked') ?? $lockMessage }}</p>
+                    <p class="mt-1 text-xs font-semibold text-amber-700">
+                        Dibuka lagi {{ $nextOpenAt->translatedFormat('l, d F Y') }} pukul 00:00.</p>
+                </div>
+            </div>
+        @endif
+
+        @php
+            // Tanggal yang bukti pekerjaannya masih menunggu verifikasi Direksi.
+            // Baris kalender sudah membawa hitungan per status, jadi daftar ini
+            // tidak menambah query apa pun.
+            $pendingDays = $calendar
+                ->filter(fn ($item) => $item['hasData'] && $item['recordId'] && $item['counts']['process'] > 0)
+                ->values();
+            $pendingTotal = (int) $pendingDays->sum(fn ($item) => $item['counts']['process']);
+            $monthHasData = $calendar->contains(fn ($item) => $item['hasData']);
+        @endphp
+
+        <section
+            class="mt-4 mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] sm:p-5"
+            data-pending-days>
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <h2 class="flex items-center gap-2 text-sm font-bold text-slate-900">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600">
+                        <i class="ri-time-line"></i>
+                    </span>
+                    Tanggal Belum Di Approve
+                    @if ($pendingDays->isNotEmpty())
+                        <span
+                            class="rounded-full bg-amber-500 px-2 py-0.5 text-[11px] font-bold text-white">{{ $pendingTotal }}</span>
+                    @endif
+                </h2>
+                <span class="text-xs font-semibold text-slate-500">{{ $start->translatedFormat('F Y') }}</span>
+            </div>
+
+            @if ($pendingDays->isEmpty())
+                <p
+                    class="mt-3 flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5 text-xs text-emerald-700">
+                    <i class="ri-checkbox-circle-line text-base"></i>
+                    {{ $monthHasData
+                        ? 'Semua bukti pekerjaan bulan ini sudah di-approve Direksi.'
+                        : 'Belum ada bukti pekerjaan yang diisi bulan ini.' }}
+                </p>
+            @else
+                <p class="mt-2 text-xs text-slate-500">
+                    {{ $pendingTotal }} bukti pekerjaan pada {{ $pendingDays->count() }} tanggal belum
+                    di-approve Direksi. Klik tanggal untuk membuka pekerjaannya.
+                </p>
+
+                <div class="mt-3 flex flex-wrap gap-2">
+                    @foreach ($pendingDays as $item)
+                        @php
+                            // Pekan ditutup: hanya tanggal yang punya catatan evaluasi
+                            // yang masih bisa dibuka untuk diperbaiki.
+                            $pendingUrl = $reportLocked && ! $item['hasNote']
+                                ? route('checkpoint-user.history.show', ['id' => $item['recordId']])
+                                : route('checkpoint-user.edit', [
+                                    'checkpoint_user' => $item['recordId'],
+                                    'tanggal' => $item['date']->format('Y-m-d'),
+                                ]);
+                        @endphp
+                        <a href="{{ $pendingUrl }}"
+                            data-pending-date="{{ $item['date']->toDateString() }}"
+                            data-pending-date-count="{{ $item['counts']['process'] }}"
+                            title="Buka pekerjaan {{ $item['date']->translatedFormat('l, d F Y') }}"
+                            class="group inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-800 transition duration-300 hover:border-amber-300 hover:bg-amber-100 active:scale-[.98]">
+                            <span
+                                class="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-amber-500 text-[11px] font-bold tabular-nums text-white">{{ $item['date']->day }}</span>
+                            <span>{{ $item['date']->translatedFormat('d M') }}</span>
+                            <span
+                                class="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-amber-700">{{ $item['counts']['process'] }}
+                                bukti</span>
+                            <i
+                                class="ri-arrow-right-s-line text-sm text-amber-500 transition group-hover:translate-x-0.5"></i>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
+        </section>
 
         <section
         class="w-full rounded-2xl border border-slate-200 bg-white p-2.5 shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] sm:p-4 md:p-6">
@@ -76,54 +174,51 @@
                     } elseif ($item['hasData']) {
                         $state = 'border-transparent bg-emerald-500 text-white';
                     } else {
-                        $state = 'border-slate-200 bg-white text-slate-700 hover:border-sky-300';
+                        $state = 'border-slate-200 bg-white text-slate-700';
                     }
+
+                    // Pekan ditutup: hari berisi bukti hanya bisa dibaca,
+                    // hari kosong tidak bisa diklik sama sekali.
+                    $hasRecord = $item['hasData'] && $item['recordId'];
+                    if ($hasRecord) {
+                        // Hari dengan catatan evaluasi tetap bisa diedit walau pekan
+                        // sudah ditutup; hari lain hanya bisa dibaca.
+                        $cellHref = $reportLocked && ! $item['hasNote']
+                            ? route('checkpoint-user.history.show', ['id' => $item['recordId']])
+                            : route('checkpoint-user.edit', [
+                                'checkpoint_user' => $item['recordId'],
+                                'tanggal' => $date->format('Y-m-d'),
+                            ]);
+                    } else {
+                        $cellHref = $reportLocked
+                            ? null
+                            : route('checkpoint-user.create', ['tanggal' => $date->format('Y-m-d')]);
+                    }
+
+                    $cellClass =
+                        'reveal-cell group relative flex min-h-[48px] min-w-0 flex-col justify-between overflow-hidden rounded-lg border p-1.5 font-medium transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] ' .
+                        'sm:min-h-[64px] sm:rounded-xl sm:p-2 md:min-h-[74px] md:p-2.5 ' .
+                        $state .
+                        ($date->isToday() ? ' ring-2 ring-sky-400 ring-offset-1 sm:ring-offset-2' : '');
                 @endphp
 
-                <a
-                    href="{{ $item['hasData'] && $item['recordId']
-                        ? route('checkpoint-user.edit', [
-                            'checkpoint_user' => $item['recordId'],
-                            'tanggal' => $date->format('Y-m-d'),
-                        ])
-                        : route('checkpoint-user.create', [
-                            'tanggal' => $date->format('Y-m-d'),
-                        ]) }}"
+                @if ($cellHref)
+                    <a href="{{ $cellHref }}" style="animation-delay: {{ min($index * 12, 320) }}ms"
+                        class="{{ $cellClass }} hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_10px_24px_-12px_rgba(15,23,42,.22)] active:scale-[.98]"
+                        title="{{ $date->translatedFormat('l, d F Y') }}">
 
-                    style="animation-delay: {{ min($index * 12, 320) }}ms"
+                        @include('check.partials.calendar-day')
 
-                    class="reveal-cell group relative flex min-h-[48px] min-w-0 flex-col justify-between overflow-hidden rounded-lg border p-1.5 font-medium transition duration-300 ease-[cubic-bezier(.22,1,.36,1)]
-                    hover:-translate-y-0.5
-                    hover:shadow-[0_10px_24px_-12px_rgba(15,23,42,.22)]
-                    active:scale-[.98]
-                    sm:min-h-[64px] sm:rounded-xl sm:p-2
-                    md:min-h-[74px] md:p-2.5
-                    {{ $state }}
-                    {{ $date->isToday() ? 'ring-2 ring-sky-400 ring-offset-1 sm:ring-offset-2' : '' }}"
+                    </a>
+                @else
+                    <span aria-disabled="true" style="animation-delay: {{ min($index * 12, 320) }}ms"
+                        class="{{ $cellClass }} cursor-not-allowed opacity-70"
+                        title="Laporan pekan ini ditutup. Dibuka {{ $nextOpenAt->translatedFormat('l, d F Y') }} pukul 00:00.">
 
-                    title="{{ $date->translatedFormat('l, d F Y') }}">
+                        @include('check.partials.calendar-day')
 
-                    {{-- Date --}}
-                    <span class="overflow-hidden text-[11px] leading-none sm:text-xs md:text-sm flex justify-between items-center">
-                        {{ $date->day }}
-                        <i class="ri-pushpin-line {{ $date->isToday() ? '' : 'hidden' }}"></i>
                     </span>
-
-                    {{-- Status --}}
-                    @if ($item['hasData'])
-
-                        <x-checkpoint-status-row :counts="$item['counts']" :has-data="$item['hasData']" size="md" />
-
-                    @elseif ($date->isWeekend())
-
-                        <span
-                            class="hidden truncate text-[8px] font-semibold uppercase tracking-wide opacity-85 sm:block sm:text-[9px] md:text-[10px]">
-                            Libur
-                        </span>
-
-                    @endif
-
-                </a>
+                @endif
 
             @endforeach
 

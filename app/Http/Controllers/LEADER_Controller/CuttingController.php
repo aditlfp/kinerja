@@ -257,8 +257,7 @@ class CuttingController extends Controller
             ->when($request->filled('month'), function ($q) use ($request) {
                 try {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('date_cut', $date->year)
-                        ->whereMonth('date_cut', $date->month);
+                    $q->whereBetween('date_cut', monthBounds($date));
                 } catch (\Throwable $th) {
                     // Ignore invalid month and keep base query
                 }

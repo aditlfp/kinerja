@@ -29,8 +29,10 @@ class PersonOutController extends Controller
                 ->whereBetween('out_date', [$startDate, $endDate])
                 ->when($request->month, function ($q) use ($request) {
                     $date = Carbon::createFromFormat('Y-m', $request->month);
-                    $q->whereYear('out_date', $date->year)
-                        ->whereMonth('out_date', $date->month);
+                    $q->whereBetween('out_date', [
+                        $date->copy()->startOfMonth()->toDateString(),
+                        $date->copy()->endOfMonth()->toDateString(),
+                    ]);
                 })
                 ->get();
 
