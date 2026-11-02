@@ -215,21 +215,8 @@ class DashboardController extends Controller
         }
 
         // data untuk dashboard mitra
-        if ($user->jabatan->code_jabatan == "MITRA") {
-            $jumlahKaryawan = User::where('kerjasama_id', $user->kerjasama_id)->count();
-            $jumlahAbsensiHariIni = Absensi::where('kerjasama_id', $user->kerjasama_id)
-                ->whereBetween('created_at', [$dayStart, $dayEnd])->count();
-            $jumlahIzinHariIni = Izin::where('kerjasama_id', $user->kerjasama_id)
-                ->whereBetween('updated_at', [$dayStart, $dayEnd])->count();
-            $jumlahLemburHariIni = Lembur::where('kerjasama_id', $user->kerjasama_id)
-                ->whereBetween('created_at', [$dayStart, $dayEnd])->count();
-
-            return view('mitra_view.index', compact(
-                'jumlahKaryawan',
-                'jumlahAbsensiHariIni',
-                'jumlahIzinHariIni',
-                'jumlahLemburHariIni'
-            ));
+        if (($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'MITRA') {
+            return view('mitra_view.index', ['mitra' => $this->mitraDashboardData($user)]);
         } else {
             return view('dashboard', compact(
                 'absenP',
@@ -253,6 +240,281 @@ class DashboardController extends Controller
                 'direksiRecapAvailable'
             ));
         }
+    }
+
+    /**
+     * Ringkasan operasional untuk dashboard mitra, seluruhnya dihitung dari data nyata.
+     */
+    private function mitraDashboardData(User $user): array
+    {
+        $now = Carbon::now();
+        $kerjasamaId = $user->kerjasama_id;
+        $todayStart = $now->copy()->startOfDay();
+        $monthStart = $now->copy()->startOfMonth();
+
+        $totalPersonel = User::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->whereNotIn('nama_lengkap', User::PLACEHOLDER_ACCOUNT_NAMES)
+            ->count();
+
+        $absensiQuery = Absensi::query()->where('kerjasama_id', $kerjasamaId);
+
+        $hadirIds = (clone $absensiQuery)
+            ->where('created_at', '>=', $todayStart)
+            ->distinct()
+            ->pluck('user_id');
+        $hadirHariIni = $hadirIds->count();
+
+        $hadirKemarin = (clone $absensiQuery)
+            ->whereBetween('created_at', [
+                $now->copy()->subDay()->startOfDay(),
+                $now->copy()->subDay()->endOfDay(),
+            ])
+            ->distinct()
+            ->count('user_id');
+
+        $persenKehadiran = $totalPersonel > 0 ? round(($hadirHariIni / $totalPersonel) * 100, 1) : 0.0;
+        $persenKemarin = $totalPersonel > 0 ? round(($hadirKemarin / $totalPersonel) * 100, 1) : 0.0;
+        $deltaKehadiran = round($persenKehadiran - $persenKemarin, 1);
+
+        // Satu query harian dipakai ulang untuk seri harian, mingguan, dan bulanan.
+        $dailyAttendance = (clone $absensiQuery)
+            ->where('created_at', '>=', $now->copy()->subMonthsNoOverflow(5)->startOfMonth())
+            ->selectRaw('DATE(created_at) as tanggal, COUNT(DISTINCT user_id) as jumlah')
+            ->groupBy('tanggal')
+            ->pluck('jumlah', 'tanggal');
+
+        $rataRataRentang = function (Carbon $start, Carbon $end) use ($dailyAttendance, $now): int {
+            $total = 0;
+            $hari = 0;
+
+            for ($cursor = $start->copy(); $cursor->lessThanOrEqualTo($end); $cursor->addDay()) {
+                if ($cursor->greaterThan($now)) {
+                    break;
+                }
+
+                $total += (int) ($dailyAttendance[$cursor->toDateString()] ?? 0);
+                $hari++;
+            }
+
+            return $hari > 0 ? (int) round($total / $hari) : 0;
+        };
+
+        $harian = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = $now->copy()->subDays($i);
+            $harian[] = [
+                'label' => $tanggal->locale('id')->isoFormat('ddd'),
+                'keterangan' => $tanggal->locale('id')->isoFormat('D MMM'),
+                'value' => (int) ($dailyAttendance[$tanggal->toDateString()] ?? 0),
+            ];
+        }
+
+        $mingguan = [];
+        for ($i = 3; $i >= 0; $i--) {
+            $awal = $now->copy()->subWeeks($i)->startOfWeek();
+            $mingguan[] = [
+                'label' => $awal->locale('id')->isoFormat('D MMM'),
+                'keterangan' => $awal->locale('id')->isoFormat('D MMM'),
+                'value' => $rataRataRentang($awal, $awal->copy()->endOfWeek()),
+            ];
+        }
+
+        $bulanan = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $awal = $now->copy()->subMonthsNoOverflow($i)->startOfMonth();
+            $bulanan[] = [
+                'label' => $awal->locale('id')->isoFormat('MMM'),
+                'keterangan' => $awal->locale('id')->isoFormat('MMM Y'),
+                'value' => $rataRataRentang($awal, $awal->copy()->endOfMonth()),
+            ];
+        }
+
+        $seri = [
+            'harian' => $this->lengkapiSeriGrafik($harian, $totalPersonel),
+            'mingguan' => $this->lengkapiSeriGrafik($mingguan, $totalPersonel),
+            'bulanan' => $this->lengkapiSeriGrafik($bulanan, $totalPersonel),
+        ];
+
+        $izinMenunggu = Izin::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->where('approve_status', 'process')
+            ->count();
+
+        $lemburBerjalan = Lembur::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->whereNull('jam_selesai')
+            ->where('created_at', '>=', $todayStart)
+            ->count();
+
+        $izinHarian = Izin::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->where('created_at', '>=', $now->copy()->subDays(6)->startOfDay())
+            ->selectRaw('DATE(created_at) as tanggal, COUNT(*) as jumlah')
+            ->groupBy('tanggal')
+            ->pluck('jumlah', 'tanggal');
+
+        $seriPengajuan = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = $now->copy()->subDays($i);
+            $seriPengajuan[] = (int) ($izinHarian[$tanggal->toDateString()] ?? 0);
+        }
+        $puncakPengajuan = max(1, max($seriPengajuan));
+
+        $izinHariIni = Izin::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->where('created_at', '>=', $todayStart)
+            ->distinct()
+            ->count('user_id');
+
+        $terlambatHariIni = (clone $absensiQuery)
+            ->where('created_at', '>=', $todayStart)
+            ->where('keterangan', 'telat')
+            ->distinct()
+            ->count('user_id');
+
+        $tepatWaktu = max($hadirHariIni - $terlambatHariIni, 0);
+        $belumAbsen = max($totalPersonel - $hadirHariIni - $izinHariIni, 0);
+        $basisDistribusi = max($tepatWaktu + $terlambatHariIni + $izinHariIni + $belumAbsen, 1);
+
+        $distribusi = [
+            [
+                'label' => 'Hadir Tepat Waktu',
+                'value' => $tepatWaktu,
+                'persen' => round(($tepatWaktu / $basisDistribusi) * 100, 1),
+                'warna' => 'var(--mitra-accent)',
+            ],
+            [
+                'label' => 'Terlambat',
+                'value' => $terlambatHariIni,
+                'persen' => round(($terlambatHariIni / $basisDistribusi) * 100, 1),
+                'warna' => 'var(--mitra-warning)',
+            ],
+            [
+                'label' => 'Izin / Cuti',
+                'value' => $izinHariIni,
+                'persen' => round(($izinHariIni / $basisDistribusi) * 100, 1),
+                'warna' => 'var(--mitra-success)',
+            ],
+            [
+                'label' => 'Belum Absen',
+                'value' => $belumAbsen,
+                'persen' => round(($belumAbsen / $basisDistribusi) * 100, 1),
+                'warna' => '#94a3b8',
+            ],
+        ];
+
+        $personelTerbaru = (clone $absensiQuery)
+            ->with('user:id,nama_lengkap')
+            ->where('created_at', '>=', $todayStart)
+            ->latest('id')
+            ->get(['id', 'user_id', 'created_at'])
+            ->unique('user_id')
+            ->take(5)
+            ->map(fn (Absensi $absen) => [
+                'nama' => $absen->user?->nama_lengkap ?? '-',
+                'jam' => optional($absen->created_at)->format('H:i'),
+            ])
+            ->values();
+
+        $totalAbsensiBulanIni = (clone $absensiQuery)
+            ->whereBetween('created_at', [$monthStart, $now])
+            ->count();
+        $telatBulanIni = (clone $absensiQuery)
+            ->whereBetween('created_at', [$monthStart, $now])
+            ->where('keterangan', 'telat')
+            ->count();
+        $tingkatDisiplin = $totalAbsensiBulanIni > 0
+            ? round((1 - ($telatBulanIni / $totalAbsensiBulanIni)) * 100, 1)
+            : null;
+
+        $menitLembur = Lembur::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->whereNotNull('jam_selesai')
+            ->whereBetween('created_at', [$monthStart, $now])
+            ->get(['jam_mulai', 'jam_selesai'])
+            ->sum(function (Lembur $lembur) {
+                if (blank($lembur->jam_mulai) || blank($lembur->jam_selesai)) {
+                    return 0;
+                }
+
+                $mulai = Carbon::parse($lembur->jam_mulai);
+                $selesai = Carbon::parse($lembur->jam_selesai);
+                $menit = $selesai->diffInMinutes($mulai, false);
+
+                if ($menit < 0) {
+                    $menit += 24 * 60;
+                }
+
+                return max($menit, 0);
+            });
+
+        $izinBulanIni = Izin::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->whereBetween('created_at', [$monthStart, $now])
+            ->count();
+        $izinDisetujuiBulanIni = Izin::query()
+            ->where('kerjasama_id', $kerjasamaId)
+            ->where('approve_status', 'accept')
+            ->whereBetween('created_at', [$monthStart, $now])
+            ->count();
+
+        return [
+            'workspace' => $user->kerjasama?->client?->name,
+            'periodeLabel' => $now->locale('id')->isoFormat('D MMMM Y'),
+            'namaMitra' => $user->nama_lengkap ?? $user->name,
+            'totalPersonel' => $totalPersonel,
+            'hadirHariIni' => $hadirHariIni,
+            'persenKehadiran' => $persenKehadiran,
+            'deltaKehadiran' => $deltaKehadiran,
+            'izinMenunggu' => $izinMenunggu,
+            'lemburBerjalan' => $lemburBerjalan,
+            'izinHariIni' => $izinHariIni,
+            'terlambatHariIni' => $terlambatHariIni,
+            'seri' => $seri,
+            'seriPengajuan' => $seriPengajuan,
+            'persenPengajuan' => array_map(
+                fn (int $jumlah) => (int) round(($jumlah / $puncakPengajuan) * 100),
+                $seriPengajuan
+            ),
+            'distribusi' => $distribusi,
+            'personelTerbaru' => $personelTerbaru,
+            'ringkasan' => [
+                'jamLembur' => round($menitLembur / 60, 1),
+                'disiplin' => $tingkatDisiplin,
+                'izinDisetujui' => $izinDisetujuiBulanIni,
+                'izinBulanIni' => $izinBulanIni,
+            ],
+        ];
+    }
+
+    /**
+     * Lengkapi setiap titik seri dengan tinggi relatif dan penanda puncak.
+     */
+    private function lengkapiSeriGrafik(array $titik, int $totalPersonel): array
+    {
+        $nilai = array_map(static fn (array $item) => (int) $item['value'], $titik);
+        $tertinggi = $nilai === [] ? 0 : max($nilai);
+        $skala = max(1, $tertinggi);
+        // Hanya satu batang yang diberi badge puncak, meski ada nilai yang seri.
+        $indexPuncak = $tertinggi > 0 ? array_search($tertinggi, $nilai, true) : null;
+
+        $hasil = [];
+
+        foreach ($titik as $index => $item) {
+            $value = (int) $item['value'];
+
+            $hasil[] = [
+                'label' => $item['label'],
+                'keterangan' => $item['keterangan'],
+                'value' => $value,
+                'tinggi' => $value > 0 ? max(6, (int) round(($value / $skala) * 100)) : 0,
+                'persenPersonel' => $totalPersonel > 0 ? round(($value / $totalPersonel) * 100, 1) : 0.0,
+                'puncak' => $index === $indexPuncak,
+            ];
+        }
+
+        return $hasil;
     }
 
     public function sendTestEmail()
