@@ -153,7 +153,7 @@
         }
 
         .mitra-icon-button {
-            display: inline-flex;
+            /* display: inline-flex; */
             align-items: center;
             justify-content: center;
             width: 2.5rem;
@@ -528,8 +528,8 @@
     <x-session-toast />
     <x-flasher-theme />
 
-    <div class="relative min-h-[100dvh] lg:flex">
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex flex-col max-h-screen p-4 -translate-x-full shadow-sm lg:translate-x-0">
+    <div class="relative min-h-screen lg:flex">
+        <aside id="sidebar" class="fixed inset-y-0 -left-10 sm:left-0 z-50 flex flex-col max-h-screen p-4 -translate-x-full shadow-sm lg:translate-x-0">
             <div class="flex items-center gap-3 px-1 py-1 sidebar-brand">
                 <div class="flex items-center justify-center text-white rounded-xl w-9 h-9" style="background: var(--mitra-accent);">
                     <i class="text-lg ri-leaf-line"></i>
@@ -573,7 +573,7 @@
 
                 @if($canOpenProfile)
                     <p class="sidebar-section-title px-2 mt-5 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] mitra-text-muted">Akun</p>
-                    <a href="{{ route('profile.index') }}" class="mitra-nav-link" title="Pengaturan Akun">
+                    <a href="{{ route('profile.index') }}" class="mitra-nav-link" title="Pengaturan Akun" @if(request()->routeIs('profile.*')) aria-current="page" @endif>
                         <i class="ri-settings-3-line"></i>
                         <span class="sidebar-text">Pengaturan Akun</span>
                     </a>
@@ -617,10 +617,10 @@
             <nav id="navbar" class="sticky top-0 z-30">
                 <div class="flex items-center justify-between h-16 gap-3 px-4 lg:px-8">
                     <div class="flex items-center min-w-0 gap-3">
-                        <button id="sidebarToggle" type="button" class="mitra-icon-button lg:hidden" aria-label="Buka menu navigasi">
+                        <button id="sidebarToggle" type="button" class="mitra-icon-button sm:hidden" aria-label="Buka menu navigasi">
                             <i class="text-lg ri-menu-line"></i>
                         </button>
-                        <button id="sidebarCollapseToggle" type="button" class="hidden mitra-icon-button lg:inline-flex" title="Lipat sidebar" aria-label="Lipat sidebar">
+                        <button id="sidebarCollapseToggle" type="button" class="hidden mitra-icon-button sm:inline-flex" title="Lipat sidebar" aria-label="Lipat sidebar">
                             <i id="sidebarCollapseIcon" class="text-lg ri-layout-left-2-line"></i>
                         </button>
                         <h1 class="text-base font-semibold tracking-tight truncate mitra-text-strong">{{ $title }}</h1>
@@ -686,7 +686,11 @@
         function openSidebar() {
             if (!sidebar || !sidebarOverlay) return;
             sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.remove('-left-10');
+            sidebar.classList.add('left-0');
             sidebarOverlay.classList.remove('hidden');
+            document.body.style.overflowY = 'hidden';
+            document.body.style.overflowX = 'hidden';
             requestAnimationFrame(function () {
                 sidebarOverlay.classList.remove('opacity-0');
                 sidebarOverlay.classList.add('opacity-100');
@@ -696,8 +700,12 @@
         function closeSidebar() {
             if (!sidebar || !sidebarOverlay) return;
             sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('left-0');
+            sidebar.classList.add('-left-10');
             sidebarOverlay.classList.remove('opacity-100');
             sidebarOverlay.classList.add('opacity-0');
+            document.body.style.overflowY = '';
+            document.body.style.overflowX = '';
             window.setTimeout(function () {
                 if (sidebar.classList.contains('-translate-x-full')) {
                     sidebarOverlay.classList.add('hidden');

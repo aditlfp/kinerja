@@ -27,6 +27,7 @@ class PekerjaanCpRequest extends FormRequest
             'kerjasama_id' => 'required',
             'type_check' => 'required|in:harian,mingguan,bulanan,isidental',
             'name' => 'required|string|max:255',
+            'weighting_value' => 'nullable|integer|min:0|max:1000',
         ];
     }
 }

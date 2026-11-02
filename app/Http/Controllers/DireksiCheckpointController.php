@@ -126,6 +126,22 @@ class DireksiCheckpointController extends Controller
         // so each cell can also show the holiday's name.
         $holidays = collect($this->holidayService->namesForYear($start->year))->filter(fn($name, $date) => str_starts_with($date, $start->format('Y-m')));
         $finalScore = PerformanceFinalScore::query()->with('creator')->where('user_id', $employee->id)->where('month', $start->month)->where('year', $start->year)->first();
+        $pekerjaanCpCounts = PekerjaanCp::query()
+            ->where('user_id', $employee->id)
+            ->selectRaw("CASE WHEN type_check = 'isidental' THEN 'isidental' ELSE 'rutin' END AS kelompok, COUNT(*) AS total")
+            ->groupBy('kelompok')
+            ->pluck('total', 'kelompok')
+            ->map(fn ($total) => (int) $total);
+        $pekerjaanCpDoneCounts = PekerjaanCp::query()
+            ->join('check_points', function ($join) use ($employee, $start, $end): void {
+                $join->where('check_points.user_id', $employee->id)
+                    ->whereColumn('check_points.pekerjaan_cp_id', 'pekerjaan_cps.id')
+                    ->whereBetween('check_points.created_at', [$start, $end]);
+            })
+            ->selectRaw("CASE WHEN pekerjaan_cps.type_check = 'isidental' THEN 'isidental' ELSE 'rutin' END AS kelompok, COUNT(DISTINCT pekerjaan_cps.id) AS total")
+            ->groupBy('kelompok')
+            ->pluck('total', 'kelompok')
+            ->map(fn ($total) => (int) $total);
 
         return view(
             'direksi.checkpoint.calendar',
@@ -133,6 +149,8 @@ class DireksiCheckpointController extends Controller
                 'previousMonth' => $start->copy()->subMonth()->format('Y-m'),
                 'nextMonth' => $start->copy()->addMonth()->format('Y-m'),
                 'totalRecords' => $calendar->sum('total'),
+                'pekerjaanCpCounts' => $pekerjaanCpCounts,
+                'pekerjaanCpDoneCounts' => $pekerjaanCpDoneCounts,
             ],
         );
     }

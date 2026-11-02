@@ -204,6 +204,33 @@ class CheckPointMessageAcknowledgementHttpTest extends TestCase
             ->assertSee('Belum dibaca', false);
     }
 
+    public function test_many_management_notes_on_one_item_use_one_confirmation(): void
+    {
+        $owner = $this->employee();
+        $manager = $this->direksiUser();
+        $item = $this->itemFor($owner);
+        $first = $this->managementReply($item, $manager, ['body' => 'Catatan pertama']);
+        $second = $this->managementReply($item, $manager, ['body' => 'Catatan kedua']);
+
+        $this->actingAs($owner)
+            ->get(route('checkpoint-user.history.show', $item->check_point_id))
+            ->assertOk()
+            ->assertSee('data-thread-confirm-card', false)
+            ->assertSee('data-confirm-count="2"', false)
+            ->assertSee('Catatan evaluasi pada bukti ini dikonfirmasi sekaligus.', false)
+            ->assertSeeInOrder([
+                'data-confirm-endpoint="' . route('checkpoint-item.messages.confirm', ['item' => $item->id, 'message' => $second->id]) . '"',
+            ], false);
+
+        $this->actingAs($owner)
+            ->confirm($item, $first, ['choices' => ['paham']])
+            ->assertCreated()
+            ->assertJsonPath('pending', 0);
+
+        $this->assertNotNull($first->fresh()->acknowledgement?->confirmed_at);
+        $this->assertNotNull($second->fresh()->acknowledgement?->confirmed_at);
+    }
+
     public function test_the_employee_answers_the_checklist_and_management_sees_it(): void
     {
         $owner = $this->employee();
@@ -505,16 +532,9 @@ class CheckPointMessageAcknowledgementHttpTest extends TestCase
 
         $this->actingAs($owner)->confirm($item, $message, ['choices' => ['siap']])->assertCreated();
 
+        // One confirmation covers every pending note on this proof.
         $this->actingAs($owner)
             ->reply($item, ['body' => 'Masih ada yang tertunda.'])
-            ->assertStatus(422);
-
-        $this->actingAs($owner)
-            ->confirm($item, CheckPointMessage::findOrFail($second), ['choices' => ['paham']])
-            ->assertCreated();
-
-        $this->actingAs($owner)
-            ->reply($item, ['body' => 'Sudah saya kerjakan.'])
             ->assertCreated();
     }
 

@@ -14,9 +14,12 @@ class PekerjaanCp extends Model
         'divisi_id',
         'kerjasama_id',
         'name',
-        'type_check'
+        'type_check',
+        'weighting_value'
     ];
     
+    protected $casts = ['weighting_value' => 'integer'];
+
     public function kerjasama()
     {
         return $this->belongsTo(Kerjasama::class);

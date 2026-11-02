@@ -20,9 +20,13 @@ class PekerjaanImport implements ToModel, WithHeadingRow
         $kerjasamaId = $this->normalize($row['kerjasama_id'] ?? null);
         $name = $this->normalize($row['name'] ?? null);
         $typeCheck = $this->normalize($row['type_check'] ?? null);
+        $weightingValue = $this->normalize($row['weighting_value'] ?? null);
         return PekerjaanCp::updateOrCreate(
             [
-                'id' => $row['id']
+                'user_id' => $userId,
+                'divisi_id' => $divisiId,
+                'name' => $name,
+                'type_check' => $typeCheck,
             ],
             [
                 'user_id' => $userId,
@@ -30,6 +34,7 @@ class PekerjaanImport implements ToModel, WithHeadingRow
                 'kerjasama_id' => $kerjasamaId,
                 'name' => $name,
                 'type_check' => $typeCheck,
+                'weighting_value' => $weightingValue === null ? 0 : max(0, min(1000, (int) $weightingValue)),
             ]
         );
     }

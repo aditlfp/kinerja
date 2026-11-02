@@ -131,6 +131,7 @@
     // status of their own reply.
     $viewerIsEmployee = $viewerRole === 'employee';
     $pendingCount = collect($bubbles)->where('pending', true)->count();
+    $firstPending = collect($bubbles)->firstWhere('pending', true);
     $composerLocked = $viewerIsEmployee && $pendingCount > 0;
 
     $chip = match ($status) {
@@ -423,7 +424,7 @@
                             data-state="{{ $readState }}"
                             class="mt-1 flex items-center gap-1 text-[10px] font-semibold leading-none {{ $mine ? 'justify-end' : '' }} {{ $readStateClass }}">
                             <i class="{{ $readState === 'unread' ? 'ri-time-line' : 'ri-check-double-line' }}"></i>
-                            <span data-read-label>
+                            <span data-read-label class="overflow-hidden">
                                 @if ($readState === 'unread')
                                     Belum dibaca
                                 @elseif ($readState === 'read')
@@ -488,18 +489,15 @@
                 @endif
             </div>
 
-            @if ($viewerIsEmployee && $bubble['pending'])
-                {{-- The checklist itself: one card per unanswered management reply,
-                     because each reply is confirmed on its own. ml-10 lines the
-                     card up with the bubble instead of the avatar. --}}
+            @if ($viewerIsEmployee && $bubble['pending'] && $bubble['id'] === ($messages->reverse()->firstWhere('sender_role', \App\Models\CheckPointMessage::ROLE_MANAGEMENT)?->id))
+                {{-- One checklist confirms every pending note, below the newest management note. --}}
                 <div class="ml-10 mt-2 max-w-[calc(100%-2.5rem)] rounded-2xl border border-amber-300 bg-amber-50 p-2.5 shadow-sm sm:max-w-[92%] sm:p-3"
-                    data-thread-confirm-card data-message="{{ $bubble['id'] }}"
+                    data-thread-confirm-card data-message="{{ $bubble['id'] }}" data-confirm-count="{{ $pendingCount }}"
                     data-confirm-endpoint="{{ route('checkpoint-item.messages.confirm', ['item' => $item->id, 'message' => $bubble['id']]) }}">
                     <p class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-amber-700">
                         <i class="ri-question-answer-line"></i> Konfirmasi pesan atasan
                     </p>
-                    <p class="mt-1 text-xs leading-relaxed text-amber-800/80">Pilih jawaban Anda — boleh lebih dari
-                        satu.</p>
+                    <p class="mt-1 text-xs leading-relaxed text-amber-800/80">Catatan evaluasi pada bukti ini dikonfirmasi sekaligus. Pilih jawaban Anda — boleh lebih dari satu.</p>
 
                     <div class="mt-2 space-y-1.5">
                         @foreach (\App\Models\CheckPointMessage::CONFIRM_CHOICES as $choiceKey => $choiceLabel)
@@ -2320,8 +2318,12 @@
 
                     // Answered: the card retires, the reply wears its status, and
                     // the answer itself joins the thread like any other reply.
-                    setReadState(root, id, 'confirmed', data.confirmed_at_label || '');
-                    fillReadSummary(root, id, data);
+                    root.querySelectorAll('[data-thread-read-state]').forEach((state) => {
+                        const messageId = state.dataset.stateFor;
+                        if (messageId) setReadState(root, messageId, 'confirmed', data.confirmed_at_label || '');
+                    });
+                    root.querySelectorAll('[data-read-summary]').forEach((summary) => fillReadSummary(root, summary.dataset.summaryFor, data));
+                    root.querySelectorAll('[data-thread-confirm-card]').forEach((pendingCard) => pendingCard.remove());
                     card.remove();
 
                     if (data.id) appendMessage(root, data);

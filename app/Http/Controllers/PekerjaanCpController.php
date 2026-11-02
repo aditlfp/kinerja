@@ -43,6 +43,7 @@ class PekerjaanCpController extends Controller
             'type_check' => $request->type_check
 
         ];
+        $pcp['weighting_value'] = $request->integer('weighting_value', 0);
         PekerjaanCp::create($pcp);
         toastr()->success('Data Berhasil Di Tambahkan');
         return to_route('admin.pekerjaan-cp.index');
@@ -67,6 +68,7 @@ class PekerjaanCpController extends Controller
             'type_check' => $request->type_check
 
         ];
+        $pcp['weighting_value'] = $request->integer('weighting_value', 0);
         $Datapcp = PekerjaanCp::findOrFail($id);
         $Datapcp->update($pcp);
         toastr()->success('Data Berhasil Di Edit');
