@@ -531,12 +531,13 @@
     <div class="relative min-h-screen lg:flex">
         <aside id="sidebar" class="fixed inset-y-0 -left-10 sm:left-0 z-50 flex flex-col max-h-screen p-4 -translate-x-full shadow-sm lg:translate-x-0">
             <div class="flex items-center gap-3 px-1 py-1 sidebar-brand">
-                <div class="flex items-center justify-center text-white rounded-xl w-9 h-9" style="background: var(--mitra-accent);">
-                    <i class="text-lg ri-leaf-line"></i>
+                <div class="flex items-center justify-center text-white rounded-xl w-9 h-9">
+                    {{-- <i class="text-lg ri-leaf-line"></i> --}}
+                    <img src="{{ URL::asset('logo/sac.png') }}" alt="" srcset="">
                 </div>
                 <div class="min-w-0 sidebar-text">
-                    <p class="text-sm font-bold leading-tight mitra-text-strong">Portal Mitra</p>
-                    <p class="text-xs leading-tight mitra-text-muted">Dashboard operasional</p>
+                    <p class="text-sm font-bold leading-tight mitra-text-strong">Kinerja APP</p>
+                    <p class="text-xs leading-tight mitra-text-muted">Dashboard Mitra</p>
                 </div>
             </div>
 
@@ -642,7 +643,7 @@
                         </form>
 
                         <a href="{{ route('mitra_izin') }}"
-                           class="relative mitra-icon-button"
+                           class="relative mitra-icon-button flex"
                            title="Pengajuan izin menunggu persetujuan"
                            aria-label="Notifikasi, {{ $izinMenunggu }} pengajuan izin menunggu persetujuan">
                             <i class="text-lg ri-notification-3-line"></i>

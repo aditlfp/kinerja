@@ -60,8 +60,7 @@
             </span>
             <a href="{{ route('mitra_laporan') }}"
                class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-white transition rounded-xl bg-[var(--mitra-accent)] hover:bg-[var(--mitra-accent-strong)]">
-                <i class="ri-add-line"></i>
-                Catat Aktivitas
+                Lihat Aktivitas
             </a>
         </div>
     </section>
@@ -195,9 +194,10 @@
                     @else
                         <p class="text-xs text-slate-500">Belum ada absensi hari ini</p>
                     @endif
-                    <a href="{{ route('mitra_izin') }}" class="inline-flex items-center gap-1 text-sm font-semibold mitra-link-accent">
-                        Lihat semua
-                        <i class="ri-arrow-right-line"></i>
+                    <a href="{{ route('mitra_izin') }}"
+                       class="group inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold transition-all duration-200 rounded-lg mitra-link-accent hover:bg-[var(--mitra-accent-soft)] hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mitra-accent)] focus-visible:ring-offset-2">
+                        <span>Lihat semua</span>
+                        <i class="text-base transition-transform duration-200 ri-arrow-right-line group-hover:translate-x-1" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
