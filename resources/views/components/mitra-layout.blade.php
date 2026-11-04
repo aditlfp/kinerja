@@ -105,6 +105,8 @@
         }
 
         #sidebar {
+            position: fixed;
+            z-index: 1100 !important;
             width: var(--mitra-sidebar-width);
             background: var(--mitra-surface);
             border-right: 1px solid var(--mitra-border);
@@ -121,7 +123,17 @@
         }
 
         #sidebarOverlay {
+            z-index: 1050 !important;
             transition: opacity 0.22s ease;
+        }
+
+        .leaflet-container {
+            z-index: 0;
+        }
+
+        .leaflet-pane,
+        .leaflet-control {
+            z-index: 400;
         }
 
         .mitra-nav-link {
@@ -446,6 +458,7 @@
 
         @media (max-width: 768px) {
             #sidebar {
+                z-index: 1100 !important;
                 width: min(20rem, calc(100vw - 1rem));
                 margin: 0.5rem 0 0.5rem 0.5rem;
                 border-radius: 1.25rem;
@@ -530,15 +543,20 @@
 
     <div class="relative min-h-screen lg:flex">
         <aside id="sidebar" class="fixed inset-y-0 -left-10 sm:left-0 z-50 flex flex-col max-h-screen p-4 -translate-x-full shadow-sm lg:translate-x-0">
-            <div class="flex items-center gap-3 px-1 py-1 sidebar-brand">
-                <div class="flex items-center justify-center text-white rounded-xl w-9 h-9">
-                    {{-- <i class="text-lg ri-leaf-line"></i> --}}
-                    <img src="{{ URL::asset('logo/sac.png') }}" alt="" srcset="">
+            <div class="flex items-center justify-between gap-3 px-1 py-1 sidebar-brand">
+                <div class="flex items-center min-w-0 gap-3">
+                    <div class="flex items-center justify-center flex-shrink-0 text-white rounded-xl w-9 h-9">
+                        {{-- <i class="text-lg ri-leaf-line"></i> --}}
+                        <img src="{{ URL::asset('logo/sac.png') }}" alt="Logo Kinerja APP" class="object-contain w-9 h-9">
+                    </div>
+                    <div class="min-w-0 sidebar-text">
+                        <p class="text-sm font-bold leading-tight mitra-text-strong">Kinerja APP</p>
+                        <p class="text-xs leading-tight mitra-text-muted">Dashboard Mitra</p>
+                    </div>
                 </div>
-                <div class="min-w-0 sidebar-text">
-                    <p class="text-sm font-bold leading-tight mitra-text-strong">Kinerja APP</p>
-                    <p class="text-xs leading-tight mitra-text-muted">Dashboard Mitra</p>
-                </div>
+                <button id="sidebarClose" type="button" class="inline-flex items-center justify-center flex-shrink-0 w-9 h-9 rounded-lg mitra-icon-button sm:hidden" aria-label="Tutup menu navigasi">
+                    <i class="text-lg ri-close-line" aria-hidden="true"></i>
+                </button>
             </div>
 
             <nav class="flex-1 mt-6 overflow-y-auto">
@@ -680,6 +698,7 @@
     <script>
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
         const sidebarCollapseToggle = document.getElementById('sidebarCollapseToggle');
         const sidebarCollapseIcon = document.getElementById('sidebarCollapseIcon');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -718,6 +737,7 @@
             sidebarToggle.addEventListener('click', openSidebar);
         }
 
+        sidebarClose?.addEventListener('click', closeSidebar);
         if (sidebarOverlay) {
             sidebarOverlay.addEventListener('click', closeSidebar);
         }

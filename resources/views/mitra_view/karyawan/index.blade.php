@@ -40,7 +40,7 @@
                                         loading="lazy"
                                         decoding="async"
                                         fetchpriority="low"
-                                        data-responsive-src="{{ asset('storage/images/' . $user->image) }}"
+                                        src="{{ asset('storage/images/' . $user->image) }}"
                                         alt="Foto {{ $user->nama_lengkap }}"
                                     >
                                 @else
@@ -94,7 +94,7 @@
                                                 loading="lazy"
                                                 decoding="async"
                                                 fetchpriority="low"
-                                                data-responsive-src="{{ asset('storage/images/' . $user->image) }}"
+                                                src="{{ asset('storage/images/' . $user->image) }}"
                                                 alt="Foto {{ $user->nama_lengkap }}"
                                             >
                                         @else
