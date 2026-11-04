@@ -163,7 +163,7 @@ class MainController extends Controller
                     'model' => $letter->cover,
                     'letter' => $letter,
                     'formatName' => $formatName,
-                    'url' => self::PDF_BASE_URL . '/' . $formatName . '.pdf',
+                    'url' => route('mitra_rekap_berkas', ['file' => $formatName . '.pdf']),
                     'monthYear' => sprintf('%02d-%d', $month, $year),
                 ];
             })->filter()->values();
@@ -188,6 +188,21 @@ class MainController extends Controller
         }
 
         return null;
+    }
+
+    public function previewRekap(string $file)
+    {
+        $file = basename($file);
+        abort_unless($file === basename($file) && preg_match('/^[a-z0-9-]+\.pdf$/i', $file), 404);
+
+        $response = Http::timeout(60)->get(self::PDF_BASE_URL . '/' . $file);
+        abort_unless($response->successful() && str_contains($response->header('Content-Type', ''), 'application/pdf'), 404);
+
+        return response($response->body(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $file . '"',
+            'Content-Length' => strlen($response->body()),
+        ]);
     }
 
     public function downloadRekap($url)

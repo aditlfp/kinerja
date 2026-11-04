@@ -46,7 +46,7 @@
                             <div class="flex items-start gap-3">
                                 @if($absen->image)
                                     <img
-                                        data-responsive-src="{{ asset('storage/images/' . $absen->image) }}"
+                                        src="{{ asset('storage/images/' . $absen->image) }}"
                                         alt="Foto {{ $absen->user?->nama_lengkap ?? 'Karyawan' }}"
                                         class="object-cover w-12 h-12 rounded-full"
                                         loading="lazy"
@@ -138,7 +138,7 @@
                                     <td class="px-4 py-3">
                                         @if($absen->image)
                                             <img
-                                                data-responsive-src="{{ asset('storage/images/' . $absen->image) }}"
+                                                src="{{ asset('storage/images/' . $absen->image) }}"
                                                 alt="Foto {{ $absen->user?->nama_lengkap ?? 'Karyawan' }}"
                                                 class="object-cover w-10 h-10 rounded-full"
                                                 loading="lazy"
