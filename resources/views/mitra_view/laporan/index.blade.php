@@ -52,8 +52,8 @@
                                         <p class="mb-2 text-[11px] font-semibold uppercase mitra-meta-label">{{ $image['label'] }}</p>
                                         @if ($image['src'])
                                             <img
-                                                data-responsive-src="http://laporan-sac.sac-po.com/storage/{{ $image['src'] }}"
-                                                data-preview-src="http://laporan-sac.sac-po.com/storage/{{ $image['src'] }}"
+                                                data-responsive-src="https://laporan-sac.sac-po.com/storage/{{ $image['src'] }}"
+                                                data-preview-src="https://laporan-sac.sac-po.com/storage/{{ $image['src'] }}"
                                                 alt="Foto {{ $image['label'] }}"
                                                 loading="lazy"
                                                 decoding="async"
@@ -99,8 +99,8 @@
                                     <td class="px-4 py-3">
                                         @if ($item->img_before)
                                             <img
-                                                data-responsive-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_before }}"
-                                                data-preview-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_before }}"
+                                                data-responsive-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_before }}"
+                                                data-preview-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_before }}"
                                                 alt="Foto Before"
                                                 loading="lazy"
                                                 decoding="async"
@@ -118,8 +118,8 @@
                                     <td class="px-4 py-3">
                                         @if ($item->img_proccess)
                                             <img
-                                                data-responsive-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_proccess }}"
-                                                data-preview-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_proccess }}"
+                                                data-responsive-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_proccess }}"
+                                                data-preview-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_proccess }}"
                                                 alt="Foto Process"
                                                 loading="lazy"
                                                 decoding="async"
@@ -137,8 +137,8 @@
                                     <td class="px-4 py-3">
                                         @if ($item->img_final)
                                             <img
-                                                data-responsive-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_final }}"
-                                                data-preview-src="http://laporan-sac.sac-po.com/storage/{{ $item->img_final }}"
+                                                data-responsive-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_final }}"
+                                                data-preview-src="https://laporan-sac.sac-po.com/storage/{{ $item->img_final }}"
                                                 alt="Foto Final"
                                                 loading="lazy"
                                                 decoding="async"

@@ -193,7 +193,7 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::get('/mypoint/{id}', [PointController::class, 'myPoint'])->name('mypoint');
 
     Route::get('checkpoint-user/work-order-file/{image}', [CheckPointController::class, 'workOrderFile'])->name('checkpoint-user.work-order-file');
-Route::resource('checkpoint-user', CheckPointController::class);
+    Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
     Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
     Route::post('checkpoint-item/{item}/messages', [CheckPointMessageController::class, 'store'])->name('checkpoint-item.messages.store');
@@ -274,6 +274,10 @@ Route::middleware(['auth', 'mitra'])->group(function () {
     Route::get('/mitra-lembur', [MainController::class, 'indexLembur'])->name('mitra_lembur');
     Route::get('/mitra-absensi-izin', [IzinController::class, 'indexLead'])->name('mitra_izin');
     Route::get('/mitra-rekap', [MitraController::class, 'indexRekap'])->name('mitra_rekap');
+    Route::get('/mitra-rekap/berkas/{file}', [MitraController::class, 'previewRekap'])
+        ->where('file', '.+')
+        ->name('mitra_rekap_berkas');
+    Route::get('mitra-download-berkas-pdf/{url}', [MitraController::class, 'downloadRekap'])->name('download_laporan_bulanan');
     Route::get('/mitra-absensi', [MitraController::class, 'indexKehadiran'])->name('mitra_absensi');
     Route::get('/mitra-check-koordinat/{id}', [MitraController::class, "showLocation"])->name('mitra-lihatMap');
     Route::get('/mitra-jadwal', [JadwalUserController::class, 'index'])->name('mitra_jadwal');

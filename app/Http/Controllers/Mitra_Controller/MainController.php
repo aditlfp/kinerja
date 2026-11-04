@@ -4,14 +4,23 @@ namespace App\Http\Controllers\Mitra_Controller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\Client;
 use App\Models\LaporanMitra;
+use App\Models\Letters;
 use App\Models\Lokasi;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class MainController extends Controller
 {
+    /**
+     * Dokumen laporan mitra disimpan di aplikasi laporan terpisah.
+     */
+    public const PDF_BASE_URL = 'https://laporan-sac.sac-po.com/storage/pdf';
+
     public function indexKehadiran(Request $request)
     {
         $kerjasamaId = auth()->user()->kerjasama_id;
@@ -118,10 +127,88 @@ class MainController extends Controller
         return view('mitra_view.izin.index');
     }
 
-    public function indexRekap()
+    public function indexRekap(Request $request)
     {
-        $laporanMitra = LaporanMitra::where('kerjasama_id', auth()->user()->kerjasama_id)->latest()->get();
+        $client = auth()->user()->kerjasama->client;
+        $hasFilter = $request->filled('bulan') && $request->filled('tahun');
+        $bulan = $request->integer('bulan');
+        $tahun = $request->integer('tahun');
 
-        return view('mitra_view.rekap.index', compact('laporanMitra'));
+        $letters = Letters::query()
+            ->whereHas('cover', fn ($query) => $query->where('clients_id', $client->id))
+            ->latest('created_at')
+            ->get();
+
+        $laporan = $letters->filter(function (Letters $letter) use ($hasFilter, $bulan, $tahun): bool {
+                if (!$hasFilter) {
+                    return true;
+                }
+
+                $period = strtolower((string) $letter->period);
+                $month = strtolower(Carbon::createFromDate($tahun, $bulan, 1)->translatedFormat('F'));
+
+                return str_contains($period, $month) && str_contains($period, (string) $tahun);
+            })->map(function (Letters $letter) use ($client): array {
+                preg_match('/(\d{4})/', (string) $letter->period, $yearMatch);
+                $year = (int) ($yearMatch[1] ?? $letter->created_at?->format('Y'));
+                $month = $this->monthNumberFromPeriod($letter->period);
+
+                if (!$month || !$year) {
+                    return [];
+                }
+
+                $formatName = 'laporan-' . Str::slug($client->name) . '-' . $year . '-' . str_pad((string) $month, 2, '0', STR_PAD_LEFT);
+
+                return [
+                    'model' => $letter->cover,
+                    'letter' => $letter,
+                    'formatName' => $formatName,
+                    'url' => self::PDF_BASE_URL . '/' . $formatName . '.pdf',
+                    'monthYear' => sprintf('%02d-%d', $month, $year),
+                ];
+            })->filter()->values();
+
+        return view('mitra_view.rekap.index', [
+            'laporanMitra' => $laporan,
+            'totalLaporan' => $laporan->count(),
+            'laporanBulanIni' => $laporan->filter(fn (array $item): bool => $item['letter']->created_at?->isSameMonth(now()))->count(),
+            'laporanTerbaru' => $laporan->first()['letter'] ?? null,
+            'hasFilter' => $hasFilter,
+            'client' => $client,
+        ]);
+    }
+
+    private function monthNumberFromPeriod(?string $period): ?int
+    {
+        $months = ['januari' => 1, 'februari' => 2, 'maret' => 3, 'april' => 4, 'mei' => 5, 'juni' => 6, 'juli' => 7, 'agustus' => 8, 'september' => 9, 'oktober' => 10, 'november' => 11, 'desember' => 12];
+        $period = strtolower((string) $period);
+
+        foreach ($months as $name => $number) {
+            if (str_contains($period, $name)) return $number;
+        }
+
+        return null;
+    }
+
+    public function downloadRekap($url)
+    {
+        $urlDownload = "https://laporan-sac.sac-po.com/storage/pdf/" . $url . ".pdf";
+        $response = Http::timeout(60)->get($urlDownload);
+
+        if (
+            !$response->successful() ||
+            !str_contains(
+                $response->header('Content-Type', ''),
+                'application/pdf'
+            )
+        ) {
+            abort(404, 'File PDF tidak ditemukan atau server mengembalikan respons yang tidak valid.');
+        }
+
+        return response($response->body(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . basename(parse_url($url, PHP_URL_PATH)) . '.pdf"',
+            'Content-Length' => strlen($response->body()),
+        ]);
     }
 }

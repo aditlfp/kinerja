@@ -41,7 +41,10 @@ class ProfileController extends Controller
         // dd(Kontrak::latest()->where('nama_pk_kda', Auth::user()->nama_lengkap)->where('tgl_selesai_kontrak', '>=', Carbon::now()->format('Y-m-d'))->first());
         // }
 
-        return view('profile.index', compact('dataUser', 'kontrak'));
+        // Mitra memakai shell portal mitra, bukan sidebar aplikasi internal.
+        $isMitra = ($dataUser->jabatan?->code_jabatan ?? $dataUser->divisi?->jabatan?->code_jabatan) === 'MITRA';
+
+        return view($isMitra ? 'profile.mitra' : 'profile.index', compact('dataUser', 'kontrak'));
     }
 
     /**

@@ -17,6 +17,7 @@ class PekerjaanTemplateExport implements FromCollection, WithHeadings
             'kerjasama_id',
             'name',
             'type_check',
+            'weighting_value',
         ];
     }
 
@@ -30,6 +31,7 @@ class PekerjaanTemplateExport implements FromCollection, WithHeadings
                 'kerjasama_id',
                 'name',
                 'type_check',
+                'weighting_value',
             ])
             ->get()
             ->map(function ($item) {
@@ -40,6 +42,7 @@ class PekerjaanTemplateExport implements FromCollection, WithHeadings
                     'kerjasama_id' => $item->kerjasama_id ?? 'Kosong',
                     'name' => $item->name ?? 'Kosong',
                     'type_check' => $item->type_check ?? 'Kosong',
+                    'weighting_value' => $item->weighting_value ?? 0,
                 ];
             });
     }

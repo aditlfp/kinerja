@@ -9,6 +9,8 @@ class Client extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'name',
         'panggilan',
@@ -30,5 +32,4 @@ class Client extends Model
     {
         return $this->hasMany(Kerjasama::class);
     }
-
 }

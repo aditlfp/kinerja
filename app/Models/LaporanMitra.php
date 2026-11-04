@@ -8,14 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class LaporanMitra extends Model
 {
     use HasFactory;
-    
-    protected $fillable = [
-        'kerjasama_id',
-        'file_pdf'
-        ];
-    
-    public function kerjasama()
+    protected $connection = 'mysql3';
+    protected $table = 'covers';
+
+    protected $guarded = [];
+
+    public function client()
     {
-        return $this->belongsTo(Kerjasama::class);
-    }    
+        return $this->belongsTo(Client::class, 'clients_id');
+    }
+
+    public function letters()
+    {
+        return $this->hasMany(Letters::class, 'cover_id');
+    }
 }

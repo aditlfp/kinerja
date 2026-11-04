@@ -137,6 +137,19 @@
                     @endforeach
                 </div>
 
+                <div class="relative mt-4 grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3">
+                        <p class="text-[10px] font-bold uppercase tracking-wide text-emerald-700">Pekerjaan rutin</p>
+                        <p class="mt-1 text-2xl font-bold tabular-nums text-slate-900">{{ $pekerjaanCpDoneCounts->get('rutin', 0) }} <span class="text-sm font-medium text-slate-400">/ {{ $pekerjaanCpCounts->get('rutin', 0) }}</span></p>
+                        <p class="text-[11px] text-slate-500">Sudah dikerjakan · Harian, mingguan, bulanan</p>
+                    </div>
+                    <div class="rounded-xl border border-orange-100 bg-orange-50/60 p-3">
+                        <p class="text-[10px] font-bold uppercase tracking-wide text-orange-700">Pekerjaan isidental</p>
+                        <p class="mt-1 text-2xl font-bold tabular-nums text-slate-900">{{ $pekerjaanCpDoneCounts->get('isidental', 0) }} <span class="text-sm font-medium text-slate-400">/ {{ $pekerjaanCpCounts->get('isidental', 0) }}</span></p>
+                        <p class="text-[11px] text-slate-500">Sudah dikerjakan · Isidental</p>
+                    </div>
+                </div>
+
                 @php
                     $excludedHolidays = collect($recap['excludedHolidays'] ?? [])
                         ->map(
