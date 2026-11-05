@@ -118,7 +118,7 @@ class CheckPointController extends Controller
             return $denied;
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
@@ -170,7 +170,7 @@ class CheckPointController extends Controller
             return $this->reportWindow->reject();
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
@@ -220,7 +220,7 @@ class CheckPointController extends Controller
             return $denied;
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
