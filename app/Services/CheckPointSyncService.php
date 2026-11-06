@@ -24,6 +24,9 @@ class CheckPointSyncService
     /** Maximum photos accepted per job row. */
     public const MAX_IMAGES_PER_ITEM = 7;
 
+    /** Maximum new photo payload accepted by one form submission. */
+    public const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+
     public function __construct(
         private readonly CheckPointImageUploader $uploader,
     ) {
@@ -158,9 +161,14 @@ class CheckPointSyncService
     public function imageLimitError(Request $request): ?string
     {
         foreach ((array) $request->file('img', []) as $entry) {
-            $count = $entry instanceof UploadedFile
-                ? 1
-                : count(array_filter((array) $entry, fn ($file) => $file instanceof UploadedFile));
+            $files = $entry instanceof UploadedFile ? [$entry] : (array) $entry;
+            $files = array_values(array_filter($files, fn ($file) => $file instanceof UploadedFile));
+            $unique = [];
+            foreach ($files as $file) {
+                $key = $file->getRealPath() ?: $file->getClientOriginalName() . ':' . $file->getSize();
+                $unique[$key] = true;
+            }
+            $count = count($unique);
 
             if ($count > self::MAX_IMAGES_PER_ITEM) {
                 return 'Foto maksimal ' . self::MAX_IMAGES_PER_ITEM . ' per pekerjaan, Anda memilih ' . $count . '.';
@@ -168,6 +176,25 @@ class CheckPointSyncService
         }
 
         return null;
+    }
+
+    /** Return a user-facing message when the total new photo payload is too large. */
+    public function uploadSizeError(Request $request): ?string
+    {
+        $bytes = 0;
+
+        foreach ((array) $request->file('img', []) as $entry) {
+            $files = $entry instanceof UploadedFile ? [$entry] : (array) $entry;
+            foreach ($files as $file) {
+                if ($file instanceof UploadedFile) {
+                    $bytes += (int) $file->getSize();
+                }
+            }
+        }
+
+        return $bytes > self::MAX_UPLOAD_BYTES
+            ? 'Total ukuran foto maksimal 20 MB per simpan. Ukuran saat ini ' . round($bytes / 1024 / 1024, 1) . ' MB.'
+            : null;
     }
 
     /**
@@ -198,6 +225,7 @@ class CheckPointSyncService
         $notes = (array) $request->input('note', []);
         $existingImages = (array) $request->input('existing_img', []);
         $newImages = (array) $request->file('img', []);
+        $tokens = (array) $request->input('img_token', []);
 
         $globalLatitude = $request->input('latitude');
         $globalLongitude = $request->input('longtitude');
@@ -239,10 +267,17 @@ class CheckPointSyncService
 
             $uploads = collect((array) $entry)
                 ->filter(fn ($file) => $file instanceof UploadedFile)
+                ->unique(fn (UploadedFile $file) => $file->getRealPath() ?: $file->getClientOriginalName() . ':' . $file->getSize())
                 ->values()
                 ->all();
+            $tokenUploads = [];
+            foreach ((array) ($tokens[$sid] ?? []) as $token) {
+                if (is_string($token) && preg_match('/^[0-9a-f-]{36}$/i', $token)) {
+                    $tokenUploads[] = $this->uploader->storeToken($token, (int) $request->user()->id);
+                }
+            }
 
-            if (count($uploads) > self::MAX_IMAGES_PER_ITEM) {
+            if (count($uploads) + count($tokenUploads) > self::MAX_IMAGES_PER_ITEM) {
                 // The controller checks first and shows a friendly toastr; this
                 // guarantees the cap is never exceeded silently.
                 throw new \RuntimeException('Foto maksimal ' . self::MAX_IMAGES_PER_ITEM . ' per pekerjaan.');
@@ -259,7 +294,7 @@ class CheckPointSyncService
                 'approve_status' => $this->stringOrNull($statuses[$sid] ?? null) ?? 'proccess',
                 'note' => $this->stringOrNull($notes[$sid] ?? null),
                 'keep_images' => $keep,
-                'new_images' => $uploads,
+                'new_images' => array_merge($uploads, $tokenUploads),
             ];
         }
 
@@ -330,8 +365,9 @@ class CheckPointSyncService
 
         $next = (int) $item->images()->max('urutan') + 1;
         foreach ($uploads as $file) {
+            $path = is_string($file) ? $file : $this->uploader->store($file);
             $item->images()->create([
-                'path' => $this->uploader->store($file),
+                'path' => $path,
                 'urutan' => $next++,
             ]);
         }

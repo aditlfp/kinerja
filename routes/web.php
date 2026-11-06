@@ -192,6 +192,8 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::resource('/laporan', LaporanController::class)->only('index', 'create', 'store');
     Route::get('/mypoint/{id}', [PointController::class, 'myPoint'])->name('mypoint');
 
+    Route::post('checkpoint-upload/chunk', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'chunk'])->name('checkpoint-upload.chunk');
+    Route::post('checkpoint-upload/complete', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'complete'])->name('checkpoint-upload.complete');
     Route::get('checkpoint-user/work-order-file/{image}', [CheckPointController::class, 'workOrderFile'])->name('checkpoint-user.work-order-file');
     Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');

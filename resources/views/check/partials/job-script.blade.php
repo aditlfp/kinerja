@@ -444,7 +444,78 @@
             bind(row);
             renumber();
         });
-        $('#form-cp').on('submit', function () { $('#submit-job').prop('disabled', true).text('Menyimpan...'); });
+        $('#form-cp').on('submit', async function (event) {
+            event.preventDefault();
+            const form = this;
+            if (!document.getElementById('checkpoint-upload-modal')) {
+                document.body.insertAdjacentHTML('beforeend', `<div id="checkpoint-upload-modal" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/65 p-4" role="dialog" aria-modal="true" aria-labelledby="checkpoint-upload-title"><div class="w-full max-w-md overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg"><div class="h-1 bg-slate-100"><div id="checkpoint-upload-line" class="h-full w-0 bg-sky-600 transition-[width] duration-200 ease-out"></div></div><div class="p-6"><div class="flex items-start gap-3"><i class="ri-upload-2-line mt-0.5 text-xl text-sky-600"></i><div><h2 id="checkpoint-upload-title" class="text-lg font-bold text-slate-900">Mengunggah foto</h2><p class="mt-1 text-sm leading-5 text-slate-500">Jangan meninggalkan halaman sampai upload selesai.</p></div></div><div class="mt-6 flex items-end justify-between"><p id="checkpoint-upload-status" class="text-sm font-semibold text-slate-800">Menyiapkan...</p><p id="checkpoint-upload-percent" class="text-xl font-bold tabular-nums text-sky-600">0%</p></div><div class="mt-2 h-2 overflow-hidden rounded-sm bg-slate-100"><div id="checkpoint-upload-progress" class="h-full w-0 rounded-sm bg-sky-600 transition-[width] duration-200 ease-out"></div></div><p class="mt-4 text-xs text-slate-500">Jangan tutup atau refresh halaman.</p></div></div></div>`);
+            }
+            const modal = document.getElementById('checkpoint-upload-modal');
+            const status = document.getElementById('checkpoint-upload-status');
+            const progress = document.getElementById('checkpoint-upload-progress');
+            const progressLine = document.getElementById('checkpoint-upload-line');
+            const percent = document.getElementById('checkpoint-upload-percent');
+            let leaving = true;
+            const warnLeaving = (e) => { if (leaving) { e.preventDefault(); e.returnValue = ''; } };
+            window.addEventListener('beforeunload', warnLeaving);
+            const seen = new Set();
+            const uploads = Array.from(form.querySelectorAll('input[type="file"]')).flatMap((input) => Array.from(input.files || []).map((file) => ({ file, input }))).filter(({ file }) => {
+                const key = `${file.name}:${file.size}:${file.lastModified}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+            const totalBytes = uploads.reduce((total, upload) => total + upload.file.size, 0);
+            if (totalBytes > 20 * 1024 * 1024) {
+                window.toastr?.error('Total ukuran foto maksimal 20 MB per simpan.');
+                return;
+            }
+            const button = $('#submit-job').prop('disabled', true).text('Mengunggah foto...');
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.content || form.querySelector('[name="_token"]').value;
+            const chunkSize = 1024 * 1024;
+            try {
+                const totalChunks = uploads.reduce((sum, { file }) => sum + Math.ceil(file.size / chunkSize), 0);
+                let completedChunks = 0;
+                status.textContent = `Menyiapkan ${uploads.length} foto...`;
+                for (const [fileIndex, { file, input }] of uploads.entries()) {
+                    const uploadId = crypto.randomUUID();
+                    const total = Math.ceil(file.size / chunkSize);
+                    const row = $(input).closest('.job-row');
+                    const rowIndex = row.attr('data-stable-index') || '0';
+                    for (let i = 0; i < total; i++) {
+                        status.textContent = `Mengunggah foto ${fileIndex + 1}/${uploads.length} (bagian ${i + 1}/${total})...`;
+                        const body = new FormData();
+                        body.append('_token', csrf); body.append('upload_id', uploadId); body.append('chunk', i); body.append('total', total);
+                        body.append('file', file.slice(i * chunkSize, Math.min(file.size, (i + 1) * chunkSize)), file.name);
+                        const response = await fetch('{{ route('checkpoint-upload.chunk') }}', { method: 'POST', body });
+                        if (!response.ok) throw new Error('Chunk upload gagal');
+                        completedChunks++;
+                        const value = Math.round(completedChunks / totalChunks * 100);
+                        progress.style.width = `${value}%`;
+                        progressLine.style.width = `${value}%`;
+                        percent.textContent = `${value}%`;
+                    }
+                    const complete = new FormData(); complete.append('_token', csrf); complete.append('upload_id', uploadId);
+                    const response = await fetch('{{ route('checkpoint-upload.complete') }}', { method: 'POST', body: complete });
+                    if (!response.ok) throw new Error('Assembly foto gagal');
+                    const token = (await response.json()).token;
+                    const hidden = document.createElement('input'); hidden.type = 'hidden'; hidden.name = `img_token[${rowIndex}][]`; hidden.value = token; form.appendChild(hidden);
+                }
+                form.querySelectorAll('input[type="file"]').forEach((input) => {
+                    input.value = '';
+                    input.disabled = true;
+                });
+                leaving = false;
+                window.removeEventListener('beforeunload', warnLeaving);
+                form.submit();
+            } catch (error) {
+                leaving = false;
+                window.removeEventListener('beforeunload', warnLeaving);
+                modal.remove();
+                button.prop('disabled', false).text('Simpan pekerjaan');
+                window.toastr?.error(error.message || 'Upload foto gagal.');
+            }
+        });
 
     });
 

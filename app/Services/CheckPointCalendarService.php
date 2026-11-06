@@ -38,7 +38,7 @@ class CheckPointCalendarService
      */
     public function forMonth(int $userId, Carbon $start, Carbon $end, ?string $type = null): Collection
     {
-        $maps = $this->dateMaps($userId, $type);
+        $maps = $this->dateMaps($userId, $start, $end, $type);
 
         $calendar = collect();
 
@@ -89,7 +89,7 @@ class CheckPointCalendarService
      */
     public function forget(int $userId): void
     {
-        Cache::forget($this->cacheKey($userId));
+        Cache::forget($this->cacheKey($userId, now()->startOfMonth()));
     }
 
     /**
@@ -98,23 +98,23 @@ class CheckPointCalendarService
      *
      * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
-    private function dateMaps(int $userId, ?string $type): array
+    private function dateMaps(int $userId, Carbon $start, Carbon $end, ?string $type): array
     {
         if ($type !== null) {
-            return $this->queryDateMaps($userId, $type);
+            return $this->queryDateMaps($userId, $start, $end, $type);
         }
 
         return Cache::remember(
             $this->cacheKey($userId),
             now()->addSeconds(self::CACHE_TTL_SECONDS),
-            fn () => $this->queryDateMaps($userId, null),
+            fn () => $this->queryDateMaps($userId, $start, $end, null),
         );
     }
 
     /**
      * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
-    private function queryDateMaps(int $userId, ?string $type): array
+    private function queryDateMaps(int $userId, Carbon $start, Carbon $end, ?string $type): array
     {
         $records = collect();
         $counts = collect();
@@ -123,7 +123,10 @@ class CheckPointCalendarService
         // Select only the columns the calendar consumes; items are eager
         // loaded so this stays at two queries no matter how many batches exist.
         CheckPoint::query()
-            ->with('items:id,check_point_id,tanggal,approve_status,note')
+            ->with(['items' => function ($query) use ($start, $end): void {
+                $query->select('id', 'check_point_id', 'tanggal', 'approve_status', 'note')
+                    ->whereBetween('tanggal', [$start->toDateString(), $end->toDateString()]);
+            }])
             ->where('user_id', $userId)
             ->when($type, fn ($query) => $query->where('type_check', $type))
             ->get()
