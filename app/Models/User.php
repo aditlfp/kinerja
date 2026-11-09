@@ -123,7 +123,12 @@ class User extends Authenticatable implements CanBeSigned
 
     public function checkPoint()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(CheckPoint::class);
+    }
+
+    public function sharedCheckPoints()
+    {
+        return $this->belongsToMany(CheckPoint::class, 'check_point_participants')->withTimestamps();
     }
     public function rating()
     {
