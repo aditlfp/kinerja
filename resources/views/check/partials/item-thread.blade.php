@@ -196,6 +196,7 @@
      history, and a composer pinned under it. The thread sits inside a bigger
      checkpoint form, so the history gets its own scroll area instead of pushing
      the form down the page. --}}
+@if (! $emptyConversation || $viewerRole === 'management')
 <div class="item-thread mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" data-thread
     data-endpoint="{{ route('checkpoint-item.messages.store', $item->id) }}"
     data-retract-endpoint="{{ route('checkpoint-item.messages.destroy', ['message' => '__ID__']) }}"
@@ -227,6 +228,7 @@
         </div>
     @endif
 
+    @if (! $emptyConversation)
     {{-- Header: who the viewer is talking to, and whether the ball is in their court.
          On phones the badges wrap to their own row under the name instead of
          squeezing it, because four chips never fit beside an avatar at 320px. --}}
@@ -535,6 +537,8 @@
         </button>
     </div>
 
+    @endif
+
     {{-- Composer. Deliberately a <div>, not a <form>: on the edit page it sits
          inside #form-cp, and a nested <form> is dropped by the HTML parser, so
          its submit button would submit the checkpoint PUT instead. Its fields
@@ -719,6 +723,7 @@
         </div>
     </template>
 </div>
+@endif
 
 @once
     <script>

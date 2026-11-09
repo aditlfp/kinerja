@@ -16,10 +16,18 @@
                     $isDenied = $status === 'denied';
                     $isAccepted = $status === 'accept';
                     $rowImages = $item->images->pluck('path')->all();
+                    $isShared = $item->checkPoint?->participants()->exists();
                 @endphp
 
                 <article class="rounded-2xl border {{ $status != 'denied' ? 'border-gray-200' : 'border-rose-500' }} bg-white p-5 shadow-sm">
-                    <h2 class="font-bold text-slate-800">{{ $jobs[$jobId]->name ?? ($manual ?? 'Pekerjaan') }}</h2>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="font-bold text-slate-800">{{ $jobs[$jobId]->name ?? ($manual ?? 'Pekerjaan') }}</h2>
+                        @if ($isShared)
+                            <span class="inline-flex items-center gap-1 rounded-full bg-violet-100 px-2.5 py-1 text-[11px] font-bold text-violet-700">
+                                <i class="ri-team-line"></i> Pekerjaan bersama
+                            </span>
+                        @endif
+                    </div>
                     @if (count($rowImages))
                         <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                             @foreach ($rowImages as $image)

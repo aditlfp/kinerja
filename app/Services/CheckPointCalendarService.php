@@ -104,11 +104,9 @@ class CheckPointCalendarService
             return $this->queryDateMaps($userId, $start, $end, $type);
         }
 
-        return Cache::remember(
-            $this->cacheKey($userId),
-            now()->addSeconds(self::CACHE_TTL_SECONDS),
-            fn () => $this->queryDateMaps($userId, $start, $end, null),
-        );
+        // Shared checkpoints can be added by another user, so a per-user cache
+        // can hide new participant records. Query the small calendar dataset fresh.
+        return $this->queryDateMaps($userId, $start, $end, null);
     }
 
     /**
@@ -127,12 +125,21 @@ class CheckPointCalendarService
                 $query->select('id', 'check_point_id', 'tanggal', 'approve_status', 'note')
                     ->whereBetween('tanggal', [$start->toDateString(), $end->toDateString()]);
             }])
-            ->where('user_id', $userId)
+            ->where(function ($query) use ($userId): void {
+                $query->where('user_id', $userId)
+                    ->orWhereHas('participants', fn ($participants) => $participants->whereKey($userId));
+            })
             ->when($type, fn ($query) => $query->where('type_check', $type))
+            // Shared batch remains the primary detail target for participants;
+            // personal work is stored separately and does not replace it.
+            ->orderBy('id')
             ->get()
-            ->each(function (CheckPoint $checkPoint) use ($records, $counts, $notes): void {
+            ->each(function (CheckPoint $checkPoint) use ($records, $counts, $notes, $userId): void {
                 if ($checkPoint->items->isEmpty()) {
-                    $records->put($checkPoint->created_at->toDateString(), $checkPoint->id);
+                    $date = $checkPoint->created_at->toDateString();
+                    if (! $records->has($date)) {
+                        $records->put($date, $checkPoint->id);
+                    }
 
                     return;
                 }
@@ -142,7 +149,9 @@ class CheckPointCalendarService
                 );
 
                 foreach ($byDate as $date => $dayItems) {
-                    $records->put($date, $checkPoint->id);
+                    if (! $records->has($date)) {
+                        $records->put($date, $checkPoint->id);
+                    }
 
                     // A day can span batches, so merge counts instead of overwriting.
                     $dayCounts = self::statusCounts($dayItems);

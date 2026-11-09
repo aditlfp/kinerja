@@ -18,6 +18,9 @@ class StoreCheckPointRequest extends FormRequest
             'divisi_id' => ['required'],
             'work_order_id' => ['nullable', 'exists:work_orders,id'],
             'type_check' => ['nullable', 'string'],
+            'work_mode' => ['nullable', 'in:individual,shared'],
+            'participant_ids' => ['nullable', 'array'],
+            'participant_ids.*' => ['integer', 'distinct', 'exists:users,id'],
         ];
     }
 }

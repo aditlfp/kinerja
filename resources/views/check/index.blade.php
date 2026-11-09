@@ -88,7 +88,8 @@
                         @php
                             // Pekan ditutup: hanya tanggal yang punya catatan evaluasi
                             // yang masih bisa dibuka untuk diperbaiki.
-                            $pendingUrl = $reportLocked && ! $item['hasNote']
+                            $isOwner = \App\Models\CheckPoint::whereKey($item['recordId'])->where('user_id', Auth::id())->exists();
+                            $pendingUrl = ! $isOwner || ($reportLocked && ! $item['hasNote'])
                                 ? route('checkpoint-user.history.show', ['id' => $item['recordId']])
                                 : route('checkpoint-user.edit', [
                                     'checkpoint_user' => $item['recordId'],
@@ -183,12 +184,15 @@
                     if ($hasRecord) {
                         // Hari dengan catatan evaluasi tetap bisa diedit walau pekan
                         // sudah ditutup; hari lain hanya bisa dibaca.
-                        $cellHref = $reportLocked && ! $item['hasNote']
-                            ? route('checkpoint-user.history.show', ['id' => $item['recordId']])
-                            : route('checkpoint-user.edit', [
+                        $isOwner = \App\Models\CheckPoint::whereKey($item['recordId'])->where('user_id', Auth::id())->exists();
+                        $cellHref = ! $isOwner
+                            ? route('checkpoint-user.create', ['tanggal' => $date->format('Y-m-d')])
+                            : ($reportLocked && ! $item['hasNote']
+                                ? route('checkpoint-user.history.show', ['id' => $item['recordId']])
+                                : route('checkpoint-user.edit', [
                                 'checkpoint_user' => $item['recordId'],
                                 'tanggal' => $date->format('Y-m-d'),
-                            ]);
+                            ]));
                     } else {
                         $cellHref = $reportLocked
                             ? null
