@@ -129,6 +129,17 @@ class CheckPointCalendarService
                 $query->where('user_id', $userId)
                     ->orWhereHas('participants', fn ($participants) => $participants->whereKey($userId));
             })
+            ->where(function ($query) use ($start, $end): void {
+                $query->whereBetween('created_at', [
+                    $start->copy()->startOfDay(),
+                    $end->copy()->endOfDay(),
+                ])->orWhereHas('items', function ($items) use ($start, $end): void {
+                    $items->whereBetween('tanggal', [
+                        $start->toDateString(),
+                        $end->toDateString(),
+                    ]);
+                });
+            })
             ->when($type, fn ($query) => $query->where('type_check', $type))
             // Shared batch remains the primary detail target for participants;
             // personal work is stored separately and does not replace it.

@@ -49,8 +49,8 @@ class ApprovalNotificationService
     {
         return $recipients->filter(function (User $recipient) use ($type, $kerjasamaId) {
             return !$recipient->unreadNotifications()
-                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(`data`, '$.type')) COLLATE utf8mb4_unicode_ci = ?", [$type])
-                ->whereRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(`data`, '$.kerjasama_id')) AS UNSIGNED) = ?", [$kerjasamaId])
+                ->where('notification_type', $type)
+                ->where('kerjasama_id', $kerjasamaId)
                 ->exists();
         });
     }
