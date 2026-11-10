@@ -11,41 +11,24 @@
     $userName = $authUser->name ?? 'Admin';
     $initials = \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($userName, 0, 1));
 @endphp
-<style>
-    .xshiden {
-        display: none;
-    }
-    @media (min-width: 640px) {
-        .smhiden {
-            display: none;
-        }
-
-        .smflex {
-            display: inline-flex;
-        }
-    }
-
-    
-</style>
 <!-- TOP APP BAR (Material 3) -->
 {{-- Catatan hierarki heading: topbar tidak lagi memakai elemen h1 karena setiap
      halaman punya judulnya sendiri lewat komponen admin-page-header. Ini
      menghapus h1 "Dashboard Admin" yang sebelumnya muncul di semua halaman. --}}
 <header
-    class="sticky top-0 z-40 border-b border-(--md-sys-color-outline-variant) bg-(--md-sys-color-surface-container-low)/95 backdrop-blur-sm">
+    :class="mobileSidebarOpen ? 'z-30' : 'z-40'"
+    class="sticky top-0 border-b border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)]/95 backdrop-blur">
     <div class="flex h-16 items-center gap-2 px-3 sm:gap-3 sm:px-4 lg:px-6">
 
-        {{-- Mobile: buka drawer overlay --}}
-        <button type="button" @click="mobileSidebarOpen = true" class="m3-icon-btn smhiden" aria-label="Buka menu navigasi">
+        {{-- Satu tombol navigasi: drawer overlay di bawah lg, rail <-> drawer di desktop. --}}
+        <button type="button"
+            @click="window.matchMedia('(min-width: 1024px)').matches ? toggleSidebar() : mobileSidebarOpen = true"
+            class="m3-icon-btn" aria-label="Buka menu navigasi">
             <span class="material-symbols-outlined" aria-hidden="true">menu</span>
         </button>
 
-        {{-- Desktop: rail <-> drawer --}}
-        <button type="button" @click="toggleSidebar()" class="m3-icon-btn xshiden smflex"
-            :aria-label="sidebarOpen ? 'Ciutkan menu navigasi' : 'Bentangkan menu navigasi'">
-            <span class="material-symbols-outlined" x-text="sidebarOpen ? 'menu_open' : 'menu'"
-                aria-hidden="true">menu</span>
-        </button>
+        {{-- Desktop menampilkan status sidebar melalui tombol yang sama; mobile selalu membuka drawer. --}}
+        <span class="sr-only" x-text="sidebarOpen ? 'Menu terbuka' : 'Menu diciutkan'"></span>
 
         {{-- Konteks + metadata lingkungan. Modul yang sedang dibuka diambil dari
              menu aktif; kalau tidak ada (mis. halaman di luar daftar menu), baris
