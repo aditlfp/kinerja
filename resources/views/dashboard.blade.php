@@ -31,70 +31,149 @@
 
 </head>
 
-<body class="font-sans antialiased bg-slate-400">
-    @php
-        $user = Auth::user();
-        $jabatan = $user?->divisi?->jabatan?->code_jabatan;
-        $directJabatan = $user?->jabatan?->code_jabatan;
-        $roleId = $user?->role_id;
-        $kerjasamaId = $user?->kerjasama_id;
-    @endphp
-    <div class="min-h-screen" style="padding-bottom: 4rem;">
-        @include('../layouts/navbar')
-        <div class="flex items-center justify-start">
-            @if ($absenP && $absenP?->absensi_type_pulang == null)
-                <div id="statusAbsensiContainer"
-                    class="inset-0 px-4 py-2 ml-5 font-semibold text-center rounded-tr-lg rounded-bl-lg shadow-md w-fit"
-                    style="background-color: #fafafa; font-size: 10pt; margin-bottom: 10px;">
-                    <p id="statusAbsensiText">Memeriksa status...</p>
-                </div>
-            @endif
+<body class="bg-slate-50 font-sans antialiased text-slate-800 max-w-full">
 
-            @if ($izin)
-                <span class="hidden">
-                    <span id="waktuIzin" data-waktu="{{ $izin->updated_at->format('H:i') }}"></span>
-                </span>
-                <div id="inpoIzin"
-                    class="text-center hidden rounded-tr-lg rounded-bl-lg my-5 sm:w-fit text-md sm:text-xl font-semibold text-slate-50 {{ $statusClass }} py-2 px-4 shadow-md ml-5 sm:ml-10 inset-0">
-                    <p>{{ $statusMessage }}</p>
+    <div class="min-h-screen pb-24 relative">
+        {{-- @include('../layouts/navbar') --}}
+
+        {{-- navbar --}}
+        <div class="pt-5 pb-3 px-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" srcset="" class="w-32 h-auto">
+                <div class="flex items-center justify-center gap-2">
+                    <a href="{{ route('slip-gaji.index', ['bulan' => now()->format('Y-m')]) }}"
+                        class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-2xl">
+                        <i class="ri-wallet-3-line text-xl"></i>
+                        <span class="font-medium">Slip</span>
+                    </a>
+                    <form action="{{ route('logout') }}" method="post"
+                        class="min-w-0 py-1 px-3 border border-red-500/15 bg-red-100 rounded-xl">
+                        @csrf
+                        @method('POST')
+                        <button type="submit"
+                            class="flex w-full flex-col items-center gap-1 rounded-lg">
+                            <i class="ri-logout-box-r-line text-lg text-red-500"></i>
+                        </button>
+                    </form>
                 </div>
+            </div>
+            <div>
+                <a href="{{ route('profile.index') }}" class="flex items-center justify-start font-extrabold text-lg gap-2 max-w-[55svw]">
+                    <i class="ri-user-line text-lg"></i>
+                    <span class="truncate">
+                        Halo, {{ ucwords(strtolower($user->nama_lengkap)) }}
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        {{-- Status Card --}}
+        <div class="flex w-full justify-center px-4 py-2">
+            @if (!$absenP)
+                <span
+                    class="inline-flex items-center gap-2 rounded-lg bg-rose-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
+                    <i class="ri-information-line text-lg"></i>
+                    <span>Kamu belum melakukan presensi hari ini</span>
+                </span>
+            @elseif ($absenP->absensi_type_pulang == null)
+                <span
+                    class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
+                    <i class="ri-time-line text-lg"></i>
+                    <span>Kamu sedang di dalam shift</span>
+                </span>
+            @else
+                <span
+                    class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
+                    <i class="ri-check-double-line text-lg"></i>
+                    <span>Kamu sudah melakukan presensi hari ini</span>
+                </span>
             @endif
         </div>
 
-        @if ($kerjasamaId == 1 && session()->has('point'))
-            <div class="flex items-center justify-end mx-5 mb-5">
-                <div class="flex flex-row px-4 py-1 text-xs text-white rounded-md shadow-sm gap-x-2 sm:w-fit"
-                    style="background-color: #0C642F">
-                    <i class="ri-checkbox-circle-line"></i>
-                    <span>{{ session('point') }}</span>
-                </div>
-            </div>
-        @endif
+        {{-- Hero --}}
+        <div class="px-6 py-2 space-y-2">
 
-        @include('dashboard.partials.prayer-modal')
-        <div class="sm:mx-10">
-            <main>
-                @auth
-                    @if (in_array($jabatan, ['MITRA', 'LEADER', 'CO-CS', 'CO-SCR', 'DIREKSI', 'SPV-W']))
-                        <div class="flex justify-start px-4 mr-10 bg-amber-500 w-fit"
-                            style="border-radius: 5px 0px 24px 0px;">
-                            <span class="my-1 text-xs font-semibold text-center text-white sm:pr-5">
-                                <i class="text-center">Anda
-                                    Login Sebagai, {{ $jabatan }}</i>
+            {{-- Title --}}
+            <div class="flex items-center gap-2">
+                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                <span class="font-black text-lg">
+                    Informasi Singkat
+                </span>
+            </div>
+
+            {{-- Cards --}}
+            <div class="flex items-stretch gap-1">
+
+                {{-- =========================
+                    CARD TANGGAL & JAM
+                ========================== --}}
+                <div
+                    class="relative overflow-hidden
+                        bg-emerald-500
+                        min-h-[130px] w-[45%]
+                        rounded-xl p-3
+                        text-white
+                        flex flex-col justify-between">
+
+                    {{-- Dekorasi lingkaran --}}
+                    <div
+                        class="absolute -right-10 -bottom-10
+                            w-28 h-28
+                            rounded-full
+                            bg-white/10">
+                    </div>
+
+                    {{-- Tombol / Arrow --}}
+                    <div
+                        class="absolute top-3 right-3
+                            w-7 h-7
+                            rounded-full
+                            bg-white/10
+                            flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+
+                    {{-- Tanggal --}}
+                    <div class="relative z-10 flex items-center gap-2">
+
+                        {{-- Calendar --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 shrink-0" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="4" width="18" height="17" rx="2" />
+                            <path stroke-linecap="round" d="M16 2v4M8 2v4M3 9h18" />
+                        </svg>
+
+                        <div class="leading-tight">
+                            <span class="block text-[11px] font-medium">
+                                {{ now()->translatedFormat('l') }}
+                            </span>
+
+                            <span class="block text-[10px] opacity-90">
+                                {{ now()->translatedFormat('d M Y') }}
                             </span>
                         </div>
-                    @endif
-                @endauth
-                <div class="mx-5 rounded-md sm:mx-10 bg-slate-500 ">
-                    <div class="py-5">
-                        <div class="flex items-end justify-between mr-3">
-                            @if (auth()->user()->kerjasama_id == 1)
-                                <x-notification-dropdown />
-                            @endif
-                            <span style="max-width: 250px; background-color: #0C642F"
-                                class="flex justify-start gap-1 px-4 py-1 text-xs font-bold text-white rounded-full shadow-md sm:hidden">{{ Carbon\Carbon::now()->isoFormat('dddd, D/MMMM/Y') }},
-                                <span id="jam"></span>
+
+                    </div>
+
+
+                    {{-- Jam --}}
+                    <div class="relative z-10">
+
+                        <span id="heroClock"
+                            class="block text-[30px] leading-none
+                                font-black tracking-tight">
+                            --:--
+                        </span>
+
+                        <div class="flex items-center gap-1 mt-1">
+                            <i class="fas fa-globe"></i>
+                            <span id="heroTimezone" class="block text-[9px] opacity-90 font-medium">
+                                ---
                             </span>
+
                         </div>    
                         @if ($jabatan == 'DIREKSI' && $direksiRecapAvailable)
                         <a href="{{ route('direksi.cp.index') }}"
@@ -106,515 +185,491 @@
                             </span>
                         </a>
                         @endif      
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <div class="flex justify-end w-full mx-10">
-                                <div
-                                    class="items-end justify-end hidden px-4 py-2 mb-5 ml-10 font-semibold text-center bg-red-500 rounded-tr-lg rounded-bl-lg shadow-md md:flex w-fit text-md sm:text-xl text-slate-100 ">
-                                    <span class="text-white">{{ Carbon\Carbon::now()->format('d-m-Y') }}</span>
-                                </div>
-                            </div>
-                            {{-- Handle Check Kode Jabatan --}}
-                            @if ($jabatan != 'MITRA' &&
-                                    $jabatan != 'LEADER' &&
-                                    $jabatan != 'DIREKSI')
 
-                                {{-- absensi --}}
-                                <div id="btnAbsensi"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-todo-line"></i>
-                                    <button class="text-sm font-bold uppercase">Kehadiran</button>
-                                </div>
-                                {{-- menu menu dashboard absensi --}}
-                                @php
-                                    $hariIni = Carbon\Carbon::now()->format('N');
-                                    $tampilkanAbsensi =
-                                        !in_array($hariIni, [6, 7]) ||
-                                        $kerjasamaId != 1 ||
-                                        $user->devisi_id != 26;
-                                    $codeJabatan = $jabatan;
-                                    $absensiRoute = match ($codeJabatan) {
-                                        'CO-CS' => 'absensi-karyawan-co-cs.index',
-                                        'CO-SCR' => 'absensi-karyawan-co-scr.index',
-                                        default => '',
-                                    };
-                                @endphp
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsen">
-                                    <a href="{{ $tampilkanAbsensi ? route('absensi.index') : 'javascript:void(0);' }}"
-                                        class="w-full btn btn-info">{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
-                                </div>
-                                @if (!empty($absensiRoute))
-                                    <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngabsenK">
-                                        <a href="{{ route($absensiRoute) }}" class="w-full btn btn-info">Kehadiran
-                                            karyawan</a>
-                                    </div>
-                                @endif
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="ngIzin">
-                                    <a href="{{ route('izin.create') }}" class="w-full btn btn-info">Izin</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="btnRiwayat">
-                                    <a href="javascript:void(0);" class="w-full btn btn-success">Riwayat</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiAbsen">
-                                    <a href="historyAbsensi" class="w-full btn btn-info">Riwayat Kehadiran</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiLembur">
-                                    <a href="{{ route('lemburIndexUser') }}" class="w-full btn btn-info">Riwayat
-                                        Lembur</a>
-                                </div>
-                                <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20" id="isiIzin">
-                                    <a href="{{ route('izin.index') }}" class="w-full btn btn-info">Riwayat Izin</a>
-                                </div>
-                        </div>
-                        {{-- Handle Rekap & Lembur --}}
-                        @php
-                            $jabatanMatch = match ($codeJabatan) {
-                                'CO-CS' => true,
-                                'CO-SCR' => true,
-                                'SPV-W' => true,
-                                default => false,
-                            };
-                        @endphp
-                        @if ($jabatanMatch && $user->id != '7')
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnRekap"
-                                    onclick="window.location='{{ $codeJabatan == 'SPV-W' ? route('spvw.rekap.index') : route('index.rekap.data.leader') }}'"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="ri-calendar-schedule-line"></i>
-                                    <button class="text-sm font-bold uppercase">
-                                        Data Rekap (Trial)
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
-
-                        {{-- TO Manajemen SPV And MRT --}}
-
-                        @if (in_array($user->jabatan_id, [4, 14]))
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnRekap" onclick="window.location='{{ route('manajemen_rekap') }}'"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="ri-calendar-schedule-line"></i>
-                                    <button class="text-sm font-bold uppercase">
-                                        Data Rekap
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
-
-                        {{-- End Handle --}}
-                        @if ($kerjasamaId == 1 || auth()->user()->divisi->name == 'SPV-W')
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnCP"
-                                    class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-fingerprint-line"></i>
-                                    <button class="text-sm font-bold uppercase">
-                                        Kinerja harian
-                                    </button>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="isiIndex">
-                                    <a href="/checkpoint-user" class="w-full btn btn-info">+
-                                        Bukti Kerja</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <a href="{{ route('checkpoint-user.history')}}" class="w-full btn btn-info">Riwayat
-                                        Bukti Kerja</a>
-                                </div>
-                                {{-- <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahCP">
-                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? '' : 'disabled' }}>Tambah Planning (sabtu - minggu )</a>-->
-                                    <a href="{{ $cex ? route('checkpoint-user.edit', $cex->id) : route('checkpoint-user.create') }}"
-                                        class="w-full btn btn-info">{{ $cex ? 'Ubah Rencana Kerja' : 'Tambah Rencana Kerja' }}
-                                        (sabtu - minggu )</a>
-                                </div>
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="kirimCP">
-                                    <!--<a href="{{ route('checkpoint-user.create') }}" class="w-full btn btn-info" {{ \Carbon\Carbon::now()->isWeekend() ? 'disabled' : '' }}>Kirim Bukti (senin - jum'at)</a>-->
-                                    <a href="{{ route('editBukti-checkpoint-user') }}" {{ !$cex ? 'disabled' : '' }}
-                                        style="{{ !$cex ? 'background: #7dd3fc; border: none; color: #1e293b;' : '' }}"
-                                        class="w-full btn btn-info ">{{ $cex ? 'Kirim Bukti' : 'Buat Rencana Kerja Terlebih Dahulu' }}
-                                        (senin - jum'at)</a>
-                                </div> --}}
-                            </div>
-                        @endif
-                        @if (auth()->user()->jabatan->code_jabatan === 'MCS')
-                            <a href="{{ route('mcs.work-order.index') }}" class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <div id="btnPerintah"
-                                    class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-lg ri-megaphone-line"></i>
-                                    <span  class="text-sm font-bold uppercase">Perintah Kerja</span>
-                                </div>
-                            </a>        
-                        @endif
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <div id="btnRating"
-                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-user-star-line"></i>
-                                <button class="text-sm font-bold uppercase">Rating</button>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekMe">
-                                <a href="{{ route('ratingSaya', $user->id) }}"
-                                    class="w-full btn btn-info">Check Rating Saya</a>
-                            </div>
-                            @if ($roleId == 2)
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
-                                    <a href="{{ route('admin.rating.index') }}"
-                                        class="w-full btn btn-info">Rating</a>
-                                </div>
-                            @elseif($jabatan == 'LEADER')
-                                <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekRate">
-                                    <a href="{{ route('leader-rating.index') }}"
-                                        class="w-full btn btn-info">Rating</a>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <div id="btnLaporan"
-                                class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-speak-line"></i>
-                                <button class="text-sm font-bold uppercase">Laporan</button>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="tambahLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Tambah
-                                    Laporan</a>
-                            </div>
-                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16" id="cekLaporan">
-                                <a href="https://laporan-sac.sac-po.com" class="w-full btn btn-info">Riwayat
-                                    Laporan</a>
-                            </div>
-
-                        </div>
-
-                        {{-- Button Pengajuan Kontrak --}}
-                        @php
-                            $kontrakSelesai = $kontrak?->tgl_selesai_kontrak
-                                ? \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast()
-                                : false;
-                            $kontrakBerjalan = $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
-                            $bisaAjukanKontrak = ! $kontrak || $kontrakSelesai || ! $kontrakBerjalan;
-                        @endphp
-                        <div
-                            class="{{ $bisaAjukanKontrak ? 'flex' : 'hidden' }} flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                            <a href="{{ $bisaAjukanKontrak ? route('form-kontrak-request') : 'javascript:void(0)' }}"
-                                class="{{ $bisaAjukanKontrak ? 'bg-amber-400 hover:bg-amber-500 transition-all ease-linear .2s' : 'bg-gray-400/40 text-gray-600 cursor-not-allowed' }} w-full h-11 rounded-md flex justify-center items-center gap-2 ">
-                                <i class="text-xl ri-file-list-3-line"></i>
-                                <span class="text-sm font-bold uppercase">Pengajuan Kontrak</span>
-                            </a>
-                        </div>
-
-                        @if ($user->id == 7 || $user->id == 10 || $user->id == 5)
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <a href="{{ route('slip-karyawan') }}"
-                                    class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-wallet-3-line"></i>
-                                    <span class="text-sm font-bold uppercase">Slip Gaji Karyawan</span>
-                                </a>
-                            </div>
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <a href="{{ route('manajemen_absensi') }}"
-                                    class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-wallet-3-line"></i>
-                                    <span class="text-sm font-bold uppercase">Absensi Karyawan</span>
-                                </a>
-                            </div>
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <a href="{{ route('manajemen_laporan') }}"
-                                    class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-wallet-3-line"></i>
-                                    <span class="text-sm font-bold uppercase">Laporan Karyawan</span>
-                                </a>
-                            </div>
-                            <div class="flex flex-col items-center justify-center gap-2 px-2 pt-2 overflow-hidden">
-                                <a href="{{ route('manajemen_user') }}"
-                                    class=" w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                    <i class="text-xl ri-wallet-3-line"></i>
-                                    <span class="text-sm font-bold uppercase">Data Karyawan</span>
-                                </a>
-                            </div>
-                        @endif
-
-                        @if ($jabatan == 'CO-CS')
-                            <div class="flex items-center w-full px-5 mt-5 space-y-4 overflow-hidden sm:px-16">
-                                <a href="{{ route('leaderView') }}" class="w-full btn btn-info"><i
-                                        class="text-xl ri-pass-pending-line"></i>Menu Leader</a>
-                            </div>
-                        @elseif($jabatan == 'CO-SCR')
-                            <div class="flex items-center w-full mt-5 space-y-4 overflow-hidden sm:px-16">
-                                <a href="{{ route('danruView') }}" class="w-full btn btn-info"><i
-                                        class="text-xl ri-pass-pending-line"></i>Menu Danru</a>
-                            </div>
-                        @elseif($directJabatan == 'SPV-W')
-                            <div class="flex items-center w-full mt-5 space-y-4 overflow-hidden sm:px-16">
-                                <a href="{{ route('SPVWiew') }}" class="w-full btn btn-info"><i
-                                        class="text-xl ri-pass-pending-line"></i>Menu SPV Wilayah</a>
-                            </div>
-                        @endif
-                    @else
-                        @php
-                            $routes = [
-                                'MITRA' => [
-                                    'karyawan' => 'mitra_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'mitra_jadwal',
-                                    'absensi' => 'mitra_absensi',
-                                    'izin' => 'mitra_izin',
-                                    'lembur' => 'mitra_lembur',
-                                    'laporan' => 'mitra_laporan',
-                                    'rating' => 'mitra-rating.index',
-                                    'laporan bulanan' => 'mitra-laporan-bulanan.index',
-                                ],
-                                'LEADER' => [
-                                    'karyawan' => 'lead_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'leader-jadwal.index',
-                                    'absensi' => 'lead_absensi',
-                                    'izin' => 'lead_izin',
-                                    'lembur' => 'lead_lembur',
-                                    'laporan' => 'lead_laporan',
-                                    'rating' => 'leader-rating.index',
-                                ],
-                                'DIREKSI' => [
-                                    'karyawan' => 'direksi_user',
-                                    'jadwal' => $roleId == 2 ? 'admin.jadwal.index' : 'direksi_jadwal',
-                                    'absensi' => 'direksi_absensi',
-                                    'izin' => 'direksi_izin',
-                                    'lembur' => 'direksi_lembur',
-                                    'laporan' => 'direksi_laporan',
-                                    'rating' => 'direksi-rating.index',
-                                    'kinerja' => 'direksi.cp.index',
-                                    'perintah kerja' => 'direksi.work-order.index',
-                                    'kontrak' => 'direksi-cekKontrak',
-                                ],
-                            ];
-                            $icons = [
-                                'karyawan' => 'ri-pass-pending-line',
-                                'jadwal' => 'ri-calendar-check-line',
-                                'absensi' => 'ri-todo-line',
-                                'izin' => 'ri-shield-user-line',
-                                'lembur' => 'ri-time-line',
-                                'laporan' => 'ri-image-add-line',
-                                'laporan bulanan' => 'ri-image-add-line',
-                                'rating' => 'ri-sparkling-line',
-                                'kinerja' => 'ri-fingerprint-line',
-                                'perintah kerja' => 'ri-megaphone-line',
-                                'kontrak' => 'ri-pass-pending-line',
-                            ];
-                        @endphp
-                        @if (array_key_exists($jabatan, $routes))
-                            <div class="w-full gap-2">
-                                @if ($jabatan == 'DIREKSI')
-                                    {{-- absensi --}}
-                                    <div id="btnAbsensi"
-                                        class="w-full flex justify-center items-center gap-2 bg-amber-400 rounded-md h-11 hover:bg-amber-500 transition-all ease-linear .2s">
-                                        <i class="text-xl ri-todo-line"></i>
-                                        <button class="text-sm font-bold uppercase">Kehadiran</button>
-                                    </div>
-                                    {{-- menu menu dashboard absensi --}}
-                                    @php
-                                        $hariIni = Carbon\Carbon::now()->format('N');
-                                        $tampilkanAbsensi =
-                                            !in_array($hariIni, [6, 7]) || $kerjasamaId != 1;
-                                        $codeJabatan = $jabatan;
-                                        $absensiRoute = match ($codeJabatan) {
-                                            'CO-CS' => 'absensi-karyawan-co-cs.index',
-                                            'CO-SCR' => 'absensi-karyawan-co-scr.index',
-                                            default => null,
-                                        };
-                                    @endphp
-                                    <div class="flex flex-col gap-2 mt-2">
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="ngabsen">
-                                            <a href="{{ $tampilkanAbsensi ? route('absensi.index') : 'javascript:void(0);' }}"
-                                                class="w-full btn btn-info">{{ $tampilkanAbsensi ? 'Kehadiran' : 'Tidak Ada Jadwal' }}</a>
-                                        </div>
-                                        @if ($absensiRoute)
-                                            <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                                id="ngabsenK">
-                                                <a href="{{ route($absensiRoute) }}"
-                                                    class="w-full btn btn-info">Kehadiran karyawan</a>
-                                            </div>
-                                        @endif
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="ngIzin">
-                                            <a href="{{ route('izin.create') }}" class="w-full btn btn-info">Izin</a>
-                                        </div>
-                                        <div class="hidden w-full px-2 space-y-4 overflow-hidden sm:px-16"
-                                            id="btnRiwayat">
-                                            <a href="#" class="w-full btn btn-success">Riwayat</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiAbsen">
-                                            <a href="historyAbsensi" class="w-full btn btn-info">Riwayat Kehadiran</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiLembur">
-                                            <a href="{{ route('lemburIndexUser') }}"
-                                                class="w-full btn btn-info">Riwayat Lembur</a>
-                                        </div>
-                                        <div class="hidden w-full px-4 space-y-4 overflow-hidden sm:px-20"
-                                            id="isiIzin">
-                                            <a href="{{ route('izin.index') }}" class="w-full btn btn-info">Riwayat
-                                                Izin</a>
-                                        </div>
-                                    </div>
-                                @endif
-
-
-                                <div
-                                    class="grid w-full grid-cols-2 gap-2 mt-5 space-y-0 overflow-hidden sm:grid-cols-3">
-                                    @foreach ($routes[$jabatan] as $key => $route)
-                                        <div class="w-full md:space-y-4 overflow-hidden rounded-lg {{ $key == 'rating' && $jabatan == 'DIREKSI' ? 'hidden' : '' }}"
-                                            id="L{{ $key }}">
-                                            <a href="{{ route($route) }}"
-                                                class="relative flex items-center justify-center w-full btn btn-info">
-                                                <i class="{{ $icons[$key] }} text-xl"></i>{{ ucfirst($key) }}
-                                                @if ($jabatan == 'DIREKSI' && $key == 'kinerja')
-                                                    <span class="absolute text-center bg-yellow-500"
-                                                        style="padding: 20px 25px 5px 35px; right: -20px; top: -18px; transform: rotate(35deg);">
-                                                        <p style="transform: rotate(-35deg);">
-                                                            {{ $totcex }}
-                                                        </p>
-                                                    </span>
-                                                @endif
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                        @endif
-
-                        {{-- quran --}}
-                        <div class="flex items-center justify-center w-full gap-x-2">
-                            <div id="btnAbsi" style="{{ $kerjasamaId != 1 ?: 'width: 50%;' }}"
-                                class=" px-2 mt-5 flex justify-center items-center gap-2 bg-blue-400 rounded-md h-11 hover:bg-blue-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-git-repository-line"></i>
-                                <a href="https://baca-alquran.sac-po.com" class="text-sm font-bold uppercase">
-                                    {{ $kerjasamaId != 1 ? 'Baca Al-Qur`an' : 'Al-Qur`an' }}
-                                </a>
-                            </div>
-                            <div style="{{ $kerjasamaId != 1 ?: 'width: 50%;' }}"
-                                class="{{ $kerjasamaId == 1 ? 'flex' : 'hidden' }} px-5 mt-5 justify-center items-center gap-2 bg-blue-400 rounded-md h-11 hover:bg-blue-500 transition-all ease-linear .2s">
-                                <i class="text-xl ri-newspaper-line"></i>
-                                <a href="https://sppd-online.sac-po.com/login" class="text-sm font-bold uppercase">
-                                    SPPD
-                                </a>
-                            </div>
-                        </div>
-
-                        @include('dashboard.partials.checkout-modal')
                     </div>
+
                 </div>
 
-                @include('dashboard.partials.news-modal')
-                @include('dashboard.partials.checkpoint-reminder-modal')
-                @include('dashboard.partials.checkpoint-rejected-modal')
-                @include('dashboard.partials.checkpoint-pending-modal')
-
-            </main>
-        </div>
-        @if (count($warn) >= 3)
-            <div class="flex justify-center pt-10 mx-10 sm:justify-start">
+                {{-- =========================
+                    CARD MOTIVASI
+                ========================== --}}
                 <div
-                    class="inset-0 flex flex-col justify-start px-4 py-2 mb-5 font-semibold text-white bg-red-500 rounded-lg shadow-md w-fit text-md sm:text-xl">
-                    <p class="p-1 px-2 text-xs bg-yellow-500 rounded-full w-fit">Warning</p>
-                    <p style="padding-left: 3px;">Kamu Sudah Tidak Absen Pulang {{ count($warn) }}x</p>
-                </div>
-            </div>
-        @endif
-    </div>
+                    class="relative overflow-hidden
+                        bg-amber-400
+                        min-h-[130px] w-[55%]
+                        rounded-xl p-3
+                        text-slate-800
+                        flex flex-col justify-between">
 
-    <div
-        class="{{ $kontrak && $kontrak->isPending() ? 'hidden' : '' }} mx-5 mt-5 sm:mx-10">
-        @if ($kontrak && $kontrak->isActive())
-            {{-- APPROVED --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-green-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-green-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
-                        Approved
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-blue-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
-
-                    <p class="mb-4 text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Selamat! Pengajuan anda telah di setujui silahkan
-                        lihat detailnya.
-                    </p>
-
-                    <div class="flex flex-col gap-2 sm:flex-row sm:justify-center md:justify-start">
-                        <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
-                            onclick="window.open(this.href, '_blank'); window.location.reload(); return false;"
-                            class="rounded-2xl bg-yellow-400 px-4 py-2.5 text-center text-sm font-bold text-slate-900 shadow-sm transition hover:bg-yellow-500">
-                            Lihat Detail
-                        </a>
-
-                        {{-- <a href="{{ route('form-kontrak-index', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
-                            class="rounded-2xl bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white shadow-sm transition hover:bg-green-700">
-                            Tanda Tangan Kontrak
-                        </a> --}}
+                    {{-- Dekorasi bawah --}}
+                    <div
+                        class="absolute
+                            -right-8 -bottom-12
+                            w-32 h-32
+                            rounded-full
+                            bg-white/10">
                     </div>
-                </div>
 
-                <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-green-600 text-white shadow-lg shadow-green-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-check-line text-4xl sm:text-5xl"></i>
-                </div>
-            </div>
-        @elseif($kontrak && $kontrak->isPending())
-            {{-- PENDING --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
-                        Pending
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-blue-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
+                    {{-- Icon matahari --}}
+                    <div
+                        class="absolute top-3 right-3
+                            w-7 h-7
+                            rounded-full
+                            bg-white/40
+                            flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
 
-                    <p class="text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Data anda telah terkirim ke HRD perusahaan,
-                        jika belum di approve silahkan pengajuan kembali dalam
-                        <span class="font-black text-red-600">
-                            {{ max(0, 30 - (int) $kontrak->created_at->diffInDays(now())) }} Hari
+                            <path stroke-linecap="round" d="M12 2v2
+                                M12 20v2
+                                M4.93 4.93l1.41 1.41
+                                M17.66 17.66l1.41 1.41
+                                M2 12h2
+                                M20 12h2
+                                M4.93 19.07l1.41-1.41
+                                M17.66 6.34l1.41-1.41" />
+                        </svg>
+                    </div>
+
+
+                    {{-- Text --}}
+                    <div class="relative z-10 pr-7">
+
+                        <span
+                            class="block
+                                text-[15px]
+                                leading-[1.05]
+                                font-black">
+                            Ayo tingkatkan
+                            kinerjamu hari ini!
                         </span>
-                    </p>
+
+                        <span
+                            class="block
+                                mt-1
+                                text-[9px]
+                                leading-tight
+                                font-medium
+                                opacity-80">
+                            Disiplin, konsisten, hasil lebih baik.
+                        </span>
+
+                    </div>
+
+
+                    {{-- Grafik --}}
+                    <div class="relative z-10
+                            self-end
+                            mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 opacity-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            {{-- Bar --}}
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 19v-4
+                                M9 19v-7
+                                M14 19v-10" />
+
+                            {{-- Grafik naik --}}
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 14l5-4 4 2 7-7" />
+
+                            {{-- Arrow --}}
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5h4v4" />
+                        </svg>
+                    </div>
+
                 </div>
 
-                <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-blue-500 text-white shadow-lg shadow-blue-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-information-line text-4xl sm:text-5xl"></i>
-                </div>
             </div>
-        @elseif ($kontrak && $kontrak->isProses())
-            {{-- PROSES --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-gradient-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-700">
-                        Proses
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-amber-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
+        </div>
 
-                    <p class="text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Data anda telah terkirim ke HRD perusahaan,
-                        dan sedang di proses oleh HRD, harap Ditunggu.
-                    </p>
-                </div>
 
+
+
+        {{-- toggle --}}
+        <div id="mainToggle"
+            class="relative flex items-center justify-evenly
+                text-base gap-2 py-2 my-5 mx-5
+                rounded-full bg-white overflow-hidden">
+            {{-- Sliding background --}}
+            <div id="toggleIndicator"
+                class="absolute h-[40px] w-[100px]
+                    rounded-3xl bg-sky-500
+                    transition-all duration-300 ease-in-out">
+            </div>
+
+            {{-- Info --}}
+            <button type="button" data-index="0"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    transition-all duration-300">
+                Info
+            </button>
+
+            {{-- Utama --}}
+            <button type="button" data-index="1"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    font-extrabold text-white
+                    transition-all duration-300">
+                Utama
+            </button>
+
+            {{-- Riwayat --}}
+            <button type="button" data-index="2"
+                class="toggle-btn relative z-10
+                    min-h-[40px] w-[100px]
+                    transition-all duration-300">
+                Riwayat
+            </button>
+        </div>
+
+        <div id="dashboardPanels" class="overflow-hidden">
+            <div id="dashboardPanelTrack" class="flex w-[300%] transition-transform duration-300 ease-in-out">
+                {{-- menu informasi --}}
+                <section class="w-1/3 shrink-0">
+                    <div class="space-y-3 px-6 py-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+                                    <i class="ri-notification-3-line text-lg"></i>
+                                </span>
+                                <div>
+                                    <h2 class="flex items-center gap-2 font-black text-lg leading-tight text-slate-900">
+                                        Informasi
+                                        @if ($hasUnreadInformation)
+                                            <span class="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" title="Ada informasi baru" aria-label="Ada informasi baru"></span>
+                                        @endif
+                                    </h2>
+                                    <p class="text-xs text-slate-500">Pembaruan terbaru untukmu</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if ($kontrak && ($kontrak->isActive() || $kontrak->isPending() || $kontrak->isProses()))
+                            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {{ $kontrak->isActive() ? 'bg-emerald-100 text-emerald-600' : ($kontrak->isPending() ? 'bg-sky-100 text-sky-600' : 'bg-amber-100 text-amber-600') }}">
+                                        <i class="{{ $kontrak->isActive() ? 'ri-check-line' : ($kontrak->isPending() ? 'ri-information-line' : 'ri-time-line') }} text-xl"></i>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-bold uppercase tracking-wide {{ $kontrak->isActive() ? 'text-emerald-600' : ($kontrak->isPending() ? 'text-sky-600' : 'text-amber-600') }}">Status pengajuan kontrak</p>
+                                        <h3 class="mt-1 text-base font-black text-slate-900">{{ $kontrak->isActive() ? 'Pengajuan disetujui' : ($kontrak->isPending() ? 'Menunggu persetujuan' : 'Sedang diproses') }}</h3>
+                                        <p class="mt-1 text-xs leading-relaxed text-slate-500">{{ $kontrak->isActive() ? 'Lihat detail kontrak yang telah disetujui.' : ($kontrak->isPending() ? 'Pengajuan sedang menunggu persetujuan HRD.' : 'Pengajuan sedang diproses oleh HRD.') }}</p>
+                                        @if ($kontrak->isActive())
+                                            <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak->id)]) }}" target="_blank" class="mt-3 inline-flex rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Lihat detail</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (auth()->user()->kerjasama_id == 1)
+                            <x-notification-dropdown />
+                        @else
+                            <div class="flex flex-col items-center rounded-xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center shadow-xs">
+                                <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                                    <i class="ri-notification-off-line text-2xl"></i>
+                                </div>
+                                <p class="font-semibold text-slate-700">Belum ada informasi</p>
+                                <p class="mt-1 text-xs text-slate-500">Informasi terbaru akan tampil di sini.</p>
+                            </div>
+                        @endif
+                    </div>
+                </section>
+
+                {{-- menu utama --}}
+                <section class="w-1/3 shrink-0">
+                    @if ($dashboardMenus->isNotEmpty())
+                        <div class="px-6 py-2 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                                <span class="font-black text-lg">Menu Utama</span>
+                            </div>
+                            <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
+                                @foreach ($dashboardMenus as $menu)
+                                    @if ($menu['disabled'] ?? false)
+                                        <div aria-disabled="true" title="Menu hanya tersedia untuk pengguna kerjasama internal"
+                                            class="flex cursor-not-allowed flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 opacity-40 grayscale">
+                                    @else
+                                        <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
+                                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-2">
+                                    @endif
+
+                                        <i class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center rounded-2xl bg-{{ $menu['color'] }}-200 text-2xl font-bold text-{{ $menu['color'] }}-700"></i>
+                                        <span class="text-sm font-extrabold">{{ $menu['label'] }}</span>
+
+                                    @if ($menu['disabled'] ?? false)
+                                        </div>
+                                    @else
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- menu tambahan --}}
+                    @if ($dashboardAddMenus->isNotEmpty())
+                        <div class="px-6 py-2 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                                <span class="font-black text-lg">Menu Tambahan</span>
+                            </div>
+                            <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
+                                @foreach ($dashboardAddMenus as $menu)
+                                    <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
+                                        class="flex flex-col items-center justify-center
+                                        gap-1 rounded-lg px-1 py-2">
+
+                                        <i
+                                            class="{{ $menu['icon'] }}
+                                            flex h-14 w-14 items-center justify-center text-2xl font-bold
+                                            text-{{ $menu['color'] }}-700
+                                            bg-{{ $menu['color'] }}-300 rounded-2xl"></i>
+
+                                        <span class="font-extrabold text-sm">
+                                            {{ $menu['label'] }}
+                                        </span>
+
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                </section>
+
+                {{-- menu riwayat --}}
+                <section class="w-1/3 shrink-0 px-6 py-2 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1 h-5 rounded-full bg-sky-500"></span>
+                        <span class="font-black text-lg">Menu Riwayat</span>
+                    </div>
+                    <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
+                        @foreach ($historyMenus as $menu)
+                            @if ($menu['disabled'] ?? false)
+                                <div aria-disabled="true" title="Menu hanya tersedia untuk pengguna kerjasama internal"
+                                    class="flex cursor-not-allowed flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 opacity-40 grayscale">
+                            @else
+                                <a href="{{ $menu['url'] }}"
+                                    class="flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-2">
+                            @endif
+
+                                    <i class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center rounded-2xl bg-{{ $menu['color'] }}-300 text-2xl font-bold text-{{ $menu['color'] }}-700"></i>
+                                    <span class="text-sm font-extrabold">{{ $menu['label'] }}</span>
+
+                            @if ($menu['disabled'] ?? false)
+                                </div>
+                            @else
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        {{-- Tombol Pulang --}}
+        @if ($absenP && $absenP?->absensi_type_pulang == null)
+            <div id="checkoutBar"
+                class="fixed inset-x-0 bottom-0 z-30 hidden
+                flex justify-center
+                px-4 pb-4
+                pointer-events-none">
                 <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-amber-500 text-white shadow-lg shadow-amber-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-time-line text-4xl sm:text-5xl"></i>
+                    class="pointer-events-auto
+                    w-full max-w-sm
+                    rounded-2xl
+                    bg-white/80
+                    p-1.5
+                    shadow-lg
+                    ring-1 ring-slate-200/70
+                    backdrop-blur-md">
+                    <button id="modalPulangBtn" data-absen="{{ $absenP }}" type="button"
+                        class="group flex w-full
+                        items-center justify-center gap-2
+                        rounded-xl
+                        bg-red-500
+                        px-5 py-3
+                        text-white
+                        shadow-md shadow-red-500/20
+                        transition-all duration-200
+                        hover:bg-red-600
+                        active:scale-[0.98]">
+                        <span
+                            class="flex h-9 w-9
+                            items-center justify-center
+                            rounded-lg
+                            bg-white/15">
+                            <i class="ri-run-line text-xl"></i>
+                        </span>
+
+                        <span class="checkout-button-label text-sm font-extrabold">
+                            Waktunya Pulang
+                        </span>
+
+                        <i
+                            class="ri-arrow-right-line
+                            text-lg opacity-80
+                            transition-transform duration-200
+                            group-hover:translate-x-1"></i>
+                    </button>
                 </div>
             </div>
         @endif
+
+        @if ($kerjasamaId == 1 && session()->has('point'))
+            <div class="flex items-center justify-end mx-5 mb-5">
+                <div class="flex flex-row px-4 py-1 text-xs text-white rounded-md shadow-xs gap-x-2 sm:w-fit"
+                    style="background-color: #0C642F">
+                    <i class="ri-checkbox-circle-line"></i>
+                    <span>{{ session('point') }}</span>
+                </div>
+            </div>
+        @endif
+
+        @include('dashboard.partials.prayer-modal')
+
+        @include('dashboard.partials.checkout-modal')
+
+        @include('dashboard.partials.news-modal')
+        @include('dashboard.partials.checkpoint-reminder-modal')
+        @include('dashboard.partials.checkpoint-rejected-modal')
+        @include('dashboard.partials.checkpoint-pending-modal')
     </div>
+
     @include('dashboard.partials.scripts.checkout-tracking')
     @include('dashboard.partials.scripts.dashboard-ui')
     @include('dashboard.partials.scripts.shift-timer')
     <x-flasher-theme />
+
+    <script>
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                updateHeroTimezone(lat, lng);
+            },
+            error => {
+                console.warn('GPS tidak tersedia:', error);
+
+                // fallback timezone perangkat
+                updateHeroTimezone();
+            }, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000
+            }
+        );
+
+        function updateHeroTimezone(lat = null, lng = null) {
+            let timezone = Intl.DateTimeFormat()
+                .resolvedOptions()
+                .timeZone;
+
+            let label = 'WIB';
+
+            // Jika timezone perangkat sudah Indonesia
+            if (timezone === 'Asia/Jakarta') {
+                label = 'WIB';
+            } else if (timezone === 'Asia/Makassar') {
+                label = 'WITA';
+            } else if (timezone === 'Asia/Jayapura') {
+                label = 'WIT';
+            }
+
+            document.getElementById('heroTimezone').textContent = label;
+
+            updateHeroClock(timezone);
+        }
+
+        function updateHeroClock(timezone) {
+            const clock = document.getElementById('heroClock');
+
+            if (!clock) return;
+
+            const time = new Intl.DateTimeFormat('en-GB', {
+                timeZone: timezone,
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).format(new Date());
+
+            clock.textContent = time;
+        }
+
+        setInterval(() => {
+            const timezone = Intl.DateTimeFormat()
+                .resolvedOptions()
+                .timeZone;
+
+            updateHeroClock(timezone);
+        }, 1000);
+    </script>
+    <script>
+        const toggle = document.getElementById('mainToggle');
+        const indicator = document.getElementById('toggleIndicator');
+        const track = document.getElementById('dashboardPanelTrack');
+        const buttons = toggle.querySelectorAll('.toggle-btn');
+
+        function setActive(index, animate = true) {
+
+            const button = buttons[index];
+
+            // Posisi indicator mengikuti tombol
+            indicator.style.left =
+                `${button.offsetLeft}px`;
+
+            // Animasi indicator dan panel
+            indicator.style.transition = animate ?
+                'left 300ms ease-in-out' :
+                'none';
+            track.style.transition = animate ?
+                'transform 300ms ease-in-out' :
+                'none';
+            track.style.transform = `translateX(-${index * (100 / track.children.length)}%)`;
+
+            buttons.forEach((btn, i) => {
+
+                if (i === index) {
+                    btn.classList.add(
+                        'font-extrabold',
+                        'text-white'
+                    );
+
+                    btn.classList.remove(
+                        'text-slate-700'
+                    );
+
+                } else {
+                    btn.classList.remove(
+                        'font-extrabold',
+                        'text-white'
+                    );
+
+                    btn.classList.add(
+                        'text-slate-700'
+                    );
+                }
+            });
+        }
+
+
+        // Default = Utama
+        setActive(1, false);
+
+
+        // Klik tombol
+        buttons.forEach((button, index) => {
+
+            button.addEventListener('click', () => {
+                setActive(index);
+            });
+
+        });
+    </script>
 </body>
 
 </html>

@@ -34,9 +34,9 @@
 </head>
 
 <body class="font-sans antialiased  bg-slate-400">
-	<div class="min-h-screen pb-[12.5rem]">
+	<div class="min-h-screen pb-50">
 		@include('../layouts/navbar')
-		<div class="justify-start flex items-center p-10 sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md mb-[12.5rem]">
+		<div class="justify-start flex items-center p-10 sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md mb-50">
 			<div class="w-full flex flex-col">
 				<div class="mb-2">
 					<button id="modalPulangBtn"
@@ -56,8 +56,8 @@
 					</thead>
 				</table>
 			</div>
-			<div class="fixed inset-0 modalp hidden bg-slate-500/10 backdrop-blur-sm transition-all duration-300 ease-in-out">
-				<div class="bg-slate-200 w-3/6 m-10 h-3/6 rounded-md shadow">
+			<div class="fixed inset-0 modalp hidden bg-slate-500/10 backdrop-blur-xs transition-all duration-300 ease-in-out">
+				<div class="bg-slate-200 w-3/6 m-10 h-3/6 rounded-md shadow-sm">
                     <div class="flex justify-end mb-3">
 						<button class="btn btn-error scale-90 close">&times;</button>
 					</div>

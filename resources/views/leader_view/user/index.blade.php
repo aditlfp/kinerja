@@ -1,32 +1,27 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10 sm:mx-10">
-            <p class="text-center text-lg sm:text-2xl uppercase font-bold">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <p class="border-l-4 border-sky-500 text-center text-lg font-bold uppercase sm:text-2xl">
                 List Karyawan,<br>
-                {{ auth()->id() == 175 ? 'Semua Mitra' : Auth::user()->kerjasama->client->name }}
+                {{ auth()->id() == 175 ? 'Semua Mitra' : (Auth::user()->kerjasama->client->panggilan ?: Auth::user()->kerjasama->client->name) }}
             </p>
 
             <div class="flex flex-col items-center mx-2 my-2 sm:justify-center justify-start">
                 {{-- Top Controls --}}
                 <div class="flex items-center justify-center sm:justify-between gap-2 w-full mt-5">
-                    <div style="width: 44.44%;">
-                        @php
-                            $jabatan = Auth::user()->divisi->jabatan->code_jabatan ?? Auth::user()->divisi->code_jabatan;
-                        @endphp
-                        <a href="{{
-                            $jabatan === 'CO-CS' ? route('leaderView') :
-                            ($jabatan === 'CO-SCR' ? route('danruView') : route('dashboard.index'))
-                        }}" class="btn btn-error">Kembali</a>
-                    </div>
-
-                    <div style="width: 55.55%;" class="mt-5">
+                    <div style="width: 75%;" class="mt-5">
                         <x-search />
                     </div>
                 </div>
 
                 {{-- Mitra Filter (visible only for user ID 175) --}}
                 @if(Auth::user()->jabatan->code_jabatan == 'SPV-W')
-                    <form action="" method="GET" class="flex justify-center items-end gap-1 bg-slate-100 rounded w-full px-2 py-3 mb-5">
+                    <form action="" method="GET" class="flex justify-center items-end gap-1 bg-slate-100 rounded-sm w-full px-2 py-3 mb-5">
                         <div style="width: 66.66%;" class="w-2/3">
                             <label class="label text-xs sm:text-base">Pilih Mitra</label>
                             <select name="mitra" class="select select-bordered text-black select-sm text-xs w-full">
@@ -45,8 +40,8 @@
                 @endif
 
                 {{-- Table --}}
-                <div class="overflow-x-scroll w-full md:overflow-hidden mx-2 sm:mx-10">
-                    <table id="searchTable" class="table table-xs table-zebra sm:table-md text-xs bg-slate-50 font-semibold sm:text-md">
+                <div class="table-scroll w-full max-w-full min-w-0">
+                    <table id="searchTable" class="table table-xs table-zebra text-xs bg-slate-50 font-semibold sm:table-md sm:text-md" style="min-width: 900px;">
                         <thead>
                             <tr class="text-center">
                                 <th class="p-1 py-2 bg-slate-300 rounded-tl-2xl">#</th>
@@ -75,12 +70,12 @@
                                         @endif
                                     </td>
                                     <td class="p-1">{{ $i->name }}</td>
-                                    <td class="p-1 break-words whitespace-pre-wrap">{{ ucwords(strtolower($i->nama_lengkap)) }}</td>
-                                    <td class="p-1 break-words whitespace-pre-wrap" style="width: 90px">
+                                    <td class="p-1 wrap-break-word whitespace-pre-wrap">{{ ucwords(strtolower($i->nama_lengkap)) }}</td>
+                                    <td class="p-1 wrap-break-word whitespace-pre-wrap" style="width: 90px">
                                         {{ $i->divisi->jabatan->code_jabatan ?? 'Jabatan Kosong ?' }}
                                     </td>
-                                    <td class="p-1 break-words whitespace-pre-line">{{ $i->email }}</td>
-                                    <td class="p-1 break-words whitespace-pre-line">
+                                    <td class="p-1 wrap-break-word whitespace-pre-line">{{ $i->email }}</td>
+                                    <td class="p-1 wrap-break-word whitespace-pre-line">
                                         {{ $i->kerjasama->client->panggilan ?: $i->kerjasama->client->name ?? 'Penempatan Kosong ?' }}
                                     </td>
                                 </tr>
@@ -97,6 +92,7 @@
                     {{ $user->links() }}
                 </div>
             </div>
+            </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

@@ -1,7 +1,11 @@
 <x-app-layout>
-    <x-main-div>
-
-        <div id="mDiv" class="py-10 sm:mx-10">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div id="mDiv" class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
             <p class="text-lg font-bold text-center uppercase sm:text-2xl ">Riwayat Laporan, {{ Auth::user()->kerjasama->client->name }}</p>
             <div class="flex flex-col items-center justify-start mx-2 my-2 sm:justify-center">
                 <div class="flex items-center justify-center w-full my-5 sm:justify-end">
@@ -31,7 +35,7 @@
                             <tr>
                                 <td class="p-1">{{ $n++ }}.</td>
                                 @if ($i->img_before != null)
-                                    <td><img id="image1" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_before }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_before }}" data-imgName="img_before" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                                    <td><img id="image1" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_before }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_before }}" data-imgName="img_before" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                                 @else
                                  <td>
                                     <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />
@@ -39,7 +43,7 @@
                                 @endif
 
                                 @if ($i->img_proccess != null)
-                                    <td><img id="image2" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_proccess }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_proccess }}" data-imgName="img_proccess" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                                    <td><img id="image2" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_proccess }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_proccess }}" data-imgName="img_proccess" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                                 @else
                                  <td>
                                     <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />
@@ -47,7 +51,7 @@
                                 @endif
 
                                  @if ($i->img_final != null)
-                                    <td><img id="image3" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_final }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_final }}" data-imgName="img_final" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                                    <td><img id="image3" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_final }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_final }}" data-imgName="img_final" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                                 @else
                                  <td>
                                     <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />
@@ -150,5 +154,7 @@
             })
         })
     </script>
-    </x-main-div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

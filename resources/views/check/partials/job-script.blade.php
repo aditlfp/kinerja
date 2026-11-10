@@ -215,7 +215,7 @@
         $('body').append(`
             <div
                 id="photo-source-modal"
-                class="fixed inset-0 z-[10000] hidden items-center justify-center overflow-hidden bg-slate-950/60 p-3 backdrop-blur-md sm:p-4"
+                class="fixed inset-0 z-10000 hidden items-center justify-center overflow-hidden bg-slate-950/60 p-3 backdrop-blur-md sm:p-4"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="photo-source-title"

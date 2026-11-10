@@ -70,7 +70,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="m3-dialog-panel m-auto w-full overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)] {{ $maxWidth }}"
+        class="m3-dialog-panel m-auto w-full overflow-hidden rounded-[28px] bg-(--md-sys-color-surface-container-high) shadow-(--md-elevation-3) {{ $maxWidth }}"
         x-transition:enter="m3-dialog-enter"
         x-transition:enter-start="m3-dialog-enter-start"
         x-transition:enter-end="m3-dialog-enter-end"

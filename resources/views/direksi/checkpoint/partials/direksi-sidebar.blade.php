@@ -45,7 +45,7 @@
 @endphp
 
 <aside
-    class="fixed inset-y-0 left-0 z-40 hidden w-[17.5rem] flex-col border-r border-slate-200/80 bg-white/85 px-6 py-7 text-slate-600 backdrop-blur-xl lg:flex">
+    class="fixed inset-y-0 left-0 z-40 hidden w-70 flex-col border-r border-slate-200/80 bg-white/85 px-6 py-7 text-slate-600 backdrop-blur-xl lg:flex">
     <a href="{{ route($homeRoute) }}" class="group mb-12 flex items-center gap-3 overflow-hidden">
         <span
             class="grid h-10 w-10 place-items-center rounded-xl bg-sky-500 text-xl text-white shadow-[0_8px_20px_rgba(14,165,233,.18)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"><i
@@ -86,7 +86,7 @@
 </aside>
 
 <div
-    class="fixed inset-x-0 top-0 z-30 rounded-full m-3 flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-3 text-slate-800 shadow-sm backdrop-blur-xl lg:hidden">
+    class="fixed inset-x-0 top-0 z-30 rounded-full m-3 flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-3 text-slate-800 shadow-xs backdrop-blur-xl lg:hidden">
     <button type="button" id="direksi-cp-menu-open" aria-label="Buka menu" aria-controls="direksi-cp-drawer"
         aria-expanded="false"
         class="group grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:border-sky-300 hover:text-sky-600 active:scale-[.96]"><i
@@ -102,10 +102,10 @@
 </div>
 
 <div id="direksi-cp-overlay" aria-hidden="true"
-    class="pointer-events-none fixed inset-0 z-40 bg-slate-900/40 opacity-0 backdrop-blur-sm transition-opacity duration-300 ease-[cubic-bezier(.22,1,.36,1)] lg:hidden">
+    class="pointer-events-none fixed inset-0 z-40 bg-slate-900/40 opacity-0 backdrop-blur-xs transition-opacity duration-300 ease-[cubic-bezier(.22,1,.36,1)] lg:hidden">
 </div>
 <aside id="direksi-cp-drawer" aria-hidden="true"
-    class="fixed inset-y-0 left-0 z-50 flex w-[17.5rem] max-w-[85vw] -translate-x-full flex-col overflow-y-auto border-r border-slate-200/80 bg-white/95 px-6 py-7 text-slate-600 shadow-[0_24px_60px_-24px_rgba(15,23,42,.35)] backdrop-blur-xl transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] will-change-transform lg:hidden">
+    class="fixed inset-y-0 left-0 z-50 flex w-70 max-w-[85vw] -translate-x-full flex-col overflow-y-auto border-r border-slate-200/80 bg-white/95 px-6 py-7 text-slate-600 shadow-[0_24px_60px_-24px_rgba(15,23,42,.35)] backdrop-blur-xl transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] will-change-transform lg:hidden">
     <div class="mb-10 flex items-center justify-between">
         <a href="{{ route($homeRoute) }}" class="group flex items-center gap-3">
             <span

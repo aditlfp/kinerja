@@ -1,15 +1,17 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10 sm:mx-10">
-            <p class="text-lg font-bold text-center uppercase sm:text-2xl ">List Gaji Karyawan, <br>{{ auth()->user()->id == 175 ? "Semua Mitra" : Auth::user()->kerjasama->client->name }}</p>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <p class="border-l-4 border-sky-500 text-lg font-bold text-center uppercase sm:text-2xl">List Gaji Karyawan, <br>{{ auth()->user()->id == 175 ? "Semua Mitra" : Auth::user()->kerjasama->client->name }}</p>
             <div class="flex flex-col items-center justify-start mx-2 my-2 sm:justify-center">
 
                 <div class="flex flex-col md:flex-row items-center justify-center w-full gap-2 mt-5 md:justify-between">
-                    <div class="flex justify-start my-1 w-full">
-                        <button onclick="history.back()" class="btn btn-error">Kembali</button>
-                    </div>
                     <div class="flex justify-end mt-5" style="min-width: 50%;">
-                        <form action="{{ Auth::user()->kerjasama_id == 1 ? route('slip-karyawan') : (Auth::user()->jabatan_id == 11 ? route('danru-slip') : route('leader-slip')) }}" method="GET" class="flex flex-col gap-2 p-2 mb-5 rounded bg-slate-100" style="">
+                        <form action="{{ Auth::user()->kerjasama_id == 1 ? route('slip-karyawan') : (Auth::user()->jabatan_id == 11 ? route('danru-slip') : route('leader-slip')) }}" method="GET" class="flex flex-col gap-2 p-2 mb-5 rounded-sm bg-slate-100" style="">
                             @if(Auth::user()->kerjasama_id == 1)
                             <div style="width: 100%">
                                 <label class="text-xs label">Pilih Mitra</label>
@@ -27,7 +29,7 @@
                                 </select>
                             </div>
                             @endif
-                            <div class="join" style="Width: 100%;">
+                            <div class="join w-full">
                                 <input type="month" name="bulan" value="{{ $bulan ? $bulan : Carbon\Carbon::now()->subMonth()->format('Y-m') }}" max="{{ Carbon\Carbon::now()->addMonth()->format('Y-m') }}" class="input input-sm input-bordered join-item text-xs" style="width: 75%;" />
                                 <button type="submit" class="btn btn-sm btn-info join-item" style="width: 25%;" ><i class="ri-search-2-line"></i></button>
                             </div>
@@ -35,8 +37,8 @@
                     </div>
                 </div>
 
-                <div class="w-full mx-2 overflow-x-scroll md:overflow-hidden sm:mx-10 ">
-                    <table id="searchTable" class="table text-xs font-semibold table-xs table-zebra sm:table-md bg-slate-50 sm:text-md ">
+                <div class="table-scroll w-full min-w-0 pb-10 sm:mx-10">
+                    <table id="searchTable" class="table w-full min-w-[700px] text-xs font-semibold table-xs table-zebra sm:table-md bg-slate-50 sm:text-md">
                         <thead>
 							<tr class="text-center">
                                 <th class="p-1 py-2 bg-slate-300 rounded-tl-2xl">#</th>
@@ -121,6 +123,7 @@
                     </table>
                 </div>
             </div>
+            </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

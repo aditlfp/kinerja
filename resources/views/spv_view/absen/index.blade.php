@@ -70,7 +70,7 @@
 										<x-no-img />
 									</td>
 								@endif
-                                <td class="p-1  break-words whitespace-pre-wrap">{{ ucwords(strtolower($i->user->nama_lengkap)) }}</td>
+                                <td class="p-1  wrap-break-word whitespace-pre-wrap">{{ ucwords(strtolower($i->user->nama_lengkap)) }}</td>
                                 <td class="p-1 text-center">{{ $i->shift?->shift_name }}, <br> {{ $i->shift?->jam_start }} - {{ Carbon\Carbon::parse($i->shift?->jam_end)->subHour(1)->format('H:i') }}</td>
 								<td class="p-1">
                                     {{ $i->kerjasama->client->panggilan }}

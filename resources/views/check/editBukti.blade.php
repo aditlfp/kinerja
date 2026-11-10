@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-main-div>
         <div class="mx-auto w-full max-w-5xl px-3 py-5 sm:px-5 lg:px-6">
-            <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/5">
-                <div class="border-b border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 px-4 py-4 sm:px-6">
+            <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs ring-1 ring-slate-900/5">
+                <div class="border-b border-slate-200 bg-linear-to-br from-emerald-50 via-white to-sky-50 px-4 py-4 sm:px-6">
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex items-start gap-3">
-                            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-400 text-white shadow-sm ring-1 ring-emerald-300">
+                            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-400 text-white shadow-xs ring-1 ring-emerald-300">
                                 <i class="ri-camera-line text-2xl"></i>
                             </span>
                             <div class="min-w-0">
@@ -17,7 +17,7 @@
                                 <p class="mt-1 text-sm leading-5 text-slate-600">Upload foto untuk setiap checkpoint yang dikerjakan.</p>
                             </div>
                         </div>
-                        <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                        <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50">
                             <i class="ri-arrow-left-line"></i>
                             Kembali
                         </a>

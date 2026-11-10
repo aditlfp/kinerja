@@ -1,20 +1,26 @@
 <x-app-layout>
-	<x-main-div>
-		<div class="py-10 px-5">
-			<p class="text-center text-lg sm:text-2xl font-bold  uppercase">Index Rating, {{ Auth::user()->kerjasama->client->name }}</p>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <div class="px-5">
+                    <p class="border-l-4 border-sky-500 text-center text-lg font-bold uppercase sm:text-2xl">Index Rating, {{ Auth::user()->kerjasama->client->name }}</p>
 			
-			<div class="flex justify-center sm:justify-end ">
-				<div class="input flex items-center w-fit input-bordered my-10">
+            <div class="flex justify-center sm:justify-end">
+                <div class="input my-10 flex w-fit items-center input-bordered">
 					<i class="ri-search-2-line"></i>
-					<input type="search" id="searchInput" class="border-none rounded ml-1" placeholder="Search..." required>
+					<input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
 				</div>
 			</div>
-			<div class="flex  overflow-x-scroll md:overflow-hidden sm:mx-10 pb-10">
-				<table class="table table-xs sm:table-sm w-full text-xs sm:text-base shadow-md bg-slate-50" id="searchTable">
+            <div class="table-scroll w-full min-w-0 pb-10 sm:mx-10">
+                <table class="table w-full min-w-[700px] text-xs shadow-md bg-slate-50 table-xs sm:table-sm sm:text-base" id="searchTable">
 					<thead>
 						<tr>
-							<th class="bg-slate-300 rounded-tl-2xl">#</th>
-							<th class="bg-slate-300 ">Nama Karyawan</th>
+							<th class="bg-slate-300 rounded-tl-2xl hidden sm:block">#</th>
+							<th class="bg-slate-300 rounded-tl-2xl sm:rounded-none">Nama Karyawan</th>
 							@if (Auth::user()->divisi->jabatan->code_jabatan == 'MITRA')
 								<th class="bg-slate-300 ">Rating Mitra</th>
 								<th class="bg-slate-300 ">Rating Leader</th>
@@ -36,7 +42,7 @@
 						@forelse ($user as $us)
 							@if ($us->divisi->jabatan->code_jabatan != 'MITRA')
 								<tr>
-									<td>{{ $no++ }}</td>
+									<td class="hidden sm:block">{{ $no++ }}</td>
 									<td class="line-clamp-3 sm:line-clamp-none">{{ $us->nama_lengkap }}</td>
 									@if (Auth::user()->divisi->jabatan->code_jabatan == 'MITRA')
 										<td>
@@ -163,8 +169,8 @@
 
 						<!-- Modal structure for each user -->
 						<div id="myRateModal{{ $us->id }}"
-							class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-[9999]">
-							<div class="modal-content bg-white rounded-md shadow  p-6">
+							class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-9999">
+							<div class="modal-content bg-white rounded-md shadow-sm  p-6">
 								@if (Auth::user()->divisi->jabatan->code_jabatan == 'MITRA')
 									<form action="{{ route('mitra-rating.store') }}" method="post">
 										@csrf
@@ -235,8 +241,8 @@
 						</div>
 						<!-- Modal structure for each user (Updated) -->
 						<div id="myRateModalU{{ $us->id }}"
-							class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-[9999]">
-							<div class="modal-content bg-white rounded-md shadow mx-2 sm:mx-0 p-6">
+							class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-9999">
+							<div class="modal-content bg-white rounded-md shadow-sm mx-2 sm:mx-0 p-6">
 								@if (Auth::user()->divisi->jabatan->code_jabatan == 'MITRA')
 									@foreach ($rating as $item)
 										<form action="{{ route('mitra-rating.update', $item->id) }}" method="post">
@@ -342,7 +348,6 @@
 </div>
 </div>
 </div>
-</x-main-div>
 <script>
 	var modalButtons = document.querySelectorAll('.myModalBtn');
 	var modalButtonsU = document.querySelectorAll('.myModalBtnU');
@@ -394,4 +399,6 @@
 		}
 	});
 </script>
+        </div>
+    </div>
 </x-app-layout>

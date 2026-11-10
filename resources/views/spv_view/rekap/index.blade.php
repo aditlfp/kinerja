@@ -361,7 +361,7 @@
                             <div class="relative flex-1">
                                 <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                                     placeholder="Cari mitra..."
-                                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
                                 <svg class="absolute w-5 h-5 text-gray-400 pointer-events-none left-3 top-3"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -396,7 +396,7 @@
             <!-- Stats Summary -->
             <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
                 <!-- Total Mitra -->
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 bg-indigo-600 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -413,7 +413,7 @@
                 </div>
 
                 <!-- Halaman -->
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-lg bg-emerald-600">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -431,7 +431,7 @@
                 </div>
 
                 <!-- Bulan Ini -->
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-lg bg-violet-600">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -450,7 +450,7 @@
 
             <!-- Global Export Section -->
             <div class="my-6">
-                <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="mb-1 text-lg font-semibold text-gray-900">Export Data Keseluruhan</h3>
@@ -529,20 +529,20 @@
                             <div class="flex items-start flex-1 min-w-0 gap-4 sm:items-center">
                                 <!-- Avatar -->
                                 <div
-                                    class="flex items-center justify-center flex-shrink-0 w-12 h-12 text-lg font-bold text-white bg-indigo-600 rounded-lg sm:w-14 sm:h-14">
+                                    class="flex items-center justify-center shrink-0 w-12 h-12 text-lg font-bold text-white bg-indigo-600 rounded-lg sm:w-14 sm:h-14">
                                     {{ strtoupper(substr($mitra->client->name ?? 'M', 0, 1)) }}
                                 </div>
 
                                 <!-- Client Info -->
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 break-words">
+                                    <h3 class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 wrap-break-word">
                                         {{ $mitra->client->name ?? 'Nama Mitra' }}
                                     </h3>
                                     <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
                                         @if ($mitra->client->email)
                                             <p
                                                 class="text-gray-600 text-xs sm:text-sm flex items-center gap-1.5 break-all">
-                                                <svg class="flex-shrink-0 w-4 h-4 text-gray-400" fill="none"
+                                                <svg class="shrink-0 w-4 h-4 text-gray-400" fill="none"
                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
@@ -554,7 +554,7 @@
                                         @endif
                                         @if ($mitra->client->phone)
                                             <p class="text-gray-600 text-xs sm:text-sm flex items-center gap-1.5">
-                                                <svg class="flex-shrink-0 w-4 h-4 text-gray-400" fill="none"
+                                                <svg class="shrink-0 w-4 h-4 text-gray-400" fill="none"
                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
@@ -667,7 +667,7 @@
                             <!-- Action Button -->
                             <button
                                 onclick="openModal({{ $mitra->id }}, '{{ addslashes($mitra->client->name ?? 'Nama Mitra') }}')"
-                                class="w-full sm:w-auto flex-shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
+                                class="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
                                 <span>Lihat Detail</span>
                                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -678,7 +678,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-12">
+                    <div class="p-8 text-center bg-white border border-gray-200 rounded-lg shadow-xs sm:p-12">
                         <div class="max-w-sm mx-auto">
                             <div
                                 class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full">
@@ -715,14 +715,14 @@
             <!-- Pagination -->
             @if ($client->hasPages())
                 <div class="mt-6">
-                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                         {{ $client->appends(['search' => request('search')])->links() }}
                     </div>
                 </div>
             @endif
 
             <!-- Modal Overlay -->
-            <div id="detailModal" class="fixed inset-0 z-[999999] hidden" aria-labelledby="modal-title"
+            <div id="detailModal" class="fixed inset-0 z-999999 hidden" aria-labelledby="modal-title"
                 role="dialog" aria-modal="true">
                 <!-- Background overlay -->
                 <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeModal()"></div>
@@ -737,7 +737,7 @@
                             <div class="flex flex-col px-6 pt-6 pb-4 bg-white gap-y-2">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-3">
-                                        <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 text-lg font-bold text-white bg-indigo-600 rounded-lg"
+                                        <div class="flex items-center justify-center shrink-0 w-12 h-12 text-lg font-bold text-white bg-indigo-600 rounded-lg"
                                             id="modalAvatar">
                                             M
                                         </div>
@@ -749,7 +749,7 @@
                                         </div>
                                     </div>
                                     <button type="button" onclick="closeModal()"
-                                        class="flex-shrink-0 ml-3 text-gray-400 rounded-md hover:text-gray-500 focus:outline-none">
+                                        class="shrink-0 ml-3 text-gray-400 rounded-md hover:text-gray-500 focus:outline-hidden">
                                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -796,9 +796,9 @@
                             <div class="px-6 py-4 space-y-3 bg-white">
                                 <!-- Data Lembur Button -->
                                 <a href="#" id="linkLembur"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-indigo-200 rounded-lg group bg-gradient-to-r from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-indigo-200 rounded-lg group bg-linear-to-r from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-lg">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 bg-indigo-600 rounded-lg">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -814,7 +814,7 @@
                                             Lihat rekap data lembur karyawan
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 text-indigo-600 transition-transform group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 text-indigo-600 transition-transform group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>
@@ -823,9 +823,9 @@
 
                                 <!-- Data Personil Keluar Button -->
                                 <a href="#" id="linkPersonilKeluar"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 border-emerald-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-linear-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 border-emerald-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-lg bg-emerald-600">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 rounded-lg bg-emerald-600">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -842,7 +842,7 @@
                                             Lihat data karyawan yang keluar
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 transition-transform text-emerald-600 group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 transition-transform text-emerald-600 group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>
@@ -850,9 +850,9 @@
                                 </a>
 
                                 <a href="#" id="linkPersonilMasuk"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-blue-200 rounded-lg group bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-blue-200 rounded-lg group bg-linear-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-blue-600 rounded-lg">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 bg-blue-600 rounded-lg">
                                         <i class="text-lg text-white ri-user-follow-line"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -864,7 +864,7 @@
                                             Lihat data karyawan yang masuk
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 text-blue-600 transition-transform group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 text-blue-600 transition-transform group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>
@@ -872,9 +872,9 @@
                                 </a>
 
                                 <a href="#" id="linkCutting"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-gradient-to-r from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-rose-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-linear-to-r from-rose-50 to-rose-100 hover:from-rose-100 hover:to-rose-200 border-rose-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-lg bg-rose-600">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 rounded-lg bg-rose-600">
                                         <i class="text-lg text-white ri-scissors-cut-line"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -886,7 +886,7 @@
                                             Lihat data pengajuan cutting
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 transition-transform text-rose-600 group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 transition-transform text-rose-600 group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>
@@ -894,9 +894,9 @@
                                 </a>
 
                                 <a href="#" id="linkFinishedTraining"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-gradient-to-r from-violet-50 to-violet-100 hover:from-violet-100 hover:to-violet-200 border-violet-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border rounded-lg group bg-linear-to-r from-violet-50 to-violet-100 hover:from-violet-100 hover:to-violet-200 border-violet-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-lg bg-violet-600">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 rounded-lg bg-violet-600">
                                         <i class="text-lg text-white ri-graduation-cap-line"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -908,7 +908,7 @@
                                             Lihat data pengajuan lepas training
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 transition-transform text-violet-600 group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 transition-transform text-violet-600 group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>
@@ -916,9 +916,9 @@
                                 </a>
 
                                 <a href="#" id="linkKeteranganLanjutan"
-                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-yellow-200 rounded-lg group bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200">
+                                    class="flex items-center gap-3 p-4 transition-all duration-200 border border-yellow-200 rounded-lg group bg-linear-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200">
                                     <div
-                                        class="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-yellow-600 rounded-lg">
+                                        class="flex items-center justify-center shrink-0 w-10 h-10 bg-yellow-600 rounded-lg">
                                         <i class="text-lg text-white ri-file-list-line"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -930,7 +930,7 @@
                                             Lihat keterangan lanjutan mitra
                                         </p>
                                     </div>
-                                    <svg class="flex-shrink-0 w-5 h-5 text-yellow-600 transition-transform group-hover:translate-x-1"
+                                    <svg class="shrink-0 w-5 h-5 text-yellow-600 transition-transform group-hover:translate-x-1"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7"></path>

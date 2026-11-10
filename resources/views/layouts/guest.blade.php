@@ -34,17 +34,11 @@
             opacity: .45;
         }
 
-        main,
-        .fixed {
+        main{
             position: relative;
             z-index: 1;
         }
 
-        /* pastikan konten di atas pseudo-element */
-        body>* {
-            position: relative;
-            z-index: 1;
-        }
 
         /* ── Input & button glassmorphism ── */
         .glass-input {
@@ -101,7 +95,7 @@
     </style>
 </head>
 
-<body class="max-h-screen min-h-screen font-sans text-stone-800"
+<body class="max-h-screen min-h-screen relative font-sans text-stone-800"
     style="background: linear-gradient(135deg, #fffdf5 0%, #fefce8 40%, #fef9c3 70%, #fef08a 100%);">
     <!-- Background 12th text -->
     <div
@@ -127,7 +121,7 @@
         const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua) && !/OPR/.test(ua);
         if (!isChrome) open = true;
     })()" x-show="open" x-transition class="fixed z-50 inset-x-4 top-4">
-        <div class="flex items-center justify-between px-4 py-2 border rounded-full shadow glass-pill border-amber-200">
+        <div class="flex items-center justify-between px-4 py-2 border rounded-full shadow-sm glass-pill border-amber-200">
             <div class="flex items-center gap-3 text-sm text-amber-900">
                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-200">
                     <!-- info icon -->
@@ -205,21 +199,21 @@
                         <h3 class="mb-2 text-sm font-semibold text-slate-700">Akun Media Sosial</h3>
                         <div class="flex flex-wrap gap-3">
                             <a href="https://www.instagram.com/ptsacponorogo/" target="_blank" rel="noopener"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow">
+                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow-sm">
                                 <i class="ri-instagram-line text-[18px]"></i>
                                 <span>@ptsacponorogo</span>
                             </a>
 
                             <a href="https://www.facebook.com/profile.php?id=61571512059418" target="_blank"
                                 rel="noopener"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow">
+                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow-sm">
                                 <i class="ri-facebook-line text-[18px]"></i>
                                 <span>Sac Ponorogo</span>
                             </a>
 
                             <a href="https://youtube.com/@sacponorogo9355?si=UjkQtK5IHPZjfaPk" target="_blank"
                                 rel="noopener"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow">
+                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-amber-100 text-sm hover:shadow-sm">
                                 <i class="ri-youtube-line text-[18px]"></i>
                                 <span>SAC Ponorogo</span>
                             </a>
@@ -228,7 +222,7 @@
                 </div>
 
                 <!-- contact card -->
-                <div class="flex flex-col gap-2 px-3 py-1.5 rounded-2xl glass-pill text-sm hover:shadow">
+                <div class="flex flex-col gap-2 px-3 py-1.5 rounded-2xl glass-pill text-sm hover:shadow-sm">
                     <h4 class="font-semibold text-slate-700">Kontak</h4>
                     <div class="mt-2 space-y-2 font-medium text-slate-700">
                         <div class="flex items-center gap-2">
@@ -249,8 +243,8 @@
 
                                 <!-- Border gradient berputar -->
                                 <span
-                                    class="absolute -inset-[4px] rounded-lg p-[2px]
-                  bg-gradient-to-r from-pink-500 via-yellow-500 to-purple-500
+                                    class="absolute inset-[-4px] rounded-lg p-[2px]
+                  bg-linear-to-r from-pink-500 via-yellow-500 to-purple-500
                   opacity-0 group-hover:opacity-100 animate-rotate-border transition-all duration-300"></span>
 
                                 <!-- Background solid biar isi tetap jelas -->

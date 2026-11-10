@@ -1,8 +1,8 @@
         <div id="prayerContainer"
-            class="fixed inset-0 z-[900000] hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-md px-0 sm:px-4">
+            class="fixed inset-0 z-900000 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-md px-0 sm:px-4">
             <div class="relative w-full sm:max-w-lg overflow-hidden rounded-t-[28px] sm:rounded-3xl bg-white shadow-2xl ring-1 ring-white/80 max-h-[92dvh] sm:max-h-[88vh] flex flex-col">
                 
-                <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500"></div>
+                <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-amber-400 via-yellow-500 to-orange-500"></div>
 
                 <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 sm:px-6 py-3.5">
                     <div class="flex items-center gap-3">
@@ -43,11 +43,11 @@
                     </div>
 
                     <div class="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 shadow-inner">
-                        <div class="relative aspect-[3/4] sm:aspect-video w-full max-h-[250px] bg-slate-900">
+                        <div class="relative aspect-3/4 sm:aspect-video w-full max-h-[250px] bg-slate-900">
                             <video id="prayerCameraVideo" autoplay playsinline muted
                                 class="h-full w-full object-cover"></video>
 
-                            <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/75 to-transparent px-3 py-3">
+                            <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-slate-950/75 to-transparent px-3 py-3">
                                 <div class="flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-100">
                                     <span class="flex items-center gap-1">
                                         <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
@@ -71,7 +71,7 @@
                         <input name="waktu_sholat" value="" class="hidden waktuSholat" />
 
                         <button type="submit"
-                            class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-yellow-600 to-amber-600 px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-amber-500/30 transition hover:from-yellow-700 hover:to-amber-700 hover:shadow-xl active:scale-[0.99]">
+                            class="flex w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-yellow-600 to-amber-600 px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-amber-500/30 transition hover:from-yellow-700 hover:to-amber-700 hover:shadow-xl active:scale-[0.99]">
                             <i class="ri-check-line text-xl"></i>
                             <span>Oke Siap</span>
                         </button>

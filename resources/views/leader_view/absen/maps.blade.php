@@ -34,10 +34,10 @@
     </style>
 </head>
 
-<body class="font-sans antialiased  bg-slate-400">
-    <div class="min-h-screen pb-[12.5rem]">
+<body class="bg-slate-50 font-sans antialiased text-slate-800">
+    <div class="min-h-screen pb-24">
         @include('../layouts/navbar')
-        <div class="sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md">
+        <div class="mx-3 rounded-2xl bg-white shadow-xs ring-1 ring-slate-900/5 sm:mx-10">
             <main>
                 <div class="px-5 py-5">
                     <p class="p-2 rounded-full bg-white text-center mx-10 my-5 font-semibold">Lokasi Absen Masuk & Pulang {{ $absen?->user->nama_lengkap }}</p>

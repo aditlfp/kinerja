@@ -1,8 +1,13 @@
 <x-app-layout>
     <x-main-div>
-        <div>
-            <p class="pt-5 text-2xl font-bold text-center uppercase">Detail Izin</p>
-            <div class="mx-5 my-5 rounded-md shadow bg-slate-100">
+        <div class="-mx-5 min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+            <div class="mx-auto flex w-full max-w-2xl items-center justify-between">
+                <a href="{{ route('dashboard.index') }}"><img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32"></a>
+                <p class="flex items-center gap-2 text-lg font-black"><i class="ri-file-text-line"></i> Detail Izin</p>
+            </div>
+            <div class="mx-auto max-w-2xl pt-8">
+            <p class="border-l-4 border-sky-500 pl-3 text-xl font-black uppercase">Detail Izin</p>
+            <div class="my-5 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
                 <div>
                     <div class="flex items-center justify-center pt-10">
                         <div class=" mx-2 my-2 overflow-hidden flex items-center sm:w-[40%] justify-center bg-slate-200  shadow-md  hover:shadow-none transition-all .2s  ease-in-out">
@@ -29,7 +34,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="p-2 py-5 mx-4 my-4 text-sm font-semibold rounded-md bg-slate-300">
+                    <div class="mx-4 my-4 rounded-xl bg-slate-50 p-3 py-5 text-sm font-semibold ring-1 ring-slate-200">
                         <div class="space-y-2 text-xs text-slate-800 sm:text-sm">
                             <div class="flex flex-col w-full sm:flex-row ">
                                 <span>Nama Lengkap: </span>
@@ -47,7 +52,7 @@
                                 <span>Tanggal Dibuat: </span>
                                 <span class="indent-2">{{ $izinId->created_at->format('Y-m-d : H:i:s') }}</span>
                             </div>
-                            <div class="flex flex-col w-full break-words whitespace-normal">
+                            <div class="flex flex-col w-full wrap-break-word whitespace-normal">
                                 <span>Alasan izin: </span>
                                 <span class="textarea textarea-bordered">{{ $izinId->alasan_izin }}</span>
                             </div>
@@ -56,14 +61,16 @@
                 </div>
             </div>
         </div>
-        <div class="flex justify-center mb-4 sm:justify-end">
+        <div class="mb-4 flex justify-center sm:justify-end">
             @if(Auth::user()->role_id == 2)
-                <a href="{{ route('admin.izin.index') }}" class="mx-2 btn btn-error sm:mx-10">Back</a>
+                <a href="{{ route('admin.izin.index') }}" class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300">Kembali</a>
             @elseif (Auth::user()->jabatan_id == 15)
-                <a href="{{ route('mitra_izin') }}" class="mx-2 btn btn-error sm:mx-10">Back</a>
+                <a href="{{ route('mitra_izin') }}" class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300">Kembali</a>
             @else
-                <a href="{{ route('lead_izin') }}" class="mx-2 btn btn-error sm:mx-10">Back</a>
+                <a href="{{ route('lead_izin') }}" class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300">Kembali</a>
             @endif
+        </div>
+            </div>
         </div>
     </x-main-div>
 </x-app-layout>

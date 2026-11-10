@@ -1,7 +1,12 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10 sm:mx-10">
-            <p class="text-center text-lg sm:text-2xl uppercase font-bold">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
+            </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <p class="border-l-4 border-sky-500 text-center text-lg font-bold uppercase sm:text-2xl">
                 List Kontrak,<br>
                 {{ count($kontrak) > 0 ? $kontrak[0]->unit_pk_kda : 'PT. Surya Amanah Cendikia' }}
             </p>
@@ -19,7 +24,7 @@
                 </div>
 
                 <form action="{{ route('direksi-cekKontrak') }}" method="GET"
-                    class="flex flex-col justify-between gap-2 bg-slate-100 rounded w-full px-2 py-3 mb-5">
+                    class="flex flex-col justify-between gap-2 bg-slate-100 rounded-sm w-full px-2 py-3 mb-5">
                     <div>
                         <label class="label text-xs sm:text-base">Pilih Mitra</label>
                         <select name="mitra" class="select select-bordered text-black select-sm text-xs w-full">
@@ -146,6 +151,7 @@
                 </div>
             </div>
         </div>
+            </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

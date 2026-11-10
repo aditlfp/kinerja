@@ -1,17 +1,23 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50">
+                    <i class="ri-home-4-line"></i> Dashboard
+                </a>
+            </div>
+            <div class="p-4 mb-4 bg-white border rounded-2xl shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center min-w-0 gap-3">
                         <a href="{{ route('index.rekap.data.leader') }}"
-                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                             aria-label="Kembali ke rekapitulasi">
                             <i class="text-xl ri-arrow-left-line"></i>
                         </a>
                         <div class="min-w-0">
                             <p class="text-xs font-medium text-slate-500">Data Rekap</p>
-                            <h1 class="text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
+                            <h1 class="border-l-4 border-sky-500 pl-3 text-xl font-bold leading-tight truncate text-slate-900 sm:text-2xl">
                                 Riwayat Lembur
                             </h1>
                             <p class="mt-1 text-sm leading-5 text-slate-500">Pantau status dan kelola pengajuan lembur.
@@ -19,18 +25,18 @@
                         </div>
                     </div>
                     <a href="{{ route('overtime-application.create') }}"
-                        class="inline-flex items-center justify-center w-full gap-2 px-4 py-2 text-sm font-semibold transition rounded-lg min-h-10 bg-amber-400 text-slate-900 hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 sm:w-auto">
+                        class="inline-flex items-center justify-center w-full gap-2 px-4 py-2 text-sm font-semibold transition rounded-lg min-h-10 bg-amber-400 text-slate-900 hover:bg-amber-500 focus:outline-hidden focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 sm:w-auto">
                         <i class="ri-add-line"></i>
                         <span>Pengajuan Baru</span>
                     </a>
                 </div>
             </div>
 
-            <div class="p-3 mb-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-4">
+            <div class="p-3 mb-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-4">
                 <form action="{{ route('overtime-application.history') }}" method="GET"
                     class="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
                     <select name="status"
-                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="Di Ajukan" {{ request('status') == 'Di Ajukan' ? 'selected' : '' }}>Di Ajukan
@@ -39,7 +45,7 @@
                         </option>
                     </select>
                     <input type="month" name="month" value="{{ request('month') }}"
-                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
                     <div class="flex gap-2">
                         <button type="submit"
                             class="inline-flex items-center justify-center flex-1 gap-2 px-4 py-2 text-sm font-semibold text-white transition rounded-lg min-h-11 bg-sky-600 hover:bg-sky-700 sm:flex-none">
@@ -55,7 +61,7 @@
                 </form>
             </div>
 
-            <div class="overflow-hidden bg-white border rounded-lg shadow-sm border-slate-200">
+            <div class="overflow-hidden bg-white border rounded-lg shadow-xs border-slate-200">
                 <div class="p-3 space-y-3 sm:hidden">
                     @forelse($overtimes ?? [] as $index => $overtime)
                         @php
@@ -64,7 +70,7 @@
                             $typeLabel =
                                 $type === 'shift' ? '1 Shift' : ($overtime->type_overtime_manual ?: ucfirst($type));
                         @endphp
-                        <div class="p-3 bg-white border rounded-lg shadow-sm border-slate-200">
+                        <div class="p-3 bg-white border rounded-lg shadow-xs border-slate-200">
                             <div class="flex items-start justify-between gap-3 mb-3">
                                 <div class="min-w-0">
                                     <p class="text-sm font-semibold truncate text-slate-800">
@@ -191,7 +197,7 @@
                                     <td class="px-3 py-2">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-sky-100">
+                                                class="flex items-center justify-center shrink-0 w-10 h-10 rounded-full bg-sky-100">
                                                 <span class="text-sm font-semibold text-sky-700">
                                                     {{ substr($overtime->user->nama_lengkap ?? 'N', 0, 1) }}
                                                 </span>
@@ -337,7 +343,7 @@
                 </button>
             </div>
         </div>
-    </x-main-div>
+    </div>
 
     <div x-data="{ open: false, detail: {} }" x-show="open" @detail-modal.window="open = true; detail = $event.detail" x-cloak
         class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">

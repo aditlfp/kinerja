@@ -1,5 +1,5 @@
 @if (isset($missingCheckpointDates) && $missingCheckpointDates->isNotEmpty())
-    <div id="checkpoint-reminder" class="fixed inset-0 z-[9000] flex items-center justify-center bg-slate-500/10 backdrop-blur-sm">
+    <div id="checkpoint-reminder" class="fixed inset-0 z-9000 flex items-center justify-center bg-slate-500/10 backdrop-blur-xs">
         <div class="mx-6 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_24px_60px_-24px_rgba(15,23,42,.35)]">
             <div class="flex items-start justify-between gap-4">
                 <div>

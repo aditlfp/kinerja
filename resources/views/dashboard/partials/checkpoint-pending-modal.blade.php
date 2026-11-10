@@ -1,5 +1,5 @@
 @if (isset($pendingDireksiCheckpoints) && $pendingDireksiCheckpoints->isNotEmpty())
-<div id="checkpoint-pending" class="fixed inset-0 z-[9000] flex items-center justify-center bg-slate-500/10 p-4 backdrop-blur-sm">
+<div id="checkpoint-pending" class="fixed inset-0 z-9000 flex items-center justify-center bg-slate-500/10 p-4 backdrop-blur-xs">
     <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div class="flex items-start justify-between gap-4">
             <div><p class="text-xs font-bold uppercase tracking-[.18em] text-sky-600">Bukti Pekerjaan</p><h2 class="mt-1 text-lg font-bold text-slate-900">Pengajuan Bukti Pekerjaan</h2></div>

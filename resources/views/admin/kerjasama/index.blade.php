@@ -1,17 +1,17 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Data Kerjasama')
 
-    <div x-data="{ delOpen: false, deleteId: null, deleteName: '' }" class="w-full max-w-screen-xl px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
+    <div x-data="{ delOpen: false, deleteId: null, deleteName: '' }" class="w-full max-w-(--breakpoint-xl) px-2 mx-auto space-y-4 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Kerjasama</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Kelola kontrak kerjasama dengan client dan masa berlaku dokumen.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data Kerjasama</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Kelola kontrak kerjasama dengan client dan masa berlaku dokumen.</p>
                 </div>
                 <div class="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                     <label class="flex items-center w-full h-10 gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50 sm:w-72">
                         <i class="text-base text-gray-500 ri-search-2-line"></i>
-                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-none" placeholder="Cari client, approval, expired..." />
+                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari client, approval, expired..." />
                     </label>
                     <div class="flex items-center gap-2">
                         <button type="button" id="exportPdfBtn" class="inline-flex items-center h-10 px-4 text-sm font-semibold text-white transition bg-red-600 rounded-xl hover:bg-red-700">
@@ -25,7 +25,7 @@
             </div>
         </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
             <div class="flex flex-wrap items-center gap-2 px-4 py-3 text-xs text-gray-500 border-b border-gray-100 sm:px-5">
                 <span class="rounded-full bg-blue-50 px-2.5 py-1 font-semibold text-blue-700">Total: {{ $kerjasama->total() }}</span>
                 <span>Kontrak kerjasama client.</span>
@@ -95,7 +95,7 @@
             </div>
         </section>
 
-        <div x-show="delOpen" x-cloak style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm">
+        <div x-show="delOpen" x-cloak style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-xs">
             <div class="w-full max-w-md overflow-hidden bg-white shadow-xl rounded-2xl">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <h3 class="text-sm font-semibold text-gray-800">Konfirmasi Hapus Kerjasama</h3>

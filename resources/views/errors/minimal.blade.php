@@ -23,7 +23,7 @@
                             },
                         },
                     animation: {
-                        shadow: "shadow 5s ease infinite",
+                        shadow: "shadow-sm 5s ease infinite",
                     },
                 },
             },
@@ -44,7 +44,7 @@
         </style>
     </head>
     <body class="antialiased">
-        <div class="relative flex items-top justify-center min-h-screen bg-gradient-to-bl from-yellow-500 to-rose-400/80 sm:items-center sm:pt-0">
+        <div class="relative flex items-top justify-center min-h-screen bg-linear-to-bl from-yellow-500 to-rose-400/80 sm:items-center sm:pt-0">
             <div class="max-w-xl mx-auto sm:py-6 sm:px-6 lg:px-8 bg-slate-500/20 py-2 px-2 rounded-md shadow-inner shadow-yellow-800/20 flex flex-col items-center justify-center">
                 <div class="flex justify-center items-center">
                     @yield('icon')

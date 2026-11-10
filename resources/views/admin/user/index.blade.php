@@ -3,13 +3,13 @@
 
     <div x-data="{ delOpen: false }" :class="{ 'overflow-hidden': delOpen }"
         class="w-full px-1 mx-auto space-y-3 overflow-x-hidden max-w-screen sm:px-2 lg:px-3">
-        <section class="p-4 border shadow-sm rounded-xl border-gray-100/80 bg-white/80 backdrop-blur-sm sm:p-4">
+        <section class="p-4 border shadow-xs rounded-xl border-gray-100/80 bg-white/80 backdrop-blur-xs sm:p-4">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">
                         Data All User
                     </h1>
-                    <p class="mt-0.5 text-xs text-[var(--md-sys-color-on-surface-variant)]">Kelola akun user, export data,
+                    <p class="mt-0.5 text-xs text-(--md-sys-color-on-surface-variant)">Kelola akun user, export data,
                         dan tindak lanjut status user.
                     </p>
                 </div>
@@ -22,12 +22,12 @@
             </div>
         </section>
 
-        <section class="p-3 border shadow-sm rounded-xl border-gray-100/80 bg-white/85 sm:p-4">
+        <section class="p-3 border shadow-xs rounded-xl border-gray-100/80 bg-white/85 sm:p-4">
             <div class="grid gap-3 lg:grid-cols-2 lg:items-end">
                 <form id="filterForm" action="{{ route('admin.user.index') }}" method="GET"
                     class="flex flex-wrap items-center min-w-0 gap-2">
                     <select name="filterKerjasama" id="filterKerjasama"
-                        class="w-full max-w-xs text-xs bg-white border-gray-200 select select-bordered h-9 focus:outline-none">
+                        class="w-full max-w-xs text-xs bg-white border-gray-200 select select-bordered h-9 focus:outline-hidden">
                         <option selected disabled>~ Kerja Sama ~</option>
                         @foreach ($kerjasama as $i)
                             <option value="{{ $i->id }}" {{ $filterKerjasama == $i->id ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
                         <i class="text-gray-500 ri-search-2-line"></i>
                         <input id="searchInput" data-search-mode="server" name="search"
                             value="{{ $search ?? request('search') }}" type="text"
-                            class="w-full text-xs bg-transparent border-none focus:outline-none"
+                            class="w-full text-xs bg-transparent border-none focus:outline-hidden"
                             placeholder="Search..." />
                     </label>
                     <input type="hidden" name="page" id="pageInput" value="{{ request('page', 1) }}">
@@ -60,7 +60,7 @@
             </div>
         </section>
 
-        <section class="overflow-hidden border shadow-sm rounded-xl border-gray-100/80 bg-white/90">
+        <section class="overflow-hidden border shadow-xs rounded-xl border-gray-100/80 bg-white/90">
             <form action="{{ route('export_checklist') }}" method="POST" id="exportUserForm">
                 @csrf
                 @method('POST')
@@ -140,7 +140,7 @@
         </div>
 
         <div x-show="delOpen" x-cloak style="display: none;"
-            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-sm">
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 backdrop-blur-xs">
             <div class="w-full max-w-2xl overflow-hidden bg-white shadow-xl rounded-2xl">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <h3 class="text-sm font-semibold tracking-wide text-gray-800 uppercase">Konfirmasi Hapus Akun</h3>
@@ -231,10 +231,10 @@
                                     <p>${escapeHtml(item.no_hp)}</p>
                                 </div>
                             </td>
-                            <td class="hidden px-3 py-2 break-words whitespace-pre-line align-top lg:table-cell">${escapeHtml(item.nama_lengkap).charAt(0).toUpperCase() + escapeHtml(item.nama_lengkap).slice(1).toLowerCase()}</td>
-                            <td class="px-3 py-2 break-words whitespace-pre-line align-top">${escapeHtml(item.email)}</td>
-                            <td class="hidden px-3 py-2 break-words whitespace-pre-line align-top lg:table-cell">${escapeHtml(item.no_hp)}</td>
-                            <td class="hidden px-3 py-2 break-words whitespace-pre-line align-top md:table-cell">${escapeHtml(item.kerjasama_name)}</td>
+                            <td class="hidden px-3 py-2 wrap-break-word whitespace-pre-line align-top lg:table-cell">${escapeHtml(item.nama_lengkap).charAt(0).toUpperCase() + escapeHtml(item.nama_lengkap).slice(1).toLowerCase()}</td>
+                            <td class="px-3 py-2 wrap-break-word whitespace-pre-line align-top">${escapeHtml(item.email)}</td>
+                            <td class="hidden px-3 py-2 wrap-break-word whitespace-pre-line align-top lg:table-cell">${escapeHtml(item.no_hp)}</td>
+                            <td class="hidden px-3 py-2 wrap-break-word whitespace-pre-line align-top md:table-cell">${escapeHtml(item.kerjasama_name)}</td>
                             <td class="px-3 py-2 align-top">
                                 <a href="${escapeHtml(item.edit_url)}" class="inline-flex gap-1 items-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 transition hover:bg-blue-100">
                                     <i class="ri-pencil-line"></i> Edit

@@ -18,8 +18,8 @@ class StoreAbsensiRequest extends FormRequest
 
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'kerjasama_id' => ['required'],
-            'shift_id' => ['required'],
+            'kerjasama_id' => ['required', 'exists:kerjasamas,id'],
+            'shift_id' => ['required', 'exists:shifts,id'],
             'perlengkapan' => ['required'],
             'keterangan' => ['required'],
             'absensi_type_masuk' => ['required'],

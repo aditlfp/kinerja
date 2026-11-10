@@ -53,7 +53,7 @@
 	</head>
 
 <body class="font-sans antialiased  bg-slate-400">
-	<div class="min-h-screen pb-[12.5rem]">
+	<div class="min-h-screen pb-50">
 		@include('../layouts/navbar')
 		<div class="sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md">
 			<main>
@@ -62,8 +62,8 @@
 						@method('POST')
 						@csrf
 						<div class="flex flex-col sm:flex-row sm:m-0 items-center  justify-center gap-3 mb-3">
-							<div id="my_camera" class="bg-slate-200 px-10 rounded"></div>
-							<div id="results" class=" sm:mt-0 rounded"></div>
+							<div id="my_camera" class="bg-slate-200 px-10 rounded-sm"></div>
+							<div id="results" class=" sm:mt-0 rounded-sm"></div>
 						</div>
 
 						<div class="flex justify-center">
@@ -71,7 +71,7 @@
 									class="ri-camera-fill"></i></button>
 						</div>
 						
-						<div class="p-1 rounded my-3 ">
+						<div class="p-1 rounded-sm my-3 ">
 						    <span id="labelMap" class="text-white text-center flex flex-col justify-center">
 						        <p>Pastikan map sudah muncul !!</p>
 						        <p id="resolver">coba refresh browser jika map belum muncul</p>
@@ -191,21 +191,21 @@
 									{{-- sudah --}}
 									@if ($abs->tanggal_absen == Carbon\Carbon::now()->format('Y-m-d'))
 										<button
-											class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded transition-all ease-linear .2s disabled cursor-not-allowed"
+											class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded-sm transition-all ease-linear .2s disabled cursor-not-allowed"
 											disabled>Sudah Absen</button>
 										{{-- belum --}}
 									@else
-										<button class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded transition-all ease-linear .2s"
+										<button class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded-sm transition-all ease-linear .2s"
 											id="btnAbsen">Absen</button>
 									@endif
 								@break
 
 								@empty
-									<button class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded transition-all ease-linear .2s"
+									<button class="p-2 my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded-sm transition-all ease-linear .2s"
 										id="btnAbsen">Absen</button>
 								@endforelse
 								<a href="{{ route('dashboard.index') }}"
-									class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded transition-all ease-linear .2s">
+									class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded-sm transition-all ease-linear .2s">
 									Kembali
 								</a>
 							</span>
@@ -227,7 +227,7 @@
 		</div>
 	</div>
 	<div class="flex justify-center">
-		<div class="fixed bottom-0 z-[999]">
+		<div class="fixed bottom-0 z-999">
 			<x-menu-mobile />
 		</div>
 	</div>

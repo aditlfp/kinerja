@@ -28,14 +28,14 @@
         :class="density === 'ultra_compact' ? 'space-y-2' : 'space-y-5'"
     >
         <section
-            class="border border-gray-100/80 bg-white/90 shadow-sm backdrop-blur-sm"
+            class="border border-gray-100/80 bg-white/90 shadow-xs backdrop-blur-xs"
             :class="density === 'ultra_compact' ? 'rounded-lg p-3' : 'rounded-2xl p-6'"
         >
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]"
+                    <h1 class="font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)"
                         :class="density === 'ultra_compact' ? 'text-lg' : 'text-2xl'">Tambah User</h1>
-                    <p class="mt-1 text-[var(--md-sys-color-on-surface-variant)]"
+                    <p class="mt-1 text-(--md-sys-color-on-surface-variant)"
                         :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-sm'">
                         Mode `Normal` untuk kenyamanan visual, mode `Ultra Compact` untuk input cepat.
                     </p>
@@ -87,7 +87,7 @@
                     : 'grid gap-5 xl:grid-cols-[1fr_320px]'"
             >
                 <section
-                    class="border border-gray-100/80 bg-white/95 shadow-sm"
+                    class="border border-gray-100/80 bg-white/95 shadow-xs"
                     :class="density === 'ultra_compact' ? 'rounded-lg p-3' : 'rounded-2xl p-6'"
                 >
                     <h3 class="font-semibold uppercase tracking-wide text-gray-700" :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-sm'">Form User</h3>
@@ -107,7 +107,7 @@
                                 required
                                 autocomplete="name"
                                 placeholder="Username (available: {{ $lastUser ?? '-' }})"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('name')" class="mt-1.5" />
@@ -123,7 +123,7 @@
                                 required
                                 autocomplete="nama_lengkap"
                                 placeholder="Nama lengkap"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('nama_lengkap')" class="mt-1.5" />
@@ -139,7 +139,7 @@
                                 required
                                 autocomplete="username"
                                 placeholder="Email user"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('email')" class="mt-1.5" />
@@ -155,7 +155,7 @@
                                 maxlength="14"
                                 autocomplete="no_hp"
                                 placeholder="No HP aktif"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('no_hp')" class="mt-1.5" />
@@ -172,7 +172,7 @@
                                 pattern="[0-9]*"
                                 autocomplete="nik"
                                 placeholder="NIK"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('nik')" class="mt-1.5" />
@@ -184,7 +184,7 @@
                                 name="kerjasama_id"
                                 id="kerjasama_id"
                                 required
-                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'select-sm h-9 text-xs' : 'h-11 text-sm'"
                             >
                                 <option value="" disabled {{ old('kerjasama_id') ? '' : 'selected' }}>Pilih Client</option>
@@ -201,7 +201,7 @@
                                 name="devisi_id"
                                 id="devisi_id"
                                 required
-                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'select-sm h-9 text-xs' : 'h-11 text-sm'"
                             >
                                 <option value="" disabled {{ old('devisi_id') ? '' : 'selected' }}>Pilih Divisi</option>
@@ -218,7 +218,7 @@
                                 name="jabatan_id"
                                 id="jabatan_id"
                                 required
-                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="select select-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'select-sm h-9 text-xs' : 'h-11 text-sm'"
                             >
                                 <option value="" disabled {{ old('jabatan_id') ? '' : 'selected' }}>Pilih Jabatan</option>
@@ -238,7 +238,7 @@
                                 required
                                 autocomplete="new-password"
                                 placeholder="Password"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('password')" class="mt-1.5" />
@@ -253,7 +253,7 @@
                                 required
                                 autocomplete="new-password"
                                 placeholder="Konfirmasi password"
-                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                                class="input input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                                 :class="density === 'ultra_compact' ? 'input-sm h-9 text-xs' : 'h-11 text-sm'"
                             />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1.5" />
@@ -262,7 +262,7 @@
                 </section>
 
                 <section
-                    class="h-fit border border-gray-100/80 bg-white/95 shadow-sm xl:sticky xl:top-20"
+                    class="h-fit border border-gray-100/80 bg-white/95 shadow-xs xl:sticky xl:top-20"
                     :class="density === 'ultra_compact' ? 'rounded-lg p-3' : 'rounded-2xl p-5'"
                 >
                     <h3 class="font-semibold uppercase tracking-wide text-gray-700" :class="density === 'ultra_compact' ? 'text-[11px]' : 'text-sm'">Foto Profil</h3>
@@ -272,7 +272,7 @@
                                 id="previewImage"
                                 src="{{ asset('/logo/person.png') }}"
                                 alt="Preview"
-                                class="border border-gray-200 object-cover object-center shadow-sm"
+                                class="border border-gray-200 object-cover object-center shadow-xs"
                                 :class="density === 'ultra_compact' ? 'h-24 w-24 rounded-lg' : 'h-36 w-36 rounded-2xl'"
                             />
                         </div>
@@ -281,7 +281,7 @@
                             type="file"
                             name="image"
                             accept="image/*"
-                            class="file-input file-input-bordered w-full border-gray-200 bg-white focus:outline-none"
+                            class="file-input file-input-bordered w-full border-gray-200 bg-white focus:outline-hidden"
                             :class="density === 'ultra_compact' ? 'file-input-sm text-xs' : 'text-sm'"
                         />
                         <p class="text-gray-500" :class="density === 'ultra_compact' ? 'text-[10px]' : 'text-xs'">Format JPG/PNG proporsional.</p>

@@ -3,13 +3,13 @@
         $spvwClientId = request('client_id', session('spvw.selected_client_id'));
     @endphp
 
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full max-w-3xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+            <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center min-w-0 gap-3">
                         <a href="{{ route('spvw.rekap.index', array_filter(['client_id' => $spvwClientId])) }}"
-                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                             aria-label="Kembali ke rekapitulasi">
                             <i class="text-xl ri-arrow-left-line"></i>
                         </a>
@@ -37,12 +37,12 @@
                 data-store-url="{{ route('spvw.finished-training.store') }}" class="space-y-4">
                 <input type="hidden" id="finished_training_id" />
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5">
                     <label for="user_id" class="mb-1.5 block text-sm font-semibold text-slate-700">
                         Nama Pegawai <span class="text-red-500">*</span>
                     </label>
                     <select id="user_id" x-model="selectedUserId" @change="syncSelectedUser($event)"
-                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                        class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                         :class="showUserError ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : ''" required>
                         <option value="">Pilih nama pegawai</option>
                         <template x-for="user in allUsers" :key="user.id">
@@ -52,14 +52,14 @@
                     <p class="mt-2 text-xs text-slate-500">Daftar user dibatasi sesuai area kerja/kerjasama Anda.</p>
                 </section>
 
-                <section class="p-4 bg-white border rounded-lg shadow-sm border-slate-200 sm:p-5">
+                <section class="p-4 bg-white border rounded-lg shadow-xs border-slate-200 sm:p-5">
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label for="date_in" class="mb-1.5 block text-sm font-semibold text-slate-700">
                                 Tanggal Masuk <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="date_in" id="date_in"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required>
                         </div>
 
@@ -68,7 +68,7 @@
                                 Tanggal Lepas Training <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="date_finish_train" id="date_finish_train"
-                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required>
                         </div>
 
@@ -77,7 +77,7 @@
                                 Keterangan <span class="text-red-500">*</span>
                             </label>
                             <textarea name="desc" id="desc" rows="4" placeholder="Masukkan keterangan lepas training"
-                                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                                 required></textarea>
                         </div>
                     </div>
@@ -86,15 +86,15 @@
                 <div id="formErrors"></div>
 
                 <div
-                    class="sticky sm:bottom-16 z-20 mx-1 rounded-md border-t border-slate-200 bg-white/95 p-3 shadow-[0_-8px_18px_rgba(15,23,42,0.08)] backdrop-blur sm:static sm:mx-0 sm:rounded-lg sm:border sm:shadow-sm">
+                    class="sticky sm:bottom-16 z-20 mx-1 rounded-md border-t border-slate-200 bg-white/95 p-3 shadow-[0_-8px_18px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:static sm:mx-0 sm:rounded-lg sm:border sm:shadow-xs">
                     <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         <button type="submit" id="btnSave"
-                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
+                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-500 focus:outline-hidden focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
                             <i class="ri-save-line"></i>
                             <span id="btnSaveText">Simpan Data</span>
                         </button>
                         <button type="button" id="btnReset"
-                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+                            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
                             <i class="ri-refresh-line"></i>
                             Reset Form
                         </button>
@@ -102,7 +102,7 @@
                 </div>
             </form>
         </div>
-    </x-main-div>
+    </div>
 
     <script>
         document.addEventListener('alpine:init', () => {
@@ -158,7 +158,7 @@
             function showFormErrors(errors) {
                 const errorList = errors.map(err => `<li>${err}</li>`).join('');
                 $('#formErrors').html(`
-                    <div class="px-4 py-3 text-sm border rounded-lg shadow-sm border-rose-200 bg-rose-50 text-rose-700">
+                    <div class="px-4 py-3 text-sm border rounded-lg shadow-xs border-rose-200 bg-rose-50 text-rose-700">
                         <div class="flex items-start gap-2">
                             <i class="ri-error-warning-line mt-0.5"></i>
                             <ul class="pl-5 list-disc">${errorList}</ul>

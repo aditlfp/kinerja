@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Data Checkpoint')
 
-    <div class="w-full px-2 mx-auto space-y-4 max-w-screen-2xl sm:px-3 lg:px-4">
+    <div class="w-full px-2 mx-auto space-y-4 max-w-(--breakpoint-2xl) sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Index Rencana Kerja</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Index Rencana Kerja</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Monitor rencana dan pekerjaan checkpoint karyawan.</p>
                 </div>
                 {{-- <div class="flex items-center gap-2">
                     <a href="{{ Auth::user()->role_id == 2 ? route('admin.index') : route('dashboard.index') }}" class="inline-flex items-center h-10 px-4 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">Kembali</a>
@@ -20,7 +20,7 @@
                 <div class="flex flex-wrap items-center gap-2">
                     @if (Auth::user()->role_id == 2)
                         <form id="filterForm" action="{{ route('admin.cp.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
-                            <select name="filterKerjasama" id="filterKerjasama" class="h-10 min-w-[220px] rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-none">
+                            <select name="filterKerjasama" id="filterKerjasama" class="h-10 min-w-[220px] rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-700 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                                 <option selected disabled>~ Kerja Sama ~</option>
                                 @foreach ($kerjasama as $i)
                                     <option value="{{ $i->id }}" {{ $filter == $i->id ? 'selected' : '' }}>{{ $i->client->name }}</option>
@@ -42,12 +42,12 @@
 
                 <label class="flex items-center w-full h-10 max-w-sm gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50">
                     <i class="text-base text-gray-500 ri-search-2-line"></i>
-                    <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-none" placeholder="Cari nama, CP, deskripsi..." />
+                    <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari nama, CP, deskripsi..." />
                 </label>
             </div>
         </section>
 
-        <section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
             <div class="w-full overflow-x-auto">
                 <table class="w-full min-w-[980px] divide-y divide-gray-100" id="searchTable">
                     <thead class="text-xs font-semibold tracking-wide text-center text-gray-600 uppercase bg-gray-50">
@@ -87,7 +87,7 @@
                                             @if (!$img)
                                                 <x-no-img class="scale-50" />
                                             @else
-                                                <img src="{{ asset('storage/images/' . $img) }}" width="70" class="rounded" alt="Gambar Bukti">
+                                                <img src="{{ asset('storage/images/' . $img) }}" width="70" class="rounded-sm" alt="Gambar Bukti">
                                             @endif
                                         </td>
                                     @endif
@@ -137,13 +137,13 @@
         <div id="div_form_nilai" class="fixed inset-0 z-50 flex items-center justify-center hidden p-10 overflow-hidden bg-slate-900/50 drop-shadow-md"></div>
         <div id="div_form_delete" class="fixed inset-0 z-50 flex items-center justify-center hidden p-10 overflow-hidden bg-slate-900/50 drop-shadow-md"></div>
 
-        <div id="modalShow" class="modalShow hidden fixed inset-0 z-[9000] flex justify-center items-center bg-slate-500/10 backdrop-blur-sm p-5">
-            <div class="relative w-full max-w-xl p-6 rounded-md shadow bg-slate-50">
+        <div id="modalShow" class="modalShow hidden fixed inset-0 z-9000 flex justify-center items-center bg-slate-500/10 backdrop-blur-xs p-5">
+            <div class="relative w-full max-w-xl p-6 rounded-md shadow-sm bg-slate-50">
                 <button id="closeButton" class="absolute scale-90 btn btn-error top-2 right-2">&times;</button>
                 <div class="flex flex-col items-center justify-center gap-4">
                     <span id="status" class="p-2 text-lg font-semibold text-white rounded-lg"></span>
-                    <img id="modalImg" loading="lazy" alt="" width="120" class="rounded" />
-                    <p id="modalTitle" class="py-5 font-semibold text-center break-words whitespace-pre-wrap"></p>
+                    <img id="modalImg" loading="lazy" alt="" width="120" class="rounded-sm" />
+                    <p id="modalTitle" class="py-5 font-semibold text-center wrap-break-word whitespace-pre-wrap"></p>
                     <div class="flex flex-col w-full">
                         <label for="notes">Note</label>
                         <textarea id="notes" name="note" class="textarea textarea-bordered" placeholder="notes..."></textarea>
@@ -200,7 +200,7 @@
                                     @method('PUT')
                                     <p class="font-semibold text-center">~${label}~</p>
                                     <div class="flex justify-center">
-                                        ${imgSrc ? `<img src="${imgSrc}" class="rounded" alt="Gambar Bukti" width="70">` : ''}
+                                        ${imgSrc ? `<img src="${imgSrc}" class="rounded-sm" alt="Gambar Bukti" width="70">` : ''}
                                     </div>
                                     <p class="my-2 text-xs sm:text-sm line-clamp-2 text-start">${deskripsi}</p>
                                     <fieldset class="w-full">

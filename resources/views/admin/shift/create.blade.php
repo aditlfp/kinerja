@@ -1,12 +1,12 @@
 <x-admin-layout :fullWidth="true">
     @section('title', 'Tambah Shift')
 
-    <div class="mx-auto w-full max-w-screen-lg space-y-4 px-2 sm:px-3 lg:px-4">
+    <div class="mx-auto w-full max-w-(--breakpoint-lg) space-y-4 px-2 sm:px-3 lg:px-4">
         <section class="px-0.5">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Tambah Shift</h1>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Atur jadwal shift baru berdasarkan jabatan dan client.</p>
+                    <h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Tambah Shift</h1>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Atur jadwal shift baru berdasarkan jabatan dan client.</p>
                 </div>
                 <a href="{{ route('admin.shift.index') }}" class="inline-flex h-10 items-center rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">Kembali</a>
             </div>
@@ -14,11 +14,11 @@
 
         <form method="POST" action="{{ route('admin.shift.store') }}" class="space-y-4" id="form">
             @csrf
-            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+            <section class="rounded-2xl border border-gray-100 bg-white p-4 shadow-xs sm:p-5">
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
                         <label for="jabatan_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Jabatan</label>
-                        <select name="jabatan_id" id="jabatan_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <select name="jabatan_id" id="jabatan_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                             <option selected disabled>~ Pilih Jabatan ~</option>
                             @forelse ($jabatan as $jab)
                                 <option value="{{ $jab->id }}">{{ $jab->name_jabatan }}</option>
@@ -29,7 +29,7 @@
                     </div>
                     <div>
                         <label for="client_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Client</label>
-                        <select name="client_id" id="client_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <select name="client_id" id="client_id" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                             <option selected disabled>~ Pilih Client ~</option>
                             @forelse ($client as $cli)
                                 <option value="{{ $cli->id }}">{{ $cli->name }}</option>
@@ -40,19 +40,19 @@
                     </div>
                     <div class="md:col-span-2">
                         <label for="shift_name" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Nama Shift</label>
-                        <input type="text" name="shift_name" id="shift_name" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none" placeholder="Masukkan nama shift...">
+                        <input type="text" name="shift_name" id="shift_name" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden" placeholder="Masukkan nama shift...">
                     </div>
                     <div>
                         <label for="jam_start" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Jam Mulai</label>
-                        <input type="time" name="jam_start" id="jam_start" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <input type="time" name="jam_start" id="jam_start" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                     </div>
                     <div>
                         <label for="jam_end" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Jam Selesai</label>
-                        <input type="time" name="jam_end" id="jam_end" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <input type="time" name="jam_end" id="jam_end" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                     </div>
                     <div class="md:col-span-2">
                         <label for="is_overnight" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-600">Pergantian Hari</label>
-                        <select name="is_overnight" id="is_overnight" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-none">
+                        <select name="is_overnight" id="is_overnight" class="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 text-sm text-gray-800 focus:border-blue-300 focus:bg-white focus:outline-hidden">
                             <option selected disabled>~ Pilih Pergantian Hari ~</option>
                             <option value="0">Tidak</option>
                             <option value="1">Ya</option>
@@ -66,7 +66,7 @@
                         <label class="relative inline-flex cursor-pointer items-center">
                             <input type="hidden" name="is_active" value="0">
                             <input type="checkbox" name="is_active" id="is_active" value="1" checked class="sr-only peer">
-                            <div class="peer h-6 w-11 rounded-full bg-gray-300 transition-colors duration-200 peer-checked:bg-green-500 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-transform after:duration-200 peer-checked:after:translate-x-5"></div>
+                            <div class="peer h-6 w-11 rounded-full bg-gray-300 transition-colors duration-200 peer-checked:bg-green-500 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform after:duration-200 peer-checked:after:translate-x-5"></div>
                             <span class="ml-2 text-sm font-medium text-gray-700" id="is_active_label">Aktif</span>
                         </label>
                     </div>
@@ -79,7 +79,7 @@
                             $days = ['Senin' => 'Sen', 'Selasa' => 'Sel', 'Rabu' => 'Rab', 'Kamis' => 'Kam', 'Jumat' => 'Jum', 'Sabtu' => 'Sab', 'Minggu' => 'Min'];
                         @endphp
                         @foreach ($days as $fullDay => $shortDay)
-                            <label class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white p-2.5 text-xs font-semibold text-gray-700 transition hover:border-blue-300 has-[:checked]:border-blue-300 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700">
+                            <label class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white p-2.5 text-xs font-semibold text-gray-700 transition hover:border-blue-300 has-checked:border-blue-300 has-checked:bg-blue-50 has-checked:text-blue-700">
                                 <input type="checkbox" name="hari[]" value="{{ $fullDay }}" class="sr-only day-input">
                                 <span>{{ $shortDay }}</span>
                             </label>

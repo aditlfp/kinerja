@@ -1,19 +1,22 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10">
-			<p class="text-center text-lg sm:text-2xl uppercase font-bold pb-10">Riwayat izin Saya</p>
+        <div class=" min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+            <div class="mx-auto flex w-full max-w-5xl items-center justify-between">
+                <a href="{{ route('dashboard.index') }}"><img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32"></a>
+                <span class="font-semibold text-sm text-slate-500/50">Halaman Izin</span>
+            </div>
+            <p class="mx-auto mt-8 max-w-5xl border-l-4 border-sky-500 pl-3 text-xl font-black uppercase">Riwayat Izin Saya</p>
             
             <div class="flex flex-col items-center mx-2 my-2 sm:justify-center justify-start">
                 <div class="overflow-x-scroll w-full md:overflow-hidden mx-2 sm:mx-0 sm:w-full">
-                    <table class="table table-xs table-zebra w-full bg-slate-50 rounded-xl" id="searchTable">
+                    <table class="table table-xs w-full overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200" id="searchTable">
                         <thead>
-                            <tr>
-                                <th class="bg-slate-300 rounded-tl-xl">#</th>
-                                <th class="bg-slate-300 px-7 line-clamp-2">Nama lengkap</th>
-                                <th class="bg-slate-300 px-12">Mitra</th>
-                                <th class="bg-slate-300">Shift</th>
-                                <th class="bg-slate-300 px-10">alasan izin</th>
-                                <th class="bg-slate-300 rounded-tr-xl">status</th>
+                            <tr class="bg-slate-100 text-slate-700">
+                                <th>#</th>
+                                <th class="px-7">Nama lengkap</th>
+                                <th class="px-12">Mitra</th>
+                                <th>Shift</th>
+                                <th class="px-10">Alasan izin</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody class="rounded-b-xl">
@@ -48,10 +51,11 @@
                 <div id="pag-1" class="mt-5 mb-5 mx-10">
                     {{ $izin->links() }}
                 </div>
-                <div class="flex justify-center mt-4 sm:justify-end">
-		            <a href="{{ route('dashboard.index') }}" class="btn btn-error mx-2 sm:mx-10">Kembali</a>
+                <div class="mt-4 flex justify-center sm:justify-end">
+                    <a href="{{ route('dashboard.index') }}" class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300">Kembali</a>
                 </div>
             </div>
         </div>
-    </x-main-div>
+            </div>
+        </div>
 </x-app-layout>

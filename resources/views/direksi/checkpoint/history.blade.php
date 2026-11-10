@@ -25,12 +25,12 @@
             <form action="{{ route('direksi.cp.history') }}" method="GET"
                 class="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 <select name="type"
-                    class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 focus:border-sky-300 focus:outline-none">
+                    class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 focus:border-sky-300 focus:outline-hidden">
                     <option value="dikerjakan" {{ $type === 'dikerjakan' ? 'selected' : '' }}>Dikerjakan</option>
                     <option value="rencana" {{ $type === 'rencana' ? 'selected' : '' }}>Rencana</option>
                 </select>
                 <select name="filterKerjasama"
-                    class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 focus:border-sky-300 focus:outline-none">
+                    class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 focus:border-sky-300 focus:outline-hidden">
                     <option value="">Semua Kerja Sama</option>
                     @foreach ($kerjasama as $item)
                         <option value="{{ $item->id }}"

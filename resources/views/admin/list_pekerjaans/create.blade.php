@@ -3,7 +3,7 @@
 		<p class="text-center text-2xl uppercase font-bold">Tambah Pekerjaan</p>
 		<form method="POST" action="{{ route('admin.list-pekerjaan.store') }}" class="mx-[25%] my-10" id="form">
 			@csrf
-			<div id="formDiv" class="bg-slate-100 px-10 py-5 rounded shadow">
+			<div id="formDiv" class="bg-slate-100 px-10 py-5 rounded-sm shadow-sm">
 				<!-- ruangan -->
 				<div class="flex flex-col">
 					<label for="ruangan_id" class="label">Pilih Ruangan</label>

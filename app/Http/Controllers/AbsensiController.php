@@ -268,12 +268,40 @@ class AbsensiController extends Controller
 
         $latUser = (float) $request->lat_user;
         $longUser = (float) $request->long_user;
-        // $latUser = -7.864453554822072;
-        // $longUser = 111.49581153034036; //13316.0
 
-        // Sementara
-        $user_id = $request->user_id;
-        $kerjasama_id = $request->kerjasama_id;
+        $authUser = Auth::user();
+        $selectedUser = User::query()->with('kerjasama')->find($request->user_id);
+        $isLeaderAttendanceRoute = in_array($request->route()->getName(), [
+            'absensi-karyawan-co-cs.store',
+            'absensi-karyawan-co-scr.store',
+        ], true);
+
+        if (!$selectedUser
+            || ($selectedUser->id !== $authUser->id && !$isLeaderAttendanceRoute)
+            || $selectedUser->kerjasama_id !== $authUser->kerjasama_id
+            || (int) $request->kerjasama_id !== (int) $selectedUser->kerjasama_id) {
+            toastr()->error('Data absensi tidak sesuai kewenangan.');
+
+            return redirect()->back()->withInput();
+        }
+
+        $selectedKerjasama = Kerjasama::query()
+            ->select('id', 'client_id')
+            ->find($selectedUser->kerjasama_id);
+        $selectedShift = Shift::query()
+            ->whereKey($request->shift_id)
+            ->where('client_id', $selectedKerjasama?->client_id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (!$selectedKerjasama || !$selectedShift) {
+            toastr()->error('Shift atau penempatan tidak sesuai.');
+
+            return redirect()->back()->withInput();
+        }
+
+        $user_id = $selectedUser->id;
+        $kerjasama_id = $selectedUser->kerjasama_id;
         $shift_id = $request->shift_id;
         $perlengkapan = json_encode($request->perlengkapan);
         $keterangan = $request->keterangan;
@@ -284,18 +312,6 @@ class AbsensiController extends Controller
         $lembur = $request->lembur;
         $terus = $request->terus;
         $tukar_id = $request->pengganti;
-
-        // end Sementara
-
-        $selectedKerjasama = Kerjasama::query()
-            ->select('id', 'client_id')
-            ->find($kerjasama_id);
-
-        if (!$selectedKerjasama) {
-            toastr()->error('Data penempatan tidak ditemukan.');
-
-            return redirect()->back()->withInput();
-        }
 
         $harLok = Lokasi::query()
             ->where('client_id', $selectedKerjasama->client_id)
@@ -560,9 +576,8 @@ class AbsensiController extends Controller
         Storage::put($file, $image_base64);
         // End Get Data Image With base64
 
-        // Sementara
-        $user_id = $request->user_id;
-        $kerjasama_id = $request->kerjasama_id;
+        $user_id = Auth::id();
+        $kerjasama_id = Auth::user()->kerjasama_id;
         $shift_id = $request->shift_id;
         $perlengkapan = json_encode($request->perlengkapan);
         $keterangan = $request->keterangan;
@@ -571,7 +586,6 @@ class AbsensiController extends Controller
         $masuk = $request->masuk;
         $tukar = $request->tukar;
         $lembur = $request->lembur;
-        // end Sementara
 
         // dd($radius);
         if ($absensi) {
@@ -635,7 +649,10 @@ class AbsensiController extends Controller
 
     public function updatePulang(Request $request, $id)
     {
-        $absensi = Absensi::find($id);
+        $absensi = Absensi::query()
+            ->whereKey($id)
+            ->where('user_id', Auth::id())
+            ->first();
 
         if (!$absensi) {
             toastr()->error('Gagal Absen Pulang !! Data absensi tidak ditemukan.');
@@ -896,7 +913,10 @@ class AbsensiController extends Controller
     {
         $currentTime = Carbon::now()->format('H:i:s');
         $timeLimit = Carbon::parse('11:26:00'); // Waktu batas absen pulang
-        $absensi = Absensi::findOrFail($id);
+        $absensi = Absensi::query()
+            ->whereKey($id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
         $absensi->whereNull('absensi_type_pulang')->update(['absensi_type_pulang' => 'belum Absen Pulang']);
         $absensi->save();
 

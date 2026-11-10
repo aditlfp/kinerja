@@ -1,21 +1,23 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="py-10 sm:mx-10">
-			<p class="text-center text-lg sm:text-2xl uppercase font-bold">Riwayat izin, <br>{{ auth()->user()->id == 175 ? "Semua Mitra" : Auth::user()->kerjasama->client->name }}</p>
-            <div class="flex justify-start my-1 mx-2 w-full">
-                <button onclick="history.back()" class="btn btn-error">Kembali</button>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+                <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo Kinerja" class="h-auto w-28 sm:w-32">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
             </div>
+            <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
+                <p class="border-l-4 border-sky-500 text-center text-lg font-bold uppercase sm:text-2xl">Riwayat izin, <br>{{ auth()->user()->id == 175 ? "Semua Mitra" : Auth::user()->kerjasama->client->name }}</p>
             <div class="flex items-center w-full justify-center sm:justify-end my-5">
                 <x-search/>
             </div>
             <div class="flex flex-col items-center m-2 sm:mx-10 sm:justify-center justify-start">
                 @if (session('message'))
-                <div class="alert alert-success text-sm flex h-10 overflow-hidden rounded-md my-5 shadow">
+                <div class="alert alert-success text-sm flex h-10 overflow-hidden rounded-md my-5 shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span>{{ session('message') }}</span>
                 </div>
                 @elseif(session('msgError'))
-                <div class="alert alert-warning text-sm flex h-10 overflow-hidden rounded-md my-5 shadow">
+                <div class="alert alert-warning text-sm flex h-10 overflow-hidden rounded-md my-5 shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <span>Warning: {{ session('msgError') }}</span>
                 </div>
@@ -92,6 +94,7 @@
                     {{ $izin->links() }}
                 </div>
             </div>
+            </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

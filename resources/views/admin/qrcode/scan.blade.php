@@ -19,13 +19,13 @@
                 <p class="text-lg font-semibold text-center">Scan QR Laporan</p>
                 <div id="reader" width="600px" height="600px"></div>
                 <input id="#result" class="hidden" />
-                <button id="openScannerBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-10 px-4 w-full rounded mt-3 flex flex-col gap-2 items-center">
+                <button id="openScannerBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-10 px-4 w-full rounded-sm mt-3 flex flex-col gap-2 items-center">
                     <i class="ri-camera-line"></i>
                     <p>Klik Untuk Scan</p>
                 </button>
                 <span class="flex flex-col justify-center items-center">
-                    <button id="switchCameraBtn" class="bg-green-500 hover:bg-green-700 text-xs text-white font-bold py-2 px-4 rounded mt-3 ml-3">Ubah kamera (depan)</button>
-                    <a href="{{ route('dashboard.index') }}" class="btn btn-error text-white font-bold py-2 px-4 rounded mt-3 ml-3">Kembali</a>
+                    <button id="switchCameraBtn" class="bg-green-500 hover:bg-green-700 text-xs text-white font-bold py-2 px-4 rounded-sm mt-3 ml-3">Ubah kamera (depan)</button>
+                    <a href="{{ route('dashboard.index') }}" class="btn btn-error text-white font-bold py-2 px-4 rounded-sm mt-3 ml-3">Kembali</a>
                 </span>
             </div>
         </div>

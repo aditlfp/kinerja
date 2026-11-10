@@ -5,13 +5,13 @@
             ? $url . (str_contains($url, '?') ? '&' : '?') . 'client_id=' . $spvwClientId
             : $url;
     @endphp
-    <x-main-div>
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
         <div class="w-full max-w-6xl px-3 py-4 mx-auto sm:px-5 lg:px-6">
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+            <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center min-w-0 gap-3">
                         <a href="{{ route('spvw.rekap.index', array_filter(['client_id' => $spvwClientId])) }}"
-                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center w-10 h-10 ml-1 transition rounded-lg shrink-0 sm:ml-0 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                             aria-label="Kembali ke rekapitulasi">
                             <i class="text-xl ri-arrow-left-line"></i>
                         </a>
@@ -33,13 +33,13 @@
                 </div>
             </div>
 
-            <div class="p-4 mb-4 bg-white border rounded-lg shadow-sm border-slate-200">
+            <div class="p-4 mb-4 bg-white border rounded-lg shadow-xs border-slate-200">
                 <form action="{{ route('spvw.keterangan-lanjutan.history', array_filter(['client_id' => $spvwClientId])) }}" method="GET"
                     class="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto]">
                     <div>
                         <label class="mb-1 block text-xs font-semibold uppercase text-slate-500">User</label>
                         <select name="user_id"
-                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
                             <option value="">Semua User</option>
                             @foreach ($users ?? [] as $user)
                                 <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
@@ -51,12 +51,12 @@
                     <div>
                         <label class="mb-1 block text-xs font-semibold uppercase text-slate-500">Periode</label>
                         <input type="text" name="periode" value="{{ request('periode') }}" placeholder="Contoh: Mei 2026"
-                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
                     </div>
                     <div>
                         <label class="mb-1 block text-xs font-semibold uppercase text-slate-500">Search</label>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, periode, judul, atau isi"
-                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                            class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-hidden transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
                     </div>
                     <div class="flex gap-2 lg:self-end">
                         <button type="submit"
@@ -76,7 +76,7 @@
                 </form>
             </div>
 
-            <div class="overflow-hidden bg-white border rounded-lg shadow-sm border-slate-200">
+            <div class="overflow-hidden bg-white border rounded-lg shadow-xs border-slate-200">
                 <table class="w-full text-sm text-left">
                     <thead class="border-b bg-slate-50 border-slate-200 text-slate-600">
                         <tr>
@@ -123,5 +123,5 @@
                 {{ $keteranganLanjutans->links() }}
             </div>
         </div>
-    </x-main-div>
+    </div>
 </x-app-layout>

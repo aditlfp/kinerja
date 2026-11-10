@@ -7,14 +7,14 @@
 	@endpush --}}
 		@section('title', 'Data Absen Sholat')
 
-		<div class="w-full px-2 py-6 mx-auto space-y-4 max-w-screen-2xl sm:px-3 lg:px-4">
+		<div class="w-full px-2 py-6 mx-auto space-y-4 max-w-(--breakpoint-2xl) sm:px-3 lg:px-4">
 			<section class="px-0.5">
-				<h1 class="text-2xl font-normal leading-8 tracking-tight text-[var(--md-sys-color-on-surface)]">Data Absen Sholat</h1>
-				<p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">Filter data absensi sholat, lalu unduh report berdasarkan mitra, divisi, dan rentang tanggal.</p>
+				<h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data Absen Sholat</h1>
+				<p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">Filter data absensi sholat, lalu unduh report berdasarkan mitra, divisi, dan rentang tanggal.</p>
 			</section>
 
 			<section class="grid gap-4 lg:grid-cols-12">
-				<div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5 lg:col-span-8">
+				<div class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5 lg:col-span-8">
 					<h2 class="text-sm font-semibold text-gray-800">Filter Data</h2>
 					<form id="filterForm" action="{{ route('admin.report-sholat.index') }}" method="GET" class="grid gap-3 mt-3 md:grid-cols-2">
 						<div>
@@ -22,7 +22,7 @@
 							<select
 								name="filterKerjasama"
 								id="filterKerjasama"
-								class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+								class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 							>
 								<option selected disabled>~ Nama Klien ~</option>
 								@foreach ($absenSi as $i)
@@ -35,7 +35,7 @@
 							<select
 								name="filterDevisi"
 								id="filterDevisi"
-								class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+								class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 							>
 								<option selected disabled>~ Devisi ~</option>
 								@foreach ($divisi as $i)
@@ -59,16 +59,16 @@
 						</div>
 					</form>
 				</div>
-				<div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5 lg:col-span-4">
+				<div class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5 lg:col-span-4">
 					<h2 class="text-sm font-semibold text-gray-800">Pencarian Cepat</h2>
 					<label class="flex items-center w-full h-10 gap-2 px-3 border border-gray-200 rounded-xl bg-gray-50 sm:w-72">
                         <i class="text-base text-gray-500 ri-search-2-line"></i>
-                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-none" placeholder="Cari Sesuatu..." />
+                        <input type="search" id="searchInput" class="w-full text-sm text-gray-700 bg-transparent border-none placeholder:text-gray-400 focus:outline-hidden" placeholder="Cari Sesuatu..." />
                     </label>
 				</div>
 			</section>
 
-			<section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+			<section class="p-4 bg-white border border-gray-100 shadow-xs rounded-2xl sm:p-5">
 				<h2 class="text-sm font-semibold text-gray-800">Download Report</h2>
 				<form method="GET" action="{{ route('admin.report-sholat.download') }}" class="grid gap-3 mt-3 lg:grid-cols-12">
 					<div class="lg:col-span-3">
@@ -76,7 +76,7 @@
 						<select
 							name="kerjasama_id"
 							id="selectInput"
-							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 						>
 							<option disabled selected>Pilih Mitra</option>
 							@forelse ($absenSi as $i)
@@ -92,7 +92,7 @@
 							type="date"
 							name="str1"
 							id="str1"
-							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 						>
 					</div>
 					<div class="lg:col-span-3">
@@ -101,7 +101,7 @@
 							type="date"
 							name="end1"
 							id="end1"
-							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 						>
 					</div>
 					<div class="lg:col-span-2">
@@ -109,7 +109,7 @@
 						<select
 							name="divisi_id"
 							id="divisi_id"
-							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none"
+							class="w-full h-10 px-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-blue-500 focus:outline-hidden"
 						>
 							<option disabled selected>Pilih Divisi</option>
 							@forelse($divisi as $i)
@@ -138,7 +138,7 @@
 							<input type="text" name="libur" class="input input-bordered" placeholder="Hari libur untuk semua.."/>
 						</div>
 						<div class="flex justify-end mx-10 mb-2 ">
-							<button type="submit" class="flex flex-col items-center px-4 py-2 bg-yellow-400 rounded-md shadow">
+							<button type="submit" class="flex flex-col items-center px-4 py-2 bg-yellow-400 rounded-md shadow-sm">
 								<i class="text-2xl ri-file-download-line"></i>
 								<span class="text-sm">All</span>
 							</button>
@@ -147,7 +147,7 @@
 				</form>
 			</div>
 
-			<section class="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+			<section class="overflow-hidden bg-white border border-gray-100 shadow-xs rounded-2xl">
 				<div class="w-full overflow-x-auto">
 					<table class="table w-full table-zebra bg-slate-50" id="searchTable">
 					<thead>
@@ -176,15 +176,15 @@
 								        <img loading="lazy" class="lazy lazy-image" src="{{asset('storage/images/'.$arr->image)}}" data-src="{{asset('storage/images/'.$arr->image)}}" alt="data-absensi-image" width="120px"/>
 								    @endif
 								</td>
-								<td class="break-words whitespace-pre-line">{{ $arr->user?$arr->user->nama_lengkap : 'user_id'. ' : '. $arr->user_id . 'AKU KOSONG' }}</td>
+								<td class="wrap-break-word whitespace-pre-line">{{ $arr->user?$arr->user->nama_lengkap : 'user_id'. ' : '. $arr->user_id . 'AKU KOSONG' }}</td>
 								<td>{{ $arr->tanggal_absen }}</td>
 								@if($arr->shift != null)
 								<td id="mitra">{{ $arr->shift->shift_name . " | " . $arr->shift->jam_start . ' - ' . $arr->shift->jam_end }}</td>
 					            @else
-					            <td class="font-semibold text-red-500 break-words whitespace-pre-wrap">Shift Kosong</td>
+					            <td class="font-semibold text-red-500 wrap-break-word whitespace-pre-wrap">Shift Kosong</td>
 					            @endif
-								<td class="break-words whitespace-pre-line">{{ $arr->kerjasama->client->name }}</td>
-								<td class="break-words whitespace-pre-line">
+								<td class="wrap-break-word whitespace-pre-line">{{ $arr->kerjasama->client->name }}</td>
+								<td class="wrap-break-word whitespace-pre-line">
 								    @if($arr->subuh == 1)
 								        <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Subuh</span>
 								    @endif
@@ -219,14 +219,14 @@
 			</section>
 		</div>
 		<div id="detailModal"
-			class="fixed inset-0 z-[9999] hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-md px-0 sm:px-4">
+			class="fixed inset-0 z-9999 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-md px-0 sm:px-4">
 			<div class="relative w-full sm:max-w-6xl max-h-[95dvh] overflow-hidden rounded-t-[28px] sm:rounded-3xl bg-white shadow-2xl ring-1 ring-white/80 flex flex-col">
 
-				<div class="absolute inset-x-0 top-0 h-1.5 bg-[var(--md-sys-color-primary)]"></div>
+				<div class="absolute inset-x-0 top-0 h-1.5 bg-(--md-sys-color-primary)"></div>
 
 				<div class="flex items-start justify-between gap-3 border-b border-slate-100 px-4 sm:px-6 py-4">
 					<div class="min-w-0">
-						<h3 id="detailTitle" class="truncate text-lg font-normal leading-7 text-[var(--md-sys-color-on-surface)] sm:text-2xl">
+						<h3 id="detailTitle" class="truncate text-lg font-normal leading-7 text-(--md-sys-color-on-surface) sm:text-2xl">
 							Nama User
 						</h3>
 						<p id="detailSubtitle" class="mt-1 text-sm text-slate-500">
@@ -330,7 +330,7 @@
 				}
 
 				html += `
-					<div class="overflow-hidden transition bg-white border border-green-200 shadow-sm rounded-3xl hover:shadow-lg">
+					<div class="overflow-hidden transition bg-white border border-green-200 shadow-xs rounded-3xl hover:shadow-lg">
 
 						<div class="px-4 py-3 border-b border-green-100 bg-green-50">
 							<div class="flex items-center justify-between">

@@ -12,19 +12,19 @@
 
             <!-- Center: Company -->
             <div class="flex items-center order-1 gap-2 md:order-2">
-                <div class="hidden w-px h-6 bg-gradient-to-b from-transparent via-slate-600 to-transparent md:block">
+                <div class="hidden w-px h-6 bg-linear-to-b from-transparent via-slate-600 to-transparent md:block">
                 </div>
                 <a href="https://sac-po.com"
                     class="group flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all duration-300">
                     <div
-                        class="flex items-center justify-center w-6 h-6 text-xs font-bold text-white rounded-md bg-gradient-to-br from-blue-500 to-purple-600">
+                        class="flex items-center justify-center w-6 h-6 text-xs font-bold text-white rounded-md bg-linear-to-br from-blue-500 to-purple-600">
                         S
                     </div>
                     <span class="text-sm font-medium transition-colors text-slate-300 group-hover:text-white">
                         PT. Surya Amanah Cendekia
                     </span>
                 </a>
-                <div class="hidden w-px h-6 bg-gradient-to-b from-transparent via-slate-600 to-transparent md:block">
+                <div class="hidden w-px h-6 bg-linear-to-b from-transparent via-slate-600 to-transparent md:block">
                 </div>
             </div>
 

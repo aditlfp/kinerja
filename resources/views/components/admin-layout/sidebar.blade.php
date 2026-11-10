@@ -167,7 +167,7 @@
      agar drawer tetap tertutup di mobile walau JavaScript belum jalan. --}}
 <aside :class="{ 'translate-x-0': mobileSidebarOpen, '-translate-x-full': !mobileSidebarOpen }"
     :data-drawer-open="mobileSidebarOpen ? 'true' : null"
-    class="admin-drawer fixed inset-y-0 left-0 z-50 flex w-60 flex-col overflow-hidden border-r border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] lg:translate-x-0">
+    class="admin-drawer fixed inset-y-0 left-0 z-50 flex w-60 flex-col overflow-hidden border-r border-(--md-sys-color-outline-variant) bg-(--md-sys-color-surface-container-low) lg:translate-x-0">
 
     {{-- Header --}}
     <div class="flex h-16 shrink-0 items-center gap-3 px-4">
@@ -176,7 +176,7 @@
                 class="h-9 w-9 object-contain">
         </span>
         <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms
-            class="truncate text-sm font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">
+            class="truncate text-sm font-bold tracking-tight text-(--md-sys-color-on-surface)">
             KINERJA APP
         </span>
         {{-- <button type="button" @click="mobileSidebarOpen = false"
@@ -192,8 +192,8 @@
         <a href="{{ route('admin.index') }}" @if ($isDashboardActive) aria-current="page" @endif
             title="Dashboard"
             class="flex items-center gap-3 rounded-full p-2 {{ $isDashboardActive
-                ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
-                : 'text-[var(--md-sys-color-on-surface-variant)]' }}">
+                ? 'bg-(--md-sys-color-secondary-container) text-(--md-sys-color-on-secondary-container)'
+                : 'text-(--md-sys-color-on-surface-variant)' }}">
             <md-ripple></md-ripple>
             <span class="grid h-8 w-8 shrink-0 place-items-center">
                 <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
@@ -214,13 +214,13 @@
                     aria-controls="nav-panel-{{ $menu['key'] }}"
                     title="{{ $menu['label'] }}"
                     class="flex w-full items-center gap-3 rounded-full p-2 {{ $menu['active'] || $isOpen
-                        ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
-                        : 'text-[var(--md-sys-color-on-surface-variant)]' }}">
+                        ? 'bg-(--md-sys-color-secondary-container) text-(--md-sys-color-on-secondary-container)'
+                        : 'text-(--md-sys-color-on-surface-variant)' }}">
                     <md-ripple></md-ripple>
                     <span
                         class="grid h-8 w-8 shrink-0 place-items-center rounded-lg {{ $menu['active'] || $isOpen
-                            ? 'bg-[color-mix(in_srgb,var(--md-sys-color-primary)_14%,transparent)] text-[var(--md-sys-color-primary)]'
-                            : 'bg-[var(--md-sys-color-surface-container-high)]' }}">
+                            ? 'bg-[color-mix(in_srgb,var(--md-sys-color-primary)_14%,transparent)] text-(--md-sys-color-primary)'
+                            : 'bg-(--md-sys-color-surface-container-high)' }}">
                         <span class="material-symbols-outlined" aria-hidden="true">{{ $menu['icon'] }}</span>
                     </span>
                     <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms
@@ -237,8 +237,8 @@
                         @php $itemActive = $isActiveRoutes($item['patterns']); @endphp
                         <a href="{{ $item['url'] }}" @if ($itemActive) aria-current="page" @endif
                             class="flex items-center gap-2 rounded-full py-2 pl-3 pr-2 text-xs font-medium {{ $itemActive
-                                ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'
-                                : 'text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-on-surface)]' }}">
+                                ? 'bg-(--md-sys-color-secondary-container) text-(--md-sys-color-on-secondary-container)'
+                                : 'text-(--md-sys-color-on-surface-variant) hover:text-(--md-sys-color-on-surface)' }}">
                             <md-ripple></md-ripple>
                             <span class="material-symbols-outlined text-[1.125rem]" aria-hidden="true">{{ $item['icon'] }}</span>
                             <span class="truncate">{{ $item['label'] }}</span>
@@ -250,11 +250,11 @@
     </nav>
 
     {{-- Footer --}}
-    <div class="shrink-0 border-t border-[var(--md-sys-color-outline-variant)] p-3">
+    <div class="shrink-0 border-t border-(--md-sys-color-outline-variant) p-3">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" title="Logout"
-                class="m3-btn m3-btn--text m3-btn--block justify-start gap-3 text-[var(--md-sys-color-error)] hover:bg-[color-mix(in_srgb,var(--md-sys-color-error)_8%,transparent)]">
+                class="m3-btn m3-btn--text m3-btn--block justify-start gap-3 text-(--md-sys-color-error) hover:bg-[color-mix(in_srgb,var(--md-sys-color-error)_8%,transparent)]">
                 <span class="material-symbols-outlined" aria-hidden="true">logout</span>
                 <span x-show="sidebarOpen" x-cloak x-transition.opacity.duration.150ms class="text-sm">Logout</span>
             </button>

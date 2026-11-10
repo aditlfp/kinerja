@@ -41,7 +41,7 @@
                 <form method="POST" action="{{ route('addKaryawanStore') }}" id="form"
                     enctype="multipart/form-data" style="background: white; padding: 5% 0;">
                     @csrf
-                    <div class="px-5 rounded">
+                    <div class="px-5 rounded-sm">
                         <!-- Name Lengkap -->
                         <div>
                             <x-input-label for="nama_lengkap" class="required" :value="__('Nama lengkap')" />

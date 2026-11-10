@@ -47,7 +47,7 @@
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-4">
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 bg-red-600 rounded-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-lg bg-emerald-600">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-lg bg-amber-600">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-lg bg-violet-600">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,17 +111,17 @@
             </div>
 
             <!-- Filter Section -->
-            <div class="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-xs">
                 <div class="flex flex-col gap-3 sm:flex-row">
                     <div class="flex-1">
                         <label class="block mb-1 text-sm font-medium text-gray-700">Cari Karyawan</label>
                         <input type="text" id="searchEmployee" placeholder="Nama karyawan..."
-                            class="w-full px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                            class="w-full px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                     <div class="flex-1">
                         <label class="block mb-1 text-sm font-medium text-gray-700">Filter Bulan</label>
                         <input type="month" id="filterMonth" value="{{ now()->format('Y-m') }}"
-                            class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                            class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                     <div class="flex items-end">
                         <button onclick="resetFilters()"
@@ -133,14 +133,14 @@
             </div>
 
             <!-- Loading State -->
-            <div id="loadingState" class="p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div id="loadingState" class="p-8 text-center bg-white border border-gray-200 rounded-lg shadow-xs">
                 <div class="w-12 h-12 mx-auto mb-4 border-b-2 rounded-full animate-spin border-emerald-600"></div>
                 <p class="text-gray-600">Memuat data...</p>
             </div>
 
             <!-- Table Section -->
             <div id="tableContainer"
-                class="hidden overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
+                class="hidden overflow-hidden bg-white border border-gray-200 rounded-lg shadow-xs">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200" id="personOutTable">
                         <thead class="bg-gray-50">
@@ -178,7 +178,7 @@
 
             <!-- Pagination Section -->
             <div id="paginationContainer"
-                class="hidden p-4 mt-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                class="hidden p-4 mt-4 bg-white border border-gray-200 rounded-lg shadow-xs">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <!-- Info -->
                     <div class="text-sm text-gray-700">
@@ -191,7 +191,7 @@
                     <div class="flex items-center gap-2 mr-4">
                         <label class="text-sm text-gray-700">Per halaman:</label>
                         <select id="itemsPerPage"
-                            class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500">
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -247,7 +247,7 @@
 
             <!-- Empty State -->
             <div id="emptyState"
-                class="hidden p-8 text-center bg-white border border-gray-200 rounded-lg shadow-sm sm:p-12">
+                class="hidden p-8 text-center bg-white border border-gray-200 rounded-lg shadow-xs sm:p-12">
                 <div class="max-w-sm mx-auto">
                     <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full">
                         <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
@@ -412,7 +412,7 @@
         function actionButtons(r) {
             if (!r || (r.status || '').toLowerCase() !== 'di ajukan') return '-';
             return `<div class="flex items-center justify-center gap-2">
-                 <button onclick="updateStatus(${r.id}, 'Di Tolak')" class="px-2 py-1 text-xs text-white rounded bg-rose-600 hover:bg-rose-700">Tolak</button>
+                 <button onclick="updateStatus(${r.id}, 'Di Tolak')" class="px-2 py-1 text-xs text-white rounded-sm bg-rose-600 hover:bg-rose-700">Tolak</button>
              </div>`;
         }
 

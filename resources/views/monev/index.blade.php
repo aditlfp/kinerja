@@ -5,7 +5,7 @@
 			<div class="flex justify-end ">
 				<div class="input flex items-center w-fit input-bordered my-10">
 					<i class="ri-search-2-line"></i>
-					<input type="search" id="searchInput" class="border-none rounded ml-1" placeholder="Search..." required>
+					<input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
 				</div>
 			</div>
 			<div class="flex justify-center overflow-x-auto mx-10 pb-10">

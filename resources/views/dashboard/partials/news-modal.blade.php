@@ -4,10 +4,10 @@
                             <!-- Display your modal here -->
                             <div class="modalNews">
                                 <div style="z-index: 9000;"
-                                    class="fixed inset-0 flex items-center justify-center w-full h-screen transition-all duration-300 ease-in-out bg-slate-500/10 backdrop-blur-sm">
+                                    class="fixed inset-0 flex items-center justify-center w-full h-screen transition-all duration-300 ease-in-out bg-slate-500/10 backdrop-blur-xs">
                                     <div class="flex items-center justify-center">
                                         <div style="z-index: 9001;"
-                                            class="relative inset-0 p-3 mx-10 my-10 rounded-md shadow bg-slate-200 w-fit">
+                                            class="relative inset-0 p-3 mx-10 my-10 rounded-md shadow-sm bg-slate-200 w-fit">
                                             @if (Carbon\Carbon::now()->lessThan(Carbon\Carbon::parse('2025-04-09')))
                                                 <img src="{{ URL::asset('/logo/ketupat-3.png') }}" width="24%"
                                                     class="hanging"

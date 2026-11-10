@@ -1,6 +1,6 @@
 @if (session('toast'))
     <div id="session-toast"
-        class="fixed left-1/2 top-4 z-[99999] w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5"
+        class="fixed left-1/2 top-4 z-99999 w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5"
         data-type="{{ session('toast.type') }}">
         <div class="relative px-3.5 py-3">
             <div class="flex items-start gap-3">
@@ -75,7 +75,7 @@
 
         const toastMarkup = (type, message) => `
             <div id="session-toast"
-                class="fixed left-1/2 top-4 z-[99999] w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5 opacity-0 -translate-y-2 transition-all duration-200"
+                class="fixed left-1/2 top-4 z-99999 w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5 opacity-0 -translate-y-2 transition-all duration-200"
                 data-type="${type}">
                 <div class="relative px-3.5 py-3">
                     <div class="flex items-start gap-3">

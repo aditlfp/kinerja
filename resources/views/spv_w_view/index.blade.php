@@ -132,10 +132,18 @@
         </style>
     @endpush
 
-    <x-main-div>
-        <div class="w-full px-3 py-4 mx-auto max-w-7xl sm:px-5 lg:px-6">
+    <div class="min-h-screen w-full bg-slate-50 px-3 py-4 text-slate-800 sm:px-5 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+            <div class="mb-4">
+                <a href="{{ route('dashboard.index') }}"
+                    class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    <i class="ri-arrow-left-line"></i>
+                    Kembali ke Dashboard
+                </a>
+            </div>
+
             <div
-                class="mb-4 overflow-hidden bg-white border rounded-lg shadow-sm border-white/60 ring-1 ring-slate-900/5">
+                class="mb-4 overflow-hidden bg-white border rounded-lg shadow-xs border-white/60 ring-1 ring-slate-900/5">
                 <div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="p-4 sm:p-5">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -168,7 +176,7 @@
                         <form method="GET"
                             action="{{ route('spvw.rekap.index', array_filter(['client_id' => $spvwClientId])) }}"
                             id="spvw-client-filter-form"
-                            class="mt-4 rounded-xl border border-slate-200 bg-white/90 p-2.5 shadow-sm ring-1 ring-slate-900/5">
+                            class="mt-4 rounded-xl border border-slate-200 bg-white/90 p-2.5 shadow-xs ring-1 ring-slate-900/5">
                             <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
                                 <div
                                     class="inline-flex items-center gap-2 px-3 text-xs font-semibold tracking-wide uppercase border rounded-lg min-h-11 border-slate-200 bg-slate-50 text-slate-600 sm:w-auto">
@@ -231,7 +239,7 @@
                         <div class="flex flex-col justify-center h-full gap-2">
                             <div class="flex items-center gap-3">
                                 <span
-                                    class="inline-flex items-center justify-center bg-white rounded-lg shadow-sm h-9 w-9 shrink-0 text-slate-700 ring-1 ring-slate-200">
+                                    class="inline-flex items-center justify-center bg-white rounded-lg shadow-xs h-9 w-9 shrink-0 text-slate-700 ring-1 ring-slate-200">
                                     <i class="text-lg ri-calendar-check-line"></i>
                                 </span>
                                 <div>
@@ -274,7 +282,7 @@
                 <input type="hidden" name="client_id" value="{{ $selectedClientId }}">
             </form>
 
-            <div class="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-xs">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-900">Export Data Keseluruhan</h2>
@@ -318,7 +326,7 @@
                     input.value = nextMode;
                 }
             }"
-                class="overflow-hidden bg-white border rounded-lg shadow-sm border-slate-200">
+                class="overflow-hidden bg-white border rounded-lg shadow-xs border-slate-200">
                 <div class="p-3 border-b border-slate-200 bg-slate-50 sm:p-4">
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex items-center gap-2.5">
@@ -332,7 +340,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 p-1 bg-white rounded-lg shadow-sm ring-1 ring-slate-200 sm:w-72">
+                        <div class="grid grid-cols-2 p-1 bg-white rounded-lg shadow-xs ring-1 ring-slate-200 sm:w-72">
                             <button type="button" data-mode="pengajuan" onclick="setMode('pengajuan')"
                                 class="inline-flex items-center justify-center gap-2 px-3 text-sm font-semibold transition rounded-md min-h-9">
                                 <i class="ri-file-add-line"></i>
@@ -372,7 +380,7 @@
                             <a href="{{ $disabled ? '#' : $menu['pengajuan_url'] }}" data-menu-link
                                 data-base-url="{{ preg_replace('/([&?])client_id=\d+/', '$1', $menu['pengajuan_url']) }}"
                                 @if ($disabled) aria-disabled="true" @endif
-                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 {{ $disabled ? 'cursor-not-allowed bg-slate-50/70 opacity-70' : 'hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100' }}">
+                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 {{ $disabled ? 'cursor-not-allowed bg-slate-50/70 opacity-70' : 'hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100' }}">
                                 <span class="flex items-center min-w-0 gap-3">
                                     <span
                                         class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 {{ $menu['icon_bg'] }}">
@@ -388,7 +396,7 @@
                                     </span>
                                 </span>
                                 <span data-menu-cta
-                                    class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 {{ $disabled ? 'bg-slate-100 text-slate-500 ring-slate-200' : 'bg-emerald-100 text-emerald-800 ring-emerald-200 shadow-sm transition' }}">
+                                    class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 {{ $disabled ? 'bg-slate-100 text-slate-500 ring-slate-200' : 'bg-emerald-100 text-emerald-800 ring-emerald-200 shadow-xs transition' }}">
                                     {{ $locked ? 'Terkunci' : ($needsClient ? 'Pilih Mitra' : 'Buat') }}
                                     <i class="{{ $locked ? 'ri-lock-line' : 'ri-arrow-right-line' }}"></i>
                                 </span>
@@ -403,7 +411,7 @@
                             <a href="{{ $selectedClientId > 0 ? $menu['riwayat_url'] : '#' }}" data-menu-link
                                 data-base-url="{{ preg_replace('/([&?])client_id=\d+/', '$1', $menu['riwayat_url']) }}"
                                 @if ($selectedClientId <= 0) aria-disabled="true" @endif
-                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 {{ $selectedClientId > 0 ? 'hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100' : 'cursor-not-allowed bg-slate-50/70 opacity-70' }}">
+                                class="flex items-center justify-between gap-3 px-4 py-3 transition group min-h-16 {{ $selectedClientId > 0 ? 'hover:bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-slate-400 focus:ring-inset active:bg-slate-100' : 'cursor-not-allowed bg-slate-50/70 opacity-70' }}">
                                 <span class="flex items-center min-w-0 gap-3">
                                     <span
                                         class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 {{ $menu['icon_bg'] }}">
@@ -419,7 +427,7 @@
                                     </span>
                                 </span>
                                 <span data-menu-cta
-                                    class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 {{ $selectedClientId > 0 ? 'bg-indigo-100 text-indigo-800 ring-indigo-200 shadow-sm transition' : 'bg-slate-100 text-slate-500 ring-slate-200' }}">
+                                    class="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 {{ $selectedClientId > 0 ? 'bg-indigo-100 text-indigo-800 ring-indigo-200 shadow-xs transition' : 'bg-slate-100 text-slate-500 ring-slate-200' }}">
                                     {{ $selectedClientId > 0 ? 'Lihat' : 'Pilih Mitra' }}
                                     <i class="ri-arrow-right-line"></i>
                                 </span>
@@ -429,7 +437,7 @@
                 </div>
             </section>
         </div>
-    </x-main-div>
+    </div>
 
     <script>
         const SPVW_MODE_STORAGE_KEY = 'spvw_rekap_mode';
@@ -494,14 +502,14 @@
                 if (mode === nextMode) {
                     btn.classList.remove('text-slate-600', 'hover:bg-slate-50');
                     if (mode === 'pengajuan') {
-                        btn.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+                        btn.classList.add('bg-emerald-600', 'text-white', 'shadow-xs');
                         btn.classList.remove('bg-indigo-600', 'ring-indigo-300/50');
                     } else {
-                        btn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+                        btn.classList.add('bg-indigo-600', 'text-white', 'shadow-xs');
                         btn.classList.remove('bg-emerald-600', 'ring-emerald-300/50');
                     }
                 } else {
-                    btn.classList.remove('bg-emerald-600', 'bg-indigo-600', 'text-white', 'shadow-sm');
+                    btn.classList.remove('bg-emerald-600', 'bg-indigo-600', 'text-white', 'shadow-xs');
                     btn.classList.add('text-slate-600', 'hover:bg-slate-50');
                 }
             });
@@ -535,10 +543,10 @@
                         'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 bg-slate-100 text-slate-500 ring-slate-200';
                 } else if (nextMode === 'pengajuan') {
                     el.className =
-                        'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 bg-emerald-100 text-emerald-800 ring-emerald-200 shadow-sm transition';
+                        'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 bg-emerald-100 text-emerald-800 ring-emerald-200 shadow-xs transition';
                 } else {
                     el.className =
-                        'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 bg-indigo-100 text-indigo-800 ring-indigo-200 shadow-sm transition';
+                        'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold ring-1 bg-indigo-100 text-indigo-800 ring-indigo-200 shadow-xs transition';
                 }
             });
         }
@@ -585,7 +593,7 @@
                 if (enabled) {
                     el.removeAttribute('aria-disabled');
                     el.classList.remove('cursor-not-allowed', 'bg-slate-50/70', 'opacity-70');
-                    el.classList.add('hover:bg-slate-50', 'focus:outline-none', 'focus:ring-2',
+                    el.classList.add('hover:bg-slate-50', 'focus:outline-hidden', 'focus:ring-2',
                         'focus:ring-slate-400', 'focus:ring-inset', 'active:bg-slate-100');
                 } else {
                     el.setAttribute('aria-disabled', 'true');

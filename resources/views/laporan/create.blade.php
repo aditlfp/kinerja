@@ -5,7 +5,7 @@
             <form method="POST" action="{{ route('laporan.store') }}" class=" my-10" id="form-laporan"
                 enctype="multipart/form-data">
                 @csrf
-                <div class="bg-slate-100 px-5 py-5 rounded shadow">
+                <div class="bg-slate-100 px-5 py-5 rounded-sm shadow-sm">
                     {{-- client --}}
                     <div class="my-5">
                         <x-input-label for="client_id" :value="__('Mitra')" />

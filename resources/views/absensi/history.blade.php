@@ -1,5 +1,4 @@
 <x-app-layout>
-    <x-main-div>
         <style>
             .divCal {
                 font-family: Arial, sans-serif;
@@ -175,11 +174,15 @@
                 rotate: -45deg;
             }
         </style>
-        <div class="py-10">
-            <p class="pb-10 text-lg font-bold text-center uppercase sm:text-2xl ">Riwayat kehadiran Saya</p>
+        <div class=" min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+            <div class="mx-auto flex w-full max-w-6xl items-center justify-between">
+                <a href="{{ route('dashboard.index') }}"><img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32"></a>
+                <span class="font-semibold text-sm text-slate-500/50">Riwayat Kehadiran</span>
+            </div>
+            <p class="mx-auto mt-8 max-w-6xl border-l-4 border-sky-500 pl-3 text-xl font-black uppercase sm:text-2xl">Riwayat Kehadiran Saya</p>
             <!--kalendar-->
             <div class="divCal">
-                <div class="calendar-container">
+                <div class="calendar-container rounded-2xl shadow-sm ring-1 ring-slate-200">
                     <div class="calendar-header">
                         <form method="GET">
                             <input type="hidden" name="search"
@@ -370,8 +373,8 @@
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-center" style="margin: 2rem 2rem 0 2rem;">
-                <div class="w-full p-2 bg-white rounded-md" style="max-width: 300pt;">
+            <div class="mt-8 flex items-center justify-center">
+                <div class="w-full rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-200" style="max-width: 300pt;">
                     <p class="text-sm font-semibold">Keterangan:</p>
                     <div class="flex items-center">
                         <div class="day double-strikethrough" style="width: 35px; scale: 70%;">
@@ -403,23 +406,23 @@
             <div class="flex flex-col items-center justify-start mx-2 sm:justify-center">
                 <div class="w-full mx-2 overflow-x-auto md:overflow-hidden sm:mx-0 sm:w-full">
                     <table
-                        class="table w-full table-xs bg-slate-50 sm:table-md text-sm sm:text-md scale-90 md:scale-90 {{ Auth::user()->kerjasama_id != 1 ? 'table-zebra' : '' }}">
+                        class="table w-full overflow-hidden rounded-xl bg-white text-sm shadow-sm ring-1 ring-slate-200 sm:table-md {{ Auth::user()->kerjasama_id != 1 ? 'table-zebra' : '' }}">
                         <thead>
                             <tr class="text-center">
-                                <th class="bg-slate-300 rounded-tl-2xl">#</th>
+                                <th class="bg-slate-100 rounded-tl-2xl">#</th>
                                 @if (Auth::user()->name != 'DIREKSI')
-                                    <th class="bg-slate-300 px-7">Shift</th>
+                                    <th class="bg-slate-100 px-7">Shift</th>
                                 @endif
-                                <th class="bg-slate-300 px-7">Tanggal</th>
-                                <th class="bg-slate-300">Absen Masuk</th>
+                                <th class="bg-slate-100 px-7">Tanggal</th>
+                                <th class="bg-slate-100">Absen Masuk</th>
                                 @if (Auth::user()->kerjasama_id == 1)
-                                    <th class="bg-slate-300">Absen Siang(dzuhur)</th>
+                                    <th class="bg-slate-100">Absen Siang(dzuhur)</th>
                                 @endif
-                                <th class="px-5 bg-slate-300">Absen Keluar</th>
+                                <th class="bg-slate-100 px-5">Absen Keluar</th>
                                 <th
-                                    class="bg-slate-300 {{ Auth::user()->jabatan->code_jabatan == 'SPV-W' ? 'hidden' : '' }}">
+                                    class="bg-slate-100 {{ Auth::user()->jabatan->code_jabatan == 'SPV-W' ? 'hidden' : '' }}">
                                     Telat/Tidak</th>
-                                <th class="bg-slate-300 rounded-tr-2xl">Status</th>
+                                <th class="bg-slate-100 rounded-tr-2xl">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -603,7 +606,7 @@
                             <div style="z-index: 9000; backdrop-filter: blur(1px);"
                                 class="fixed inset-0 flex items-center justify-center w-full h-screen transition-all duration-300 ease-in-out bg-slate-500/10">
                                 <div class="flex items-center justify-center">
-                                    <div class="inset-0 p-3 mx-10 my-10 rounded-md shadow bg-slate-200 w-fit">
+                                    <div class="inset-0 p-3 mx-10 my-10 rounded-md shadow-sm bg-slate-200 w-fit">
                                         <div class="flex justify-end mb-3">
                                             <button @click="opModal = false"
                                                 class="scale-90 btn btn-error closeButton">&times;</button>
@@ -663,7 +666,6 @@
                 {{ $absen->links() }}
             </div>
             <div class="flex justify-center sm:justify-end" style="margin-top: 5px;">
-                <a href="{{ route('dashboard.index') }}" class="mx-2 btn btn-error sm:mx-10">Kembali</a>
+                <a href="{{ route('dashboard.index') }}" class="mx-2 rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300 sm:mx-10">Kembali</a>
             </div>
-    </x-main-div>
 </x-app-layout>

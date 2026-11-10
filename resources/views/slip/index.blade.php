@@ -1,5 +1,4 @@
 <x-app-layout>
-    <x-main-div>
         <style>
             .divImg {
                 @media (min-width: 768px) {
@@ -133,26 +132,32 @@
                 }
             }
         </style>
-        <div class="py-10">
-            <div>
-                <p class="text-center text-xl sm:text-2xl font-bold uppercase">Data Slip Gaji <br>
+        <div class="min-h-screen bg-slate-50 px-4 py-5 text-slate-800 md:flex md:flex-col md:items-center md:justify-center">
+            <div class="mx-auto flex w-full max-w-2xl items-center justify-between">
+                <a href="{{ route('dashboard.index') }}">
+                    <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32">
+                </a>
+                <span class="font-semibold text-sm text-slate-500/50">Slip Gaji</span>
+            </div>
+            <div class="mx-auto pt-8">
+                <p class="border-l-4 border-sky-500 pl-3 text-xl font-black uppercase sm:text-2xl">Data Slip Gaji <br>
                     {{ Carbon\Carbon::createFromFormat('Y-m', $bulan)->isoFormat('MMMM Y') }}</p>
             </div>
 
-            <div class="mt-5 flex justify-center px-4">
+            <div class="mt-5 flex justify-center px-0">
                 <form action="" method="get"
-                    class="flex w-full max-w-md flex-col gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end">
+                    class="flex w-full max-w-md flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end">
                     <div class="flex-1">
                         <label for="month" class="mb-1 block text-sm font-medium text-slate-700">Filter Bulan</label>
                         <input type="month" name="bulan" value="{{ $bulan }}" id="month"
                             class="input input-sm input-bordered w-full bg-slate-50">
                     </div>
-                    <button type="submit" class="btn btn-info btn-sm w-full sm:w-auto">Cari</button>
+                    <button type="submit" class="w-full rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600 sm:w-auto">Cari</button>
                 </form>
             </div>
             @if ($slip)
                 <div class="flex flex-col items-center mx-2 my-5 sm:justify-center justify-start">
-                    <div class="overflow-x-auto md:overflow-hidden mx-2 sm:mx-0 bg-slate-50 p-2 rounded-md"
+                    <div class="overflow-x-auto md:overflow-hidden mx-2 sm:mx-0 bg-white border-slate-200 shadow-sm p-2 rounded-md"
                         id="divImg">
                         <div class="rounded-md relative" style="user-select: none;">
                             <img src="{{ asset('logo/desain_slip.png') }}" width="450" oncontextmenu="return false;"
@@ -245,7 +250,7 @@
                             @endif
                             <form action="{{ route('slip-gaji.export') }}" method="get">
                                 <input type="hidden" name="slip_id" value="{{ $slip->id }}" />
-                                <button type="submit" class="btn btn-sm btn-warning">Download</button>
+                                <button type="submit" class="rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-amber-500">Download</button>
                             </form>
                         </div>
                     </div>
@@ -257,11 +262,12 @@
                 </div>
             @endif
 
-            <div class="flex justify-center gap-2 mx-10 sm:justify-end">
-                <a href="{{ route('dashboard.index') }}" class="btn btn-error mx-2 sm:mx-10">Kembali</a>
+            <div class="flex justify-center gap-2 py-5 sm:justify-end">
+                <a href="{{ route('dashboard.index') }}" class="rounded-lg bg-red-400 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-300 border border-red-500/20">Kembali</a>
             </div>
+            </div>
+        </div>
 
         </div>
         <script></script>
-    </x-main-div>
 </x-app-layout>

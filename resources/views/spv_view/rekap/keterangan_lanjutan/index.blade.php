@@ -14,7 +14,7 @@
             </div>
 
             <div
-                class="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-4 grid grid-cols-1 sm:grid-cols-5 gap-3">
+                class="bg-white rounded-lg p-4 shadow-xs border border-gray-200 mb-4 grid grid-cols-1 sm:grid-cols-5 gap-3">
                 <input id="search" type="text" placeholder="Cari nama..."
                     class="w-full rounded-lg border border-gray-300 px-3 py-2">
                 <input id="month" type="month" value="{{ now()->format('Y-m') }}"
@@ -26,7 +26,7 @@
                     class="rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-3 py-2">Export PDF</button>
             </div>
 
-            <div id="tableWrap" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+            <div id="tableWrap" class="bg-white rounded-lg shadow-xs border border-gray-200 overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>

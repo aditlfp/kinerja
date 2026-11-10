@@ -34,7 +34,7 @@
 </head>
 
 <body class="font-sans antialiased  bg-slate-400">
-    <div class="min-h-screen pb-[12.5rem]">
+    <div class="min-h-screen pb-50">
         @include('../layouts/navbar')
         <div class="sm:mx-10 mx-5 bg-slate-500 rounded-md shadow-md">
             <main>

@@ -17,10 +17,10 @@
     };
 
     $iconStyles = match ($type) {
-        'warning' => ['icon' => 'warning', 'class' => 'bg-[var(--md-sys-color-warning-container)] text-[var(--md-sys-color-on-warning-container)]'],
-        'info' => ['icon' => 'info', 'class' => 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]'],
-        'success' => ['icon' => 'check_circle', 'class' => 'bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)]'],
-        default => ['icon' => 'error', 'class' => 'bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)]'],
+        'warning' => ['icon' => 'warning', 'class' => 'bg-(--md-sys-color-warning-container) text-(--md-sys-color-on-warning-container)'],
+        'info' => ['icon' => 'info', 'class' => 'bg-(--md-sys-color-secondary-container) text-(--md-sys-color-on-secondary-container)'],
+        'success' => ['icon' => 'check_circle', 'class' => 'bg-(--md-sys-color-tertiary-container) text-(--md-sys-color-on-tertiary-container)'],
+        default => ['icon' => 'error', 'class' => 'bg-(--md-sys-color-error-container) text-(--md-sys-color-on-error-container)'],
     };
 @endphp
 
@@ -33,7 +33,7 @@
          pemanggil tidak menggeser overlay dari tengah viewport. Panel memakai
          `m-auto` agar kalau lebih tinggi dari layar tetap bisa di-scroll dari
          atas (flex centering biasa memotong bagian atas). --}}
-    class="m3-overlay fixed inset-0 z-[9999] flex overflow-y-auto overscroll-contain px-4 py-6"
+    class="m3-overlay fixed inset-0 z-9999 flex overflow-y-auto overscroll-contain px-4 py-6"
     style="display: none;">
 
     <div x-show="show" x-transition:enter="m3-scrim-fade-enter" x-transition:enter-start="opacity-0"
@@ -46,7 +46,7 @@
         x-transition:enter-end="m3-dialog-enter-end" x-transition:leave="m3-dialog-leave"
         x-transition:leave-start="m3-dialog-leave-start"
         x-transition:leave-end="m3-dialog-leave-end"
-        class="m3-dialog-panel m-auto relative w-full max-w-md overflow-hidden rounded-[28px] bg-[var(--md-sys-color-surface-container-high)] shadow-[var(--md-elevation-3)]">
+        class="m3-dialog-panel m-auto relative w-full max-w-md overflow-hidden rounded-[28px] bg-(--md-sys-color-surface-container-high) shadow-(--md-elevation-3)">
 
         <div class="p-6">
             <div class="flex items-start gap-4">
@@ -55,9 +55,9 @@
                 </span>
                 <div class="min-w-0 flex-1">
                     <h3 id="{{ $id }}-title"
-                        class="text-base font-semibold leading-6 text-[var(--md-sys-color-on-surface)]">
+                        class="text-base font-semibold leading-6 text-(--md-sys-color-on-surface)">
                         {{ $title }}</h3>
-                    <p class="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">{{ $message }}</p>
+                    <p class="mt-1 text-sm leading-5 text-(--md-sys-color-on-surface-variant)">{{ $message }}</p>
                 </div>
             </div>
         </div>

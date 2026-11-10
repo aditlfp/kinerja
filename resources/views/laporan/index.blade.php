@@ -119,7 +119,7 @@
                     <tr>
                         <td class="p-1">{{ $n++ }}.</td>
                         @if ($i->img_before != null)
-                            <td><img id="image1" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_before }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_before }}" data-imgName="img_before" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                            <td><img id="image1" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_before }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_before }}" data-imgName="img_before" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                         @else
                             <td>
                             <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />
@@ -127,7 +127,7 @@
                         @endif
 
                         @if ($i->img_proccess != null)
-                            <td><img id="image2" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_proccess }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_proccess }}" data-imgName="img_proccess" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                            <td><img id="image2" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_proccess }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_proccess }}" data-imgName="img_proccess" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                         @else
                             <td>
                             <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />
@@ -135,7 +135,7 @@
                         @endif
 
                             @if ($i->img_final != null)
-                            <td><img id="image3" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_final }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_final }}" data-imgName="img_final" class="rounded imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
+                            <td><img id="image3" src="http://laporan-sac.sac-po.com/storage/{{ $i->img_final }}" data-index="{{ $loop->index }}" data-image="{{ $i->img_final }}" data-imgName="img_final" class="rounded-sm imeg min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]"></td>
                         @else
                             <td>
                             <x-no-img class="min-w-[40px] md:min-w-[90px] max-w-[80px] md:max-w-[160px]" />

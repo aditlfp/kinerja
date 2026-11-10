@@ -8,7 +8,7 @@
             @endphp
 
             <div class="mx-auto w-full max-w-7xl space-y-5">
-                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600">Data Karyawan</p>
@@ -27,7 +27,7 @@
                     </div>
                 </section>
 
-                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
                     <div class="mb-3 flex items-center justify-between gap-3">
                         <h2 class="text-sm font-bold text-slate-800">Total User per Jabatan</h2>
                         <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{{ $jabatanCounts->sum() }} User</span>
@@ -49,7 +49,7 @@
                     @php $mobileNo = 1; @endphp
                     @forelse ($user as $i)
                         @continue(in_array($i->nama_lengkap, ['admin', 'user', 'MITRA SAC']))
-                        <article class="user-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <article class="user-card rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
                             <div class="flex gap-3">
                                 @if ($i->image !== 'no-image.jpg' && Storage::disk('public')->exists('images/' . $i->image))
                                     <img class="lazy lazy-image h-14 w-14 shrink-0 rounded-full object-cover" loading="lazy"
@@ -61,7 +61,7 @@
                                 @endif
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-start justify-between gap-2">
-                                        <h3 class="break-words text-sm font-extrabold text-slate-900">{{ ucwords(strtolower($i->nama_lengkap)) }}</h3>
+                                        <h3 class="wrap-break-word text-sm font-extrabold text-slate-900">{{ ucwords(strtolower($i->nama_lengkap)) }}</h3>
                                         <span class="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-700">#{{ $mobileNo++ }}</span>
                                     </div>
                                     <p class="mt-0.5 text-xs font-semibold text-slate-500">{{ $i->name }}</p>
@@ -91,7 +91,7 @@
                 </section>
 
                 {{-- Desktop Table --}}
-                <section class="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
+                <section class="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs md:block">
                     <div class="overflow-x-auto">
                     <table id="searchTable" class="table min-w-[820px] text-xs font-semibold table-zebra bg-white sm:text-sm">
                         <thead>

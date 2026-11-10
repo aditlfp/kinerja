@@ -1,7 +1,7 @@
 <x-admin-layout :fullWidth="true">
-    <div class="mx-10 rounded bg-slate-500">
+    <div class="mx-10 rounded-sm bg-slate-500">
 		<p class="my-10 text-2xl font-bold text-center">Edit User</p>
-        <div class="px-10 py-5 mx-10 my-10 rounded shadow bg-slate-100">
+        <div class="px-10 py-5 mx-10 my-10 rounded-sm shadow-sm bg-slate-100">
             <span class="flex justify-end py-3 overflow-hidden">
                 <button id="deleteUser" class="overflow-hidden btn btn-error">Delete</button>
             </span>
@@ -114,8 +114,8 @@
     </div>
 </div>
 <div
-	class="fixed inset-0 hidden transition-all duration-300 ease-in-out modalDeleteUser bg-slate-500/10 backdrop-blur-sm">
-	<div class="p-5 mx-2 rounded-md shadow bg-slate-200 w-fit">
+	class="fixed inset-0 hidden transition-all duration-300 ease-in-out modalDeleteUser bg-slate-500/10 backdrop-blur-xs">
+	<div class="p-5 mx-2 rounded-md shadow-sm bg-slate-200 w-fit">
 		<div class="flex justify-end mb-3">
 			<button id="close" class="scale-90 btn btn-error">&times;</button>
 		</div>

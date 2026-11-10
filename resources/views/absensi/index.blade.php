@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="bumblebee">
 
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <title>{{ env('APP_NAME', 'KINERJA SAC-PONOROGO') }}</title>
     <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}" type="image/x-icon">
 
+    <link rel="preconnect" href="https://fonts.bunny.net">
     {{-- <link rel="preload" as="style" href="https://fonts.bunny.net"> --}}
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     {{-- <script src="{{ URL::asset(path: 'src/js/jquery-min.js') }}"></script> --}}
@@ -19,6 +20,8 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    @include('dashboard.partials.styles')
+
     <style>
         #map {
             height: 180px;
@@ -33,10 +36,18 @@
     </style>
 </head>
 
-<body class="font-sans antialiased bg-slate-400">
+<body class="bg-slate-50 font-sans antialiased text-slate-800">
     <div class="min-h-screen pb-24">
-        @include('layouts.navbar')
-        <div class="mx-5 rounded-md shadow-md md:mx-10 bg-slate-500">
+        <div class="px-6 pt-5">
+            <div class="flex items-center justify-between">
+                <a href="{{ route('dashboard.index') }}">
+                    <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" class="h-auto w-32">
+                </a>
+                <span class="font-semibold text-sm text-slate-500/50">Absensi Page</span>
+            </div>
+        </div>
+        <div class="mx-4 mt-4 rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-200 md:mx-10">
+            <div class="rounded-xl bg-slate-50">
             <main>
                 <div class="px-5 py-5">
                     @if ($errors->any())
@@ -61,7 +72,7 @@
                                         playsinline></video>
                                 </div>
                                 <canvas id="canvas" style="display:none;"></canvas>
-                                <div id="results" class="my-3 rounded sm:mt-0"></div>
+                                <div id="results" class="my-3 rounded-sm sm:mt-0"></div>
 
                                 @if ($errors->image)
                                     <!--<p class="p-1 font-bold bg-white rounded-lg text-start" style="color: red">Foto Tidak Boleh Kosong</p>-->
@@ -75,15 +86,15 @@
 
                         @endif
 
-                        <div class="p-1 my-3 rounded ">
-                            <label class="text-white required">Map : </label>
-                            <span id="labelMap" class="flex flex-col justify-center text-center text-white">
+                        <div class="p-1 my-3 rounded-sm ">
+                            <label class="required font-semibold text-slate-700">Map : </label>
+                            <span id="labelMap" class="flex flex-col justify-center text-center text-slate-500">
                                 <p>Pastikan map sudah muncul !!</p>
                                 <p id="resolver">coba refresh browser beberapa kali jika map belum muncul</p>
                             </span>
-                            <div id="map" class="rounded"></div>
+                            <div id="map" class="rounded-sm"></div>
                             <span id="tutor"
-                                class="flex flex-col justify-center hidden text-sm italic text-center text-white capitalize">
+                                class="flex flex-col justify-center hidden text-sm italic text-center text-slate-500 capitalize">
                                 <p id="latlongLabel" class="text-[8px]"></p>
                                 <p>Pastikan tanda biru berada dilingkaran</p>
                             </span>
@@ -91,7 +102,7 @@
                         <div class="flex flex-col gap-2">
                             <div class="flex flex-col justify-between">
                                 <label for="name"
-                                    class="text-white">{{ Route::currentRouteName() == 'absensi-karyawan-co-cs.index' || Route::currentRouteName() == 'absensi-karyawan-co-scr.index' ? 'Pilih Nama: ' : 'Nama: ' }}</label>
+                                    class="font-semibold text-slate-700">{{ Route::currentRouteName() == 'absensi-karyawan-co-cs.index' || Route::currentRouteName() == 'absensi-karyawan-co-scr.index' ? 'Pilih Nama: ' : 'Nama: ' }}</label>
                                 @if (Route::currentRouteName() == 'absensi-karyawan-co-cs.index' ||
                                         Route::currentRouteName() == 'absensi-karyawan-co-scr.index')
                                     <select name="user_id" id="selectUser" class="select select-bordered">
@@ -115,7 +126,7 @@
                                 @endif
                             </div>
                             <div class="flex flex-col justify-between">
-                                <label for="kerjasama" class="text-white">Penempatan: </label>
+                                <label for="kerjasama" class="font-semibold text-slate-700">Penempatan: </label>
                                 @if (Auth::user()->id == 10)
                                     <select class="selectMitra select select-bordered" name="kerjasama_id">
 
@@ -148,7 +159,7 @@
                                         $absensi[0]->masuk;
                                 @endphp
                                 <div class="flex flex-col justify-start">
-                                    <x-input-label for="jenis_abs" class="text-lg text-white" :value="__('Jenis Absen: ')" />
+                                    <x-input-label for="jenis_abs" class="text-lg font-semibold text-slate-700" :value="__('Jenis Absen: ')" />
                                     <div class="flex flex-col justify-start rounded-lg bg-slate-50">
                                         <div class="flex items-center">
                                             <input type="radio" id="type_absen" data-pilih="masuk"
@@ -185,7 +196,7 @@
                                     </div>
                                 </div>
                                 <div class="w-full" id="divPengganti" style="display: none;">
-                                    <x-input-label for="pengganti" class="text-lg text-white" :value="__('Pengganti: ')" />
+                                    <x-input-label for="pengganti" class="text-lg font-semibold text-slate-700" :value="__('Pengganti: ')" />
                                     <select name="pengganti" id="pengganti" required
                                         style="{{ $errors->any() && $errors->pengganti ? 'border: 2px solid red;' : '' }}"
                                         class="w-full font-thin select select-bordered">
@@ -209,7 +220,7 @@
                                 <input type="hidden" name="shift_id" value="200" />
                             @else
                                 <div class="flex flex-col justify-between">
-                                    <label class="text-white required" for="shift_id">Shift: </label>
+                                    <label class="required font-semibold text-slate-700" for="shift_id">Shift: </label>
                                     <select name="shift_id" id="shift_id"
                                         {{ Auth::user()->name == 'DIREKSI' ? '' : 'required' }}
                                         style="{{ $errors->any() && $errors->shift_id ? 'border: 2px solid red;' : '' }}"
@@ -243,7 +254,7 @@
 
                             <div>
                                 <div>
-                                    <label class="text-white required">Perlengkapan: </label>
+                                    <label class="required font-semibold text-slate-700">Perlengkapan: </label>
                                 </div>
                                 <div class="p-2 bg-white rounded-lg "
                                     style="{{ $errors->any() && $errors->shift_id ? 'border: 2px solid red;' : '' }}">
@@ -260,7 +271,7 @@
                                                         value="{{ $i->name }}"
                                                         class="m-2 checkbox checkbox-sm perle">
                                                     <label
-                                                        for="perlengkapan {{ $i->id }}">{{ $i->name }}</label>
+                                                        for="perlengkapan {{ $i->id }}" class="text-sm">{{ $i->name }}</label>
                                                 </div>
                                             @endforeach
                                         @empty
@@ -271,7 +282,7 @@
 
                             </div>
                             <div>
-                                <label class="text-white" for="deskripsi">Deskripsi (opsional) : </label>
+                                <label class="font-semibold text-slate-700" for="deskripsi">Deskripsi (opsional) : </label>
                                 <textarea name="deskripsi" id="deskripsi" value="" placeholder="deskripsi..."
                                     class="w-full textarea textarea-bordered"></textarea>
                             </div>
@@ -303,31 +314,31 @@
                                             $abs->tukar == null &&
                                             !$afaLib)
                                         <button
-                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded transition-all ease-linear .2s disabled cursor-not-allowed"
+                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded-sm transition-all ease-linear .2s disabled cursor-not-allowed"
                                             disabled>Sudah Absen</button>
                                     @elseif($afaLib && Auth::user()->divisi->jabatan_id != 35)
                                         <button
-                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded transition-all ease-linear .2s disabled cursor-not-allowed"
+                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded-sm transition-all ease-linear .2s disabled cursor-not-allowed"
                                             disabled>Jadwal Tidak Ada</button>
                                     @elseif(!$cekRoute && $abs->tanggal_absen == Carbon\Carbon::now()->format('Y-m-d') && $abs->terus)
                                         <button
-                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded transition-all ease-linear .2s disabled cursor-not-allowed"
+                                            class="p-2 my-2 px-4 text-slate-100 bg-blue-300  rounded-sm transition-all ease-linear .2s disabled cursor-not-allowed"
                                             disabled>Sudah Absen 2x (Mulih Lurr, ojo kerjo ae)</button>
                                     @else
                                         <button type="button"
-                                            class="p-2 btnAbsen my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded transition-all ease-linear .2s"
+                                            class="p-2 btnAbsen my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded-sm transition-all ease-linear .2s"
                                             id="btnAbsen">Absen</button>
                                     @endif
                                 @break
 
                                 @empty
                                     <button type="button"
-                                        class="p-2 btnAbsen my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded transition-all ease-linear .2s"
+                                        class="p-2 btnAbsen my-2 px-4 text-white bg-blue-500 hover:bg-blue-600 rounded-sm transition-all ease-linear .2s"
                                         id="btnAbsen">Absen</button>
                                 @endforelse
 
                                 <a href="{{ route('dashboard.index') }}"
-                                    class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded transition-all ease-linear .2s">
+                                    class="p-2 my-2 px-4 text-white bg-red-500 hover:bg-red-600 rounded-sm transition-all ease-linear .2s">
                                     Kembali
                                 </a>
                             </span>
@@ -359,15 +370,11 @@
                     </form>
                 </div>
             </main>
-        </div>
-    </div>
-    <div class="flex justify-center">
-        <div class="fixed bottom-0 z-[999]">
-            <x-menu-mobile />
+            </div>
         </div>
     </div>
 
-    <div id="absen-submit-overlay" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+    <div id="absen-submit-overlay" class="fixed inset-0 z-100000 hidden items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
         <div class="w-[min(92vw,22rem)] rounded-2xl border border-slate-200 bg-white px-5 py-5 text-center shadow-2xl">
             <div class="mx-auto mb-3 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-sky-500"></div>
             <p class="text-sm font-semibold text-slate-900">Mengirim absen...</p>
