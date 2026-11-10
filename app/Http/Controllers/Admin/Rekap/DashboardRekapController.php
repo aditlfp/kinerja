@@ -14,8 +14,8 @@ class DashboardRekapController extends Controller
         $notifications = auth()->user()
             ->unreadNotifications()
             ->latest()
+            ->limit(10)
             ->get()
-            ->sortByDesc('created_at')
             ->groupBy('data.kerjasama_id');
 
         $query = Kerjasama::query()

@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\PerformanceRecapService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -151,33 +152,9 @@ class DashboardController extends Controller
         $isDireksi = ($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'DIREKSI';
         $direksiRecapAvailable = $isDireksi && $recapService->isVisible($now);
 
-        $pendingDireksiCheckpoints = collect();
-        if ($isDireksi) {
-            $pendingDireksiCheckpoints = CheckPoint::with(['user:id,nama_lengkap', 'items:id,check_point_id,tanggal,approve_status,pekerjaan_cp_id,input_manual'])
-                ->where('type_check', 'dikerjakan')
-                ->whereBetween('created_at', [$now->copy()->startOfYear(), $now->copy()->endOfYear()])
-                ->latest('id')->get()
-                ->flatMap(function (CheckPoint $checkpoint) {
-                    return $checkpoint->items
-                        ->where('approve_status', 'proccess')
-                        ->map(function ($item) use ($checkpoint) {
-                            return (object) [
-                                'id' => $checkpoint->id,
-                                'employee' => $checkpoint->user->nama_lengkap ?? '-',
-                                'date' => $item->tanggal?->format('Y-m-d') ?? optional($checkpoint->created_at)->format('Y-m-d'),
-                                'job' => $item->pekerjaan_cp_id ?? ($item->input_manual ?? 'Pekerjaan'),
-                            ];
-                        });
-                })->groupBy('employee')->map(function ($items) {
-                    $month = Carbon::parse($items->first()->date)->translatedFormat('F Y');
-                    return (object) [
-                        'id' => $items->first()->id,
-                        'employee' => $items->first()->employee,
-                        'dates' => $items->map(fn($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
-                        'month' => $month,
-                    ];
-                })->values();
-        }
+        $pendingDireksiCheckpoints = $isDireksi
+            ? $this->pendingDireksiCheckpoints($now->copy()->startOfYear(), $now->copy()->endOfYear())
+            : collect();
 
         $rejectedCheckpoints = CheckPoint::with('items:id,check_point_id,tanggal,approve_status,note,pekerjaan_cp_id,input_manual')
             ->where('user_id', $user->id)
@@ -201,6 +178,7 @@ class DashboardController extends Controller
             ->count();
 
         $luweh1Dino = false;
+
         if ($absenP && $absenP->shift) {
             if ($absenP->shift->is_overnight) {
                 // Untuk shift lintas hari, hitung dari jam selesai shift kemarin
@@ -240,6 +218,48 @@ class DashboardController extends Controller
                 'direksiRecapAvailable'
             ));
         }
+    }
+
+    /**
+     * Pending Direksi rows, limited in SQL before grouping for the modal.
+     */
+    private function pendingDireksiCheckpoints(Carbon $start, Carbon $end): Collection
+    {
+        return CheckPoint::query()
+            ->select(['id', 'user_id', 'created_at'])
+            ->with([
+                'user:id,nama_lengkap',
+                'items' => fn ($query) => $query
+                    ->select(['id', 'check_point_id', 'tanggal', 'approve_status', 'pekerjaan_cp_id', 'input_manual'])
+                    ->where('approve_status', 'proccess'),
+            ])
+            ->where('type_check', 'dikerjakan')
+            ->whereBetween('created_at', [$start, $end])
+            ->whereHas('items', fn ($query) => $query->where('approve_status', 'proccess'))
+            ->latest('id')
+            ->get()
+            ->flatMap(function (CheckPoint $checkpoint) {
+                return $checkpoint->items->map(function ($item) use ($checkpoint) {
+                    return (object) [
+                        'id' => $checkpoint->id,
+                        'employee' => $checkpoint->user->nama_lengkap ?? '-',
+                        'date' => $item->tanggal?->format('Y-m-d') ?? optional($checkpoint->created_at)->format('Y-m-d'),
+                        'job' => $item->pekerjaan_cp_id ?? ($item->input_manual ?? 'Pekerjaan'),
+                    ];
+                });
+            })
+            ->groupBy('employee')
+            ->map(function ($items) {
+                $month = Carbon::parse($items->first()->date)->translatedFormat('F Y');
+
+                return (object) [
+                    'id' => $items->first()->id,
+                    'employee' => $items->first()->employee,
+                    'dates' => $items->map(fn ($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
+                    'month' => $month,
+                ];
+            })
+            ->values();
     }
 
     /**

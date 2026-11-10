@@ -17,6 +17,7 @@ use App\Models\TempUser;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -160,7 +161,7 @@ class AdminController extends Controller
             ])
             ->whereBetween('created_at', [$inMonthStart, $inMonthEnd])
             ->where('type_check', $type)
-            ->when($filter, fn ($query) => $query->whereHas('user', fn ($q) => $q->where('kerjasama_id', $filter)))
+            ->when($filter, fn($query) => $query->whereHas('user', fn($q) => $q->where('kerjasama_id', $filter)))
             ->latest()
             ->paginate(20)
             ->withQueryString();
@@ -562,27 +563,11 @@ class AdminController extends Controller
         $totalHari = Carbon::parse($this->str)->diffInDays(Carbon::parse($this->ended));
 
         if ($request->has(['libur', 'end1', 'str1'])) {
-            $expPDF = User::query()
-                ->with([
-                    'absensi' => function ($query) use ($str1, $end1) {
-                        $query->whereBetween('tanggal_absen', [$str1, $end1])->with('point');
-                    },
-                    'jadwalUser' => function ($query) use ($str1, $end1) {
-                        $query->whereBetween('created_at', [$str1, $end1]);
-                    }
-                ])
-                ->whereHas('absensi', function ($query) use ($str1, $end1) {
-                    $query->whereBetween('tanggal_absen', [$str1, $end1]);
-                })
-                ->when($mitra, fn($q) => $q->where('kerjasama_id', $mitra))
-                ->when($divisiId, fn($q) => $q->where('devisi_id', $divisiId))
-                ->orderBy('nama_lengkap', 'asc')
-                ->get();
+            $kerjasama = $mitra ? Kerjasama::query()->with('client:id,name')->find($mitra) : null;
+            $kantor = optional($kerjasama)->client_id === 1;
+            $expPDF = $this->exportAttendanceUsers($str1, $end1, $mitra, $divisiId, $kantor);
+            $point = $kantor ? Point::query()->select(['id', 'sac_point'])->get() : collect();
 
-
-            $point = Point::all();
-            $kerjasama = Kerjasama::find($mitra);
-            $kantor = optional($kerjasama)->id === 1;
             $liburCount = 0;
             $hae = 0;
             $calendarHeaders = [];
@@ -738,7 +723,9 @@ class AdminController extends Controller
                     'st' => $totalST,
                     'percentage' => $tesPer,
                     'totalHariKerja' => $totalHariKerja,
-                    'totalPoints' => $user->absensi->whereNotNull('point_id')->sum(fn($p) => (int) optional($p->point)->sac_point),
+                    'totalPoints' => $kantor
+                        ? $user->absensi->whereNotNull('point_id')->sum(fn($p) => (int) optional($p->point)->sac_point)
+                        : 0,
                 ];
             }
 
@@ -773,6 +760,40 @@ class AdminController extends Controller
             toastr()->error('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
+    }
+
+    private function exportAttendanceUsers(string $start, string $end, ?int $kerjasamaId, ?int $divisiId, bool $kantor)
+    {
+        $absensi = function ($query) use ($start, $end, $kantor): void {
+            $query->select([
+                'id',
+                'user_id',
+                'created_at',
+                'keterangan',
+                'terus',
+                'absensi_type_pulang',
+                'tukar',
+                'tukar_id',
+                'point_id',
+            ])
+                ->whereBetween('tanggal_absen', [$start, $end])
+                ->when($kantor, fn(Builder $query) => $query->with('point:id,sac_point'));
+        };
+
+        return User::query()
+            ->select(['id', 'nama_lengkap', 'devisi_id', 'kerjasama_id'])
+            ->with([
+                'absensi' => $absensi,
+                'jadwalUser' => fn($query) => $query
+                    ->select(['id', 'user_id', 'tanggal', 'status'])
+                    ->whereBetween('created_at', [$start, $end]),
+                'divisi.jabatan:id,code_jabatan',
+            ])
+            ->whereHas('absensi', fn(Builder $query) => $query->whereBetween('tanggal_absen', [$start, $end]))
+            ->when($kerjasamaId, fn(Builder $query) => $query->where('kerjasama_id', $kerjasamaId))
+            ->when($divisiId, fn(Builder $query) => $query->where('devisi_id', $divisiId))
+            ->orderBy('nama_lengkap')
+            ->get();
     }
 
     public function exp(Request $request)
@@ -924,8 +945,8 @@ class AdminController extends Controller
         // sacpocom_absensi
         $absensiTables = ['absensis', 'lemburs', 'izins', 'laporans', 'overtimes', 'finished_trainings', 'performance_cuts'];
         $absensiCount = collect($absensiTables)
-            ->map(fn ($table) => "SELECT COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
-            ->pipe(fn ($queries) => DB::connection('mysql')->select(
+            ->map(fn($table) => "SELECT COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
+            ->pipe(fn($queries) => DB::connection('mysql')->select(
                 implode(' UNION ALL ', $queries->all()),
                 array_fill(0, $queries->count(), $id)
             ))
@@ -952,14 +973,14 @@ class AdminController extends Controller
             'pending_syncs',
         ];
         $rekapRows = collect($rekapTables)
-            ->map(fn ($table) => "SELECT '{$table}' AS table_name, COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
-            ->pipe(fn ($queries) => DB::connection('mysql3')->select(
+            ->map(fn($table) => "SELECT '{$table}' AS table_name, COUNT(*) AS total FROM `{$table}` WHERE user_id = ?")
+            ->pipe(fn($queries) => DB::connection('mysql3')->select(
                 implode(' UNION ALL ', $queries->all()),
                 array_fill(0, $queries->count(), $id)
             ));
         $rekapCounts = collect($rekapRows)
-            ->filter(fn ($row) => (int) $row->total > 0)
-            ->mapWithKeys(fn ($row) => [$row->table_name => (int) $row->total])
+            ->filter(fn($row) => (int) $row->total > 0)
+            ->mapWithKeys(fn($row) => [$row->table_name => (int) $row->total])
             ->all();
 
         return response()->json([

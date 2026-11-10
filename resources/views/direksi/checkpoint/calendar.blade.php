@@ -105,7 +105,7 @@
                                     {{ $metric['achieved'] }} dari {{ $metric['total'] }} {{ $card['unit'] }}
                                 </p>
                                 <p class="mt-1 text-[11px] text-slate-500">
-                                    {{ is_null($percent) ? 'Belum ada data' : 'Perintah kerja selesai' }}
+                                    {{ is_null($percent) ? 'Belum ada perintah kerja' : 'Perintah kerja selesai' }}
                                 </p>
                             @else
                                 <div class="mt-5 flex items-end justify-between gap-3">
