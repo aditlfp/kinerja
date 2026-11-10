@@ -12,7 +12,7 @@ return new class extends Migration
         }
 
         if (! $this->columnExists('kerjasama_id')) {
-            DB::statement("ALTER TABLE `notifications` ADD `kerjasama_id` BIGINT UNSIGNED GENERATED ALWAYS (IF(JSON_VALID(`data`), NULLIF(CAST(JSON_UNQUOTE(JSON_EXTRACT(`data`, '$.kerjasama_id')) AS UNSIGNED), 0), NULL)) STORED AFTER `notification_type`");
+            DB::statement("ALTER TABLE `notifications` ADD `kerjasama_id` BIGINT UNSIGNED GENERATED ALWAYS (IF(JSON_VALID(`data`), NULLIF(JSON_UNQUOTE(JSON_EXTRACT(`data`, '$.kerjasama_id')) + 0, 0), NULL)) STORED AFTER `notification_type`");
         }
 
         if (! $this->indexExists('notifications_unread_lookup_idx')) {
