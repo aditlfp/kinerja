@@ -37,8 +37,10 @@
         {{-- @include('../layouts/navbar') --}}
 
         {{-- navbar --}}
-        <div class="pt-5 pb-3 px-6 space-y-4">
-            <div class="flex items-center justify-between">
+        <div class="px-6 pt-5">
+            <div id="dashboardNavbar"
+                class="fixed inset-x-0 top-0 z-50 bg-slate-50 px-6 pb-3 pt-5 transition-[box-shadow,background-color] duration-300 ease-out">
+                <div class="flex items-center justify-between">
                 <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" srcset="" class="w-32 h-auto">
                 <div class="flex items-center justify-center gap-2">
                     <a href="{{ route('slip-gaji.index', ['bulan' => now()->format('Y-m')]) }}"
@@ -56,8 +58,9 @@
                         </button>
                     </form>
                 </div>
+                </div>
             </div>
-            <div>
+            <div class="mt-4 pt-20">
                 <a href="{{ route('profile.index') }}" class="flex items-center justify-start font-extrabold text-lg gap-2 max-w-[55svw]">
                     <i class="ri-user-line text-lg"></i>
                     <span class="truncate">
@@ -669,6 +672,27 @@
             });
 
         });
+    </script>
+
+    <script>
+        const dashboardNavbar = document.getElementById('dashboardNavbar');
+
+        const navbarScrolledClasses = [
+            'bg-gradient-to-b', 'from-slate-50', 'via-slate-50/95', 'to-transparent',
+            'pb-7', 'backdrop-blur-[2px]'
+        ];
+
+        function updateNavbar() {
+            const scrolled = window.scrollY > 0;
+            dashboardNavbar.classList.toggle('shadow-md', scrolled);
+            dashboardNavbar.classList.toggle('bg-slate-50', !scrolled);
+            navbarScrolledClasses.forEach(className => {
+                dashboardNavbar.classList.toggle(className, scrolled);
+            });
+        }
+
+        window.addEventListener('scroll', updateNavbar, { passive: true });
+        updateNavbar();
     </script>
 </body>
 
