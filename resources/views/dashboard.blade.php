@@ -334,14 +334,34 @@
                                     <i class="ri-notification-3-line text-lg"></i>
                                 </span>
                                 <div>
-                                    <h2 class="font-black text-lg leading-tight text-slate-900">Informasi</h2>
+                                    <h2 class="flex items-center gap-2 font-black text-lg leading-tight text-slate-900">
+                                        Informasi
+                                        @if ($hasUnreadInformation)
+                                            <span class="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" title="Ada informasi baru" aria-label="Ada informasi baru"></span>
+                                        @endif
+                                    </h2>
                                     <p class="text-xs text-slate-500">Pembaruan terbaru untukmu</p>
                                 </div>
                             </div>
-                            <span class="rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-sky-700">
-                                Update
-                            </span>
                         </div>
+
+                        @if ($kontrak && ($kontrak->isActive() || $kontrak->isPending() || $kontrak->isProses()))
+                            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {{ $kontrak->isActive() ? 'bg-emerald-100 text-emerald-600' : ($kontrak->isPending() ? 'bg-sky-100 text-sky-600' : 'bg-amber-100 text-amber-600') }}">
+                                        <i class="{{ $kontrak->isActive() ? 'ri-check-line' : ($kontrak->isPending() ? 'ri-information-line' : 'ri-time-line') }} text-xl"></i>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-bold uppercase tracking-wide {{ $kontrak->isActive() ? 'text-emerald-600' : ($kontrak->isPending() ? 'text-sky-600' : 'text-amber-600') }}">Status pengajuan kontrak</p>
+                                        <h3 class="mt-1 text-base font-black text-slate-900">{{ $kontrak->isActive() ? 'Pengajuan disetujui' : ($kontrak->isPending() ? 'Menunggu persetujuan' : 'Sedang diproses') }}</h3>
+                                        <p class="mt-1 text-xs leading-relaxed text-slate-500">{{ $kontrak->isActive() ? 'Lihat detail kontrak yang telah disetujui.' : ($kontrak->isPending() ? 'Pengajuan sedang menunggu persetujuan HRD.' : 'Pengajuan sedang diproses oleh HRD.') }}</p>
+                                        @if ($kontrak->isActive())
+                                            <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak->id)]) }}" target="_blank" class="mt-3 inline-flex rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Lihat detail</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         @if (auth()->user()->kerjasama_id == 1)
                             <x-notification-dropdown />
@@ -365,22 +385,24 @@
                                 <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                                 <span class="font-black text-lg">Menu Utama</span>
                             </div>
-                            <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
+                            <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
                                 @foreach ($dashboardMenus as $menu)
-                                    <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
-                                        class="flex flex-col items-center justify-center
-                                        gap-1 rounded-lg px-3 py-2">
+                                    @if ($menu['disabled'] ?? false)
+                                        <div aria-disabled="true" title="Menu hanya tersedia untuk pengguna kerjasama internal"
+                                            class="flex cursor-not-allowed flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 opacity-40 grayscale">
+                                    @else
+                                        <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
+                                            class="flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-2">
+                                    @endif
 
-                                        <i
-                                            class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center text-2xl font-bold
-                                            text-{{ $menu['color'] }}-700
-                                            bg-{{ $menu['color'] }}-200 rounded-2xl"></i>
+                                        <i class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center rounded-2xl bg-{{ $menu['color'] }}-200 text-2xl font-bold text-{{ $menu['color'] }}-700"></i>
+                                        <span class="text-sm font-extrabold">{{ $menu['label'] }}</span>
 
-                                        <span class="font-extrabold text-sm">
-                                            {{ $menu['label'] }}
-                                        </span>
-
-                                    </a>
+                                    @if ($menu['disabled'] ?? false)
+                                        </div>
+                                    @else
+                                        </a>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -393,11 +415,11 @@
                                 <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                                 <span class="font-black text-lg">Menu Tambahan</span>
                             </div>
-                            <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
+                            <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
                                 @foreach ($dashboardAddMenus as $menu)
                                     <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
                                         class="flex flex-col items-center justify-center
-                                        gap-1 rounded-lg px-3 py-2">
+                                        gap-1 rounded-lg px-1 py-2">
 
                                         <i
                                             class="{{ $menu['icon'] }}
@@ -423,23 +445,24 @@
                         <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                         <span class="font-black text-lg">Menu Riwayat</span>
                     </div>
-                    <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
+                    <div class="mx-auto grid max-w-sm grid-cols-3 items-start gap-x-1.5 gap-y-3 text-center sm:max-w-md sm:grid-cols-4">
                         @foreach ($historyMenus as $menu)
-                            <a href="{{ $menu['url'] }}"
-                                class="flex flex-col items-center justify-center
-                                    gap-1 rounded-lg px-3 py-2">
+                            @if ($menu['disabled'] ?? false)
+                                <div aria-disabled="true" title="Menu hanya tersedia untuk pengguna kerjasama internal"
+                                    class="flex cursor-not-allowed flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 opacity-40 grayscale">
+                            @else
+                                <a href="{{ $menu['url'] }}"
+                                    class="flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-2">
+                            @endif
 
-                                <i
-                                    class="{{ $menu['icon'] }}
-                                        flex h-14 w-14 items-center justify-center text-2xl font-bold
-                                        text-{{ $menu['color'] }}-700
-                                        bg-{{ $menu['color'] }}-300 rounded-2xl"></i>
+                                    <i class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center rounded-2xl bg-{{ $menu['color'] }}-300 text-2xl font-bold text-{{ $menu['color'] }}-700"></i>
+                                    <span class="text-sm font-extrabold">{{ $menu['label'] }}</span>
 
-                                <span class="font-extrabold text-sm">
-                                    {{ $menu['label'] }}
-                                </span>
-
-                            </a>
+                            @if ($menu['disabled'] ?? false)
+                                </div>
+                            @else
+                                </a>
+                            @endif
                         @endforeach
                     </div>
                 </section>
@@ -516,97 +539,6 @@
         @include('dashboard.partials.checkpoint-pending-modal')
     </div>
 
-    <div class="{{ $kontrak && $kontrak->isPending() ? 'hidden' : '' }} mx-5 mt-5 sm:mx-10">
-        @if ($kontrak && $kontrak->isActive())
-            {{-- APPROVED --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-green-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-green-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
-                        Approved
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-blue-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
-
-                    <p class="mb-4 text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Selamat! Pengajuan anda telah di setujui silahkan
-                        lihat detailnya.
-                    </p>
-
-                    <div class="flex flex-col gap-2 sm:flex-row sm:justify-center md:justify-start">
-                        <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
-                            onclick="window.open(this.href, '_blank'); window.location.reload(); return false;"
-                            class="rounded-2xl bg-yellow-400 px-4 py-2.5 text-center text-sm font-bold text-slate-900 shadow-xs transition hover:bg-yellow-500">
-                            Lihat Detail
-                        </a>
-
-                        {{-- <a href="{{ route('form-kontrak-index', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak?->id)]) }}"
-                            class="rounded-2xl bg-green-600 px-4 py-2.5 text-center text-sm font-bold text-white shadow-xs transition hover:bg-green-700">
-                            Tanda Tangan Kontrak
-                        </a> --}}
-                    </div>
-                </div>
-
-                <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-green-600 text-white shadow-lg shadow-green-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-check-line text-4xl sm:text-5xl"></i>
-                </div>
-            </div>
-        @elseif($kontrak && $kontrak->isPending())
-            {{-- PENDING --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
-                        Pending
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-blue-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
-
-                    <p class="text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Data anda telah terkirim ke HRD perusahaan,
-                        jika belum di approve silahkan pengajuan kembali dalam
-                        <span class="font-black text-red-600">
-                            {{ max(0, 30 - (int) $kontrak->created_at->diffInDays(now())) }} Hari
-                        </span>
-                    </p>
-                </div>
-
-                <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-blue-500 text-white shadow-lg shadow-blue-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-information-line text-4xl sm:text-5xl"></i>
-                </div>
-            </div>
-        @elseif ($kontrak && $kontrak->isProses())
-            {{-- PROSES --}}
-            <div
-                class="mx-auto flex max-w-3xl flex-col-reverse gap-4 rounded-xl border border-white/70 bg-linear-to-br from-white to-blue-50 p-4 shadow-lg shadow-slate-700/10 sm:p-5 md:flex-row md:items-center md:justify-between">
-                <div class="w-full text-center md:text-left">
-                    <span
-                        class="mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-700">
-                        Proses
-                    </span>
-                    <h3 class="mb-2 text-lg font-black text-amber-700 sm:text-xl">
-                        Status Pengajuan Saat Ini
-                    </h3>
-
-                    <p class="text-sm leading-relaxed text-slate-700 sm:text-base">
-                        Data anda telah terkirim ke HRD perusahaan,
-                        dan sedang di proses oleh HRD, harap Ditunggu.
-                    </p>
-                </div>
-
-                <div
-                    class="mx-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-amber-500 text-white shadow-lg shadow-amber-700/20 sm:h-20 sm:w-20 md:mx-0">
-                    <i class="ri-time-line text-4xl sm:text-5xl"></i>
-                </div>
-            </div>
-        @endif
-    </div>
     @include('dashboard.partials.scripts.checkout-tracking')
     @include('dashboard.partials.scripts.dashboard-ui')
     @include('dashboard.partials.scripts.shift-timer')

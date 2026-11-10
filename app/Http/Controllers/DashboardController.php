@@ -148,8 +148,9 @@ class DashboardController extends Controller
             $missingCheckpointDates = $dates->reject(fn($date) => $filledDates->contains($date->toDateString()));
         }
 
-        $isDireksi = ($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'DIREKSI';
+        $isDireksi = $user->jabatan_id === 24;
         $direksiRecapAvailable = $isDireksi && $recapService->isVisible($now);
+        $hasUnreadInformation = $user->unreadNotifications()->exists();
 
         $pendingDireksiCheckpoints = collect();
         if ($isDireksi) {
@@ -237,7 +238,8 @@ class DashboardController extends Controller
                 'missingCheckpointDates',
                 'rejectedCheckpoints',
                 'pendingDireksiCheckpoints',
-                'direksiRecapAvailable'
+                'direksiRecapAvailable',
+                'hasUnreadInformation'
             ))->with($this->dashboardViewContext($user, $kontrak));
         }
     }
@@ -285,7 +287,7 @@ class DashboardController extends Controller
             ['key' => 'kehadiran', 'label' => 'Kehadiran', 'route' => 'absensi.index', 'icon' => 'ri-calendar-line', 'color' => 'emerald'],
             ['key' => 'data-rekap', 'label' => 'Data Rekap', 'route' => $rekapRoute, 'icon' => 'ri-database-line', 'color' => 'indigo', 'show' => $bisaLihatRekap],
             ['key' => 'izin', 'label' => 'Izin', 'route' => 'izin.create', 'icon' => 'ri-file-line', 'color' => 'blue'],
-            ['key' => 'kinerja', 'label' => 'Kinerja', 'route' => 'checkpoint-user.index', 'icon' => 'ri-bar-chart-line', 'color' => 'amber', 'show' => !$isDireksi || $isManajemen],
+            ['key' => 'kinerja', 'label' => 'Kinerja', 'route' => 'checkpoint-user.index', 'icon' => 'ri-bar-chart-line', 'color' => 'amber', 'show' => true, 'disabled' => $user->kerjasama_id != 1],
             ['key' => 'rating', 'label' => 'Rating', 'route' => 'ratingSaya', 'params' => [$user->id], 'icon' => 'ri-star-line', 'color' => 'indigo', 'show' => !$isDireksi],
             ['key' => 'laporan', 'label' => 'Laporan', 'route' => 'laporan.index', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => !$isDireksi],
             ['key' => 'kontrak', 'label' => 'Pengajuan Kontrak', 'route' => 'form-kontrak-request', 'icon' => 'ri-file-add-line', 'color' => 'green', 'show' => $bisaAjukanKontrak && !$isDireksi],
@@ -322,98 +324,11 @@ class DashboardController extends Controller
         $historyMenus = collect([
             ['label' => 'Kehadiran', 'url' => url('historyAbsensi'), 'icon' => 'ri-calendar-line', 'color' => 'emerald'],
             ['label' => 'Izin', 'url' => route('izin.index'), 'icon' => 'ri-file-line', 'color' => 'blue'],
-            ['label' => 'Kinerja', 'url' => route('checkpoint-user.history'), 'icon' => 'ri-bar-chart-line', 'color' => 'amber'],
+            ['label' => 'Kinerja', 'url' => route('checkpoint-user.history'), 'icon' => 'ri-bar-chart-line', 'color' => 'amber', 'disabled' => $user->kerjasama_id != 1],
             ['label' => 'Laporan', 'url' => 'https://laporan-sac.sac-po.com', 'icon' => 'ri-file-text-line', 'color' => 'sky'],
         ]);
 
-        return compact('dashboardMenus', 'dashboardAddMenus', 'historyMenus', 'kerjasamaId', 'kontrak', 'routes', 'icons', 'absensiRoute', 'tampilkanAbsensi', 'bisaLihatMenuManajemen', 'bisaLihatMenuSlip', 'isMitra', 'isLeader', 'isCoCs', 'isCoScr', 'isSPVW', 'isManajemen', 'isAdmin', 'isSPV', 'isDireksi', 'directJabatan');
-    }
-
-    private function dashboardViewContext(User $user, ?Kontrak $kontrak = null): array
-    {
-        $jabatan = $user->jabatan;
-        $jabatanCode = $jabatan?->code_jabatan;
-        $jabatanId = $user->jabatan_id;
-        $isDireksi = $jabatanId === 24;
-        $isSPVW = $jabatanCode === 'SPV-W';
-        $isManajemen = $user->kerjasama_id === 1;
-        $isAdmin = $user->role_id === 2;
-        $isSPV = in_array($jabatanId, [4, 14], true);
-        $isCoCs = $jabatanCode === 'CO-CS';
-        $isCoScr = $jabatanCode === 'CO-SCR';
-        $isLeader = $jabatanCode === 'LEADER';
-        $isMitra = $jabatanCode === 'MITRA';
-        $kerjasamaId = $user->kerjasama_id;
-        $directJabatan = $user->jabatan?->code_jabatan;
-        $hariIni = now()->dayOfWeekIso;
-        $tampilkanAbsensi = !in_array($hariIni, [6, 7], true) || !$isManajemen || $user->devisi_id != 26;
-        $bisaLihatMenuManajemen = $isSPV;
-        $bisaLihatMenuSlip = in_array($user->id, [7, 10, 5], true);
-
-        $bisaLihatRekap = in_array($jabatanCode, ['CO-CS', 'CO-SCR', 'SPV-W'], true) && $user->id != 7;
-        $rekapRoute = $isSPVW ? 'spvw.rekap.index' : 'index.rekap.data.leader';
-        $absensiRoute = match ($jabatanCode) {
-            'CO-CS' => 'absensi-karyawan-co-cs.index',
-            'CO-SCR' => 'absensi-karyawan-co-scr.index',
-            default => null,
-        };
-
-        $routes = [
-            'MITRA' => ['karyawan' => 'mitra_user', 'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'mitra_jadwal', 'absensi' => 'mitra_absensi', 'izin' => 'mitra_izin', 'lembur' => 'mitra_lembur', 'laporan' => 'mitra_laporan', 'rating' => 'mitra-rating.index', 'laporan bulanan' => 'mitra-laporan-bulanan.index'],
-            'LEADER' => ['karyawan' => 'lead_user', 'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'leader-jadwal.index', 'absensi' => 'lead_absensi', 'izin' => 'lead_izin', 'lembur' => 'lead_lembur', 'laporan' => 'lead_laporan', 'rating' => 'leader-rating.index'],
-            'DIREKSI' => ['karyawan' => 'direksi_user', 'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'direksi_jadwal', 'absensi' => 'direksi_absensi', 'izin' => 'direksi_izin', 'lembur' => 'direksi_lembur', 'laporan' => 'direksi_laporan', 'rating' => 'direksi-rating.index', 'kinerja' => 'direksi.cp.index', 'kontrak' => 'direksi-cekKontrak'],
-        ];
-        $icons = ['karyawan' => 'ri-pass-pending-line', 'jadwal' => 'ri-calendar-check-line', 'absensi' => 'ri-todo-line', 'izin' => 'ri-shield-user-line', 'lembur' => 'ri-time-line', 'laporan' => 'ri-image-add-line', 'laporan bulanan' => 'ri-image-add-line', 'rating' => 'ri-sparkling-line', 'kinerja' => 'ri-sparkling-line', 'kontrak' => 'ri-pass-pending-line'];
-        $kontrakSelesai = $kontrak?->tgl_selesai_kontrak && \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast();
-        $kontrakBerjalan = $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
-        $bisaAjukanKontrak = !$kontrak || $kontrakSelesai || !$kontrakBerjalan;
-
-        $dashboardMenus = collect([
-            ['key' => 'kehadiran', 'label' => 'Kehadiran', 'route' => 'absensi.index', 'icon' => 'ri-calendar-line', 'color' => 'emerald'],
-            ['key' => 'data-rekap', 'label' => 'Data Rekap', 'route' => $rekapRoute, 'icon' => 'ri-database-line', 'color' => 'indigo', 'show' => $bisaLihatRekap],
-            ['key' => 'izin', 'label' => 'Izin', 'route' => 'izin.create', 'icon' => 'ri-file-line', 'color' => 'blue'],
-            ['key' => 'kinerja', 'label' => 'Kinerja', 'route' => 'checkpoint-user.index', 'icon' => 'ri-bar-chart-line', 'color' => 'amber', 'show' => !$isDireksi || $isManajemen],
-            ['key' => 'rating', 'label' => 'Rating', 'route' => 'ratingSaya', 'params' => [$user->id], 'icon' => 'ri-star-line', 'color' => 'indigo', 'show' => !$isDireksi],
-            ['key' => 'laporan', 'label' => 'Laporan', 'route' => 'laporan.index', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => !$isDireksi],
-            ['key' => 'kontrak', 'label' => 'Pengajuan Kontrak', 'route' => 'form-kontrak-request', 'icon' => 'ri-file-add-line', 'color' => 'green', 'show' => $bisaAjukanKontrak && !$isDireksi],
-            ['key' => 'alquran', 'label' => "Al Qur'an", 'url' => 'https://baca-alquran.sac-po.com', 'icon' => 'ri-book-line', 'color' => 'amber'],
-            ['key' => 'sppd', 'label' => 'SPPD', 'url' => 'https://sppd-online.sac-po.com/login', 'icon' => 'ri-road-map-line', 'color' => 'sky', 'show' => $isManajemen],
-        ])->filter(fn ($menu) => $menu['show'] ?? true)->values();
-
-        $dashboardAddMenus = collect([
-            ['key' => 'karyawan-direksi', 'label' => 'Karyawan', 'route' => 'direksi_user', 'icon' => 'ri-team-line', 'color' => 'blue', 'show' => $isDireksi],
-            ['key' => 'absensi-direksi', 'label' => 'Absensi', 'route' => 'direksi_absensi', 'icon' => 'ri-calendar-line', 'color' => 'emerald', 'show' => $isDireksi],
-            ['key' => 'izin-direksi', 'label' => 'Izin', 'route' => 'direksi_izin', 'icon' => 'ri-shield-user-line', 'color' => 'blue', 'show' => $isDireksi],
-            ['key' => 'kinerja-direksi', 'label' => 'Kinerja', 'route' => 'direksi.cp.index', 'icon' => 'ri-bar-chart-line', 'color' => 'amber', 'show' => $isDireksi],
-            ['key' => 'kontrak-direksi', 'label' => 'Kontrak', 'route' => 'direksi-cekKontrak', 'icon' => 'ri-file-add-line', 'color' => 'green', 'show' => $isDireksi],
-            ['key' => 'data-rekap', 'label' => 'Data Rekap', 'route' => 'manajemen_rekap', 'icon' => 'ri-database-line', 'color' => 'purple', 'show' => $isSPV],
-            ['key' => 'slip-gaji-karyawan', 'label' => 'Slip Gaji Karyawan', 'route' => 'slip-karyawan', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => $isSPV],
-            ['key' => 'absensi-karyawan', 'label' => 'Absensi Karyawan', 'route' => 'manajemen_absensi', 'icon' => 'ri-calendar-line', 'color' => 'emerald', 'show' => $isSPV],
-            ['key' => 'laporan-karyawan', 'label' => 'Laporan Karyawan', 'route' => 'manajemen_laporan', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => $isSPV],
-            ['key' => 'data-karyawan', 'label' => 'Data Karyawan', 'route' => 'manajemen_user', 'icon' => 'ri-user-line', 'color' => 'green', 'show' => $isSPV],
-            ['key' => 'data-karyawan-spvw', 'label' => 'Data Karyawan', 'route' => 'spvw_user', 'icon' => 'ri-user-line', 'color' => 'green', 'show' => $isSPVW],
-            ['key' => 'data-absensi-spvw', 'label' => 'Data Absensi', 'route' => 'spvw_absensi', 'icon' => 'ri-calendar-line', 'color' => 'emerald', 'show' => $isSPVW],
-            ['key' => 'data-izin-spvw', 'label' => 'Data Izin', 'route' => 'spvw_izin', 'icon' => 'ri-file-line', 'color' => 'blue', 'show' => $isSPVW],
-            ['key' => 'data-rating-spvw', 'label' => 'Data Rating', 'route' => 'spvw-rating.index', 'icon' => 'ri-star-line', 'color' => 'yellow', 'show' => $isSPVW],
-            ['key' => 'data-checklist-spvw', 'label' => 'Data Checklist', 'route' => 'spvw-checklist.index', 'icon' => 'ri-list-check', 'color' => 'indigo', 'show' => $isSPVW],
-            ['key' => 'data-slip-spvw', 'label' => 'Slip Gaji Karyawan', 'route' => 'spvw-slip', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => $isSPVW],
-            ['key' => 'data-karyawan-leader', 'label' => 'Data Karyawan', 'route' => $isCoCs ? 'lead_user' : 'danru_user', 'icon' => 'ri-user-line', 'color' => 'green', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-absensi-leader', 'label' => 'Data Absensi', 'route' => $isCoCs ? 'lead_absensi' : 'danru_absensi', 'icon' => 'ri-calendar-line', 'color' => 'emerald', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-izin-leader', 'label' => 'Data Izin', 'route' => $isCoCs ? 'lead_izin' : 'danru_izin', 'icon' => 'ri-file-line', 'color' => 'blue', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-absen-sholat-leader', 'label' => 'Data Absen Sholat', 'route' => 'leader-absenSholat', 'icon' => 'ri-calendar-line', 'color' => 'emerald', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-rating-leader', 'label' => 'Data Rating', 'route' => $isCoCs ? 'leader-rating.index' : 'danru-rating.index', 'icon' => 'ri-star-line', 'color' => 'yellow', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-checklist-leader', 'label' => 'Data Checklist', 'route' => 'leader-checklist.index', 'icon' => 'ri-list-check', 'color' => 'indigo', 'show' => $isCoCs || $isCoScr],
-            ['key' => 'data-slip-leader', 'label' => 'Slip Gaji Karyawan', 'route' => $isCoCs ? 'leader-slip' : 'danru-slip', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => $isCoCs || $isCoScr],
-        ])->filter(fn ($menu) => $menu['show'] ?? true)->values();
-
-        $historyMenus = collect([
-            ['label' => 'Kehadiran', 'url' => url('historyAbsensi'), 'icon' => 'ri-calendar-line', 'color' => 'emerald'],
-            ['label' => 'Izin', 'url' => route('izin.index'), 'icon' => 'ri-file-line', 'color' => 'blue'],
-            ['label' => 'Kinerja', 'url' => route('checkpoint-user.history'), 'icon' => 'ri-bar-chart-line', 'color' => 'amber'],
-            ['label' => 'Laporan', 'url' => 'https://laporan-sac.sac-po.com', 'icon' => 'ri-file-text-line', 'color' => 'sky'],
-        ]);
-
-        return compact('dashboardMenus', 'dashboardAddMenus', 'historyMenus', 'kerjasamaId', 'kontrak', 'routes', 'icons', 'absensiRoute', 'tampilkanAbsensi', 'bisaLihatMenuManajemen', 'bisaLihatMenuSlip', 'isMitra', 'isLeader', 'isCoCs', 'isCoScr', 'isSPVW', 'isManajemen', 'isAdmin', 'isSPV', 'isDireksi', 'directJabatan');
+        return compact('dashboardMenus', 'dashboardAddMenus', 'historyMenus', 'kerjasamaId', 'kontrak', 'routes', 'icons', 'absensiRoute', 'tampilkanAbsensi', 'bisaLihatMenuManajemen', 'bisaLihatMenuSlip', 'isMitra', 'isLeader', 'isCoCs', 'isCoScr', 'isSPVW', 'isManajemen', 'isAdmin', 'isSPV', 'isDireksi', 'directJabatan', 'jabatanCode') + ['jabatan' => $jabatanCode];
     }
 
     /**

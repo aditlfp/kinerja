@@ -12,6 +12,25 @@ Format rilis:
 - `## [vX.Y.Z] - YYYY-MM-DD`
 - Gunakan kategori: `Added`, `Changed`, `Fixed`, `Removed`.
 
+## [v2.0.9] - 2026-11-10
+
+### Changed
+- Memperketat validasi absensi masuk agar `user_id`, `kerjasama_id`, dan `shift_id` tidak dapat diganti melalui manipulasi request.
+- User biasa hanya dapat membuat absensi untuk dirinya sendiri.
+- Route absensi CO tetap dapat memilih karyawan dalam kerjasama yang sama.
+- `storePrivate()` menggunakan identitas user dan kerjasama dari session login, bukan nilai form.
+- Validasi `kerjasama_id` dan `shift_id` ditambah dengan aturan `exists`.
+
+### Fixed
+- Membatasi absen pulang hanya pada data absensi milik user yang sedang login.
+- Membatasi penandaan absensi belum pulang (`updateAbsenPulang`) agar tidak dapat memodifikasi data user lain.
+
+### Verification
+- Lulus `php -l app/Http/Controllers/AbsensiController.php`.
+- Lulus `php -l app/Http/Requests/StoreAbsensiRequest.php`.
+- Lulus `php artisan view:cache`.
+- Lulus `git diff --check`.
+
 ## [v2.0.8] - 2026-05-21
 
 ### Changed
