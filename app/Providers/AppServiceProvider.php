@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Izin;
+use App\Models\User;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->fallbackCacheToFileWhenRedisUnavailable();
         $this->preloadAuthUserRelations();
+        $this->shareMitraShellData();
 
         $startTime = Cache::get('app_start_time');
 
@@ -46,6 +49,52 @@ class AppServiceProvider extends ServiceProvider
         $formattedUptime = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
         view()->share('uptime', $formattedUptime);
+    }
+
+    /**
+     * Data ringan untuk sidebar dan topbar mitra: nama workspace, jumlah personel,
+     * dan pengajuan izin yang menunggu persetujuan.
+     */
+    private function shareMitraShellData(): void
+    {
+        view()->composer('components.mitra-layout', function ($view) {
+            $user = Auth::user();
+
+            if (!$user) {
+                $view->with([
+                    'mitraWorkspace' => null,
+                    'mitraPersonelTotal' => null,
+                    'mitraIzinMenunggu' => 0,
+                ]);
+
+                return;
+            }
+
+            $kerjasamaId = $user->kerjasama_id;
+            $isMitra = ($user->jabatan?->code_jabatan ?? $user->divisi?->jabatan?->code_jabatan) === 'MITRA';
+
+            if (!$isMitra || !$kerjasamaId) {
+                $view->with([
+                    'mitraWorkspace' => $user->kerjasama?->client?->name,
+                    'mitraPersonelTotal' => null,
+                    'mitraIzinMenunggu' => 0,
+                ]);
+
+                return;
+            }
+
+            $view->with([
+                'mitraWorkspace' => $user->kerjasama?->client?->name,
+                'mitraPersonelTotal' => User::query()
+                    ->where('kerjasama_id', $kerjasamaId)
+                    ->whereNotIn('nama_lengkap', User::PLACEHOLDER_ACCOUNT_NAMES)
+                    ->count(),
+                'mitraIzinMenunggu' => Izin::query()
+                    ->where('kerjasama_id', $kerjasamaId)
+                    ->where('approve_status', 'process')
+                    ->count(),
+            ]);
+        });
     }
 
     private function preloadAuthUserRelations(): void

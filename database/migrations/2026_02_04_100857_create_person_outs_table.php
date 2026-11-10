@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->cascadeOnDelete();
             $table->string('total_mk');
-            $table->timestamp('out_date');
+            $table->date('out_date')->nullable()->default(null);
             $table->string('reason');
             $table->string('reason_manual')->nullable();
             $table->string('img');

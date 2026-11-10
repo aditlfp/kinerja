@@ -8,6 +8,7 @@ use App\Models\Divisi;
 use App\Models\Jabatan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -27,6 +28,14 @@ class DireksiCheckpointCalendarPendingTest extends TestCase
     private const MONTH = '2026-10';
 
     private int $seq = 1700;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // The calendar now marks national holidays; never reach the feed here.
+        Cache::put('holidays.national.names.2026', []);
+    }
 
     private function divisiWithJabatan(string $code, string $name): array
     {

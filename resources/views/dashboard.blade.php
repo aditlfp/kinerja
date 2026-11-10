@@ -174,12 +174,21 @@
                                 ---
                             </span>
 
-                        </div>
+                        </div>    
+                        @if ($jabatan == 'DIREKSI' && $direksiRecapAvailable)
+                        <a href="{{ route('direksi.cp.index') }}"
+                            class="mt-4 mx-2 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-left text-emerald-900 shadow-sm hover:bg-emerald-100">
+                            <i class="ri-bar-chart-grouped-line text-xl text-emerald-600"></i>
+                            <span>
+                                <span class="block text-sm font-bold">Rekap persentase tersedia</span>
+                                <span class="block text-xs text-emerald-700">Buka rekap kinerja karyawan.</span>
+                            </span>
+                        </a>
+                        @endif      
 
                     </div>
 
                 </div>
-
 
                 {{-- =========================
                     CARD MOTIVASI

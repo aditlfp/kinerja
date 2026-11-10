@@ -60,6 +60,7 @@
 							<th class="bg-slate-300 ">Nama CLient</th>
 							<th class="bg-slate-300 ">Nama Pekerjaan</th>
 							<th class="bg-slate-300 ">Jenis Pekerjaan</th>
+                            <th class="bg-slate-300 ">Bobot</th>
 							<th class="bg-slate-300 rounded-tr-2xl">Action</th>
 						</tr>
 					</thead>
@@ -98,6 +99,7 @@
                                         <span>{{ $i->type_check }}</span>
                                     @endif
                                 </td>
+                                <td><span class="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">{{ $i->weighting_value ?? 0 }} poin</span></td>
 								<td class="flex gap-1">
 									<a
 										href="{{ route('admin.pekerjaan-cp.edit', [$i->id]) }}"
@@ -121,7 +123,7 @@
 							</tr>
 						@empty
 							<tr>
-								<td colspan="4" class="text-center">~ Data Kosong ~</td>
+								<td colspan="8" class="text-center">~ Data Kosong ~</td>
 							</tr>
 						@endforelse
 					</tbody>

@@ -13,6 +13,16 @@
             </div>
 
         <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,.04),0_12px_32px_-16px_rgba(15,23,42,.12)] sm:p-7">
+        @if ($recapAvailable)
+            <div class="mb-4 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900">
+                <i class="ri-bar-chart-grouped-line text-xl text-emerald-600"></i>
+                <div>
+                    <p class="text-sm font-bold">Rekap persentase tersedia</p>
+                    <p class="text-xs text-emerald-700">Pilih karyawan untuk melihat rekap kinerja.</p>
+                </div>
+            </div>
+        @endif
+
         <section class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($users as $employee)
                 <a href="{{ route('direksi.cp.calendar', ['user' => $employee->id, 'month' => $start->format('Y-m')]) }}"

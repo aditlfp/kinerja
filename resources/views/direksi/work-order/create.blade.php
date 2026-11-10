@@ -112,7 +112,7 @@
                         <p class="mt-1 text-sm text-slate-500">Tulis instruksi yang jelas dan mudah dijalankan.</p>
                     </div>
                 </div>
-                <form method="POST" action="{{ route(($isMcs ? 'mcs' : 'direksi') . '.work-order.store') }}" class="space-y-5">
+                <form method="POST" enctype="multipart/form-data" action="{{ route(($isMcs ? 'mcs' : 'direksi') . '.work-order.store') }}" class="space-y-5">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ $user->id }}">
                     <input type="hidden" name="tanggal" value="{{ $tanggal }}">
@@ -126,6 +126,18 @@
                             <p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    <div>
+                        <label class="mb-2 block text-sm font-bold text-slate-700">Lampiran berkas <span class="font-normal text-slate-400">(opsional, maksimal 7)</span></label>
+                        <label for="images" id="dropzone" class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-5 py-8 text-center transition hover:border-sky-400 hover:bg-sky-50">
+                            <i class="ri-upload-cloud-2-line text-3xl text-sky-500"></i>
+                            <span class="mt-2 text-sm font-bold text-slate-700">Tarik berkas ke sini atau klik untuk memilih</span>
+                            <span id="image-count" class="mt-1 text-xs text-slate-500">0/7 file · gambar, video, PDF, DOCX, XLSX · maksimal 5 MB/file</span>
+                        </label>
+                        <input id="images" name="images[]" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/x-msvideo,video/webm,application/pdf,.doc,.docx,.xls,.xlsx" multiple class="hidden">
+                        <div id="image-preview" class="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-7"></div>
+                        @error('images') <p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
+                        @error('images.*') <p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p> @enderror
+                    </div>
                     <button type="submit"
                         class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-sky-600 active:scale-[.99]">
                         <i class="ri-send-plane-line"></i> Simpan Perintah Kerja
@@ -134,4 +146,15 @@
             </section>
         @endif
     </div>
+    <script>
+        const input = document.getElementById('images'), preview = document.getElementById('image-preview'), count = document.getElementById('image-count'), dropzone = document.getElementById('dropzone');
+        let files = [];
+        function render() { preview.innerHTML = ''; files.forEach((file, i) => { const box = document.createElement('div'); box.className = 'relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100 p-2 text-xs'; box.innerHTML = file.type.startsWith('image/') ? `<img src="${URL.createObjectURL(file)}" class="aspect-square w-full rounded-lg object-cover">` : `<div class="flex aspect-square items-center justify-center text-center font-semibold text-slate-600">${file.name}</div>`; box.insertAdjacentHTML('beforeend', `<button type="button" data-i="${i}" class="absolute right-1 top-1 rounded-full bg-slate-900/75 px-2 py-1 text-xs font-bold text-white">×</button>`); preview.append(box); }); count.textContent = `${files.length}/7 file · maksimal 5 MB/file`; const dt = new DataTransfer(); files.forEach(f => dt.items.add(f)); input.files = dt.files; }
+        function add(list) { files = [...files, ...list].slice(0, 7); render(); }
+        input.addEventListener('change', e => add([...e.target.files]));
+        ['dragenter','dragover'].forEach(e => dropzone.addEventListener(e, ev => { ev.preventDefault(); dropzone.classList.add('border-sky-500','bg-sky-50'); }));
+        ['dragleave','drop'].forEach(e => dropzone.addEventListener(e, ev => { ev.preventDefault(); dropzone.classList.remove('border-sky-500','bg-sky-50'); }));
+        dropzone.addEventListener('drop', e => add([...e.dataTransfer.files]));
+        preview.addEventListener('click', e => { if (e.target.dataset.i !== undefined) { files.splice(+e.target.dataset.i, 1); render(); } });
+    </script>
 </x-app-layout>

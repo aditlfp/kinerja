@@ -54,8 +54,21 @@ class CheckPointController extends Controller
     public function historyShow($id)
     {
         $checkpoint = CheckPoint::with('items.images', 'items.messages.images', 'items.messages.user', 'items.messages.acknowledgement')
-            ->where('user_id', Auth::id())
+            ->where(function ($query): void {
+                $query->where('user_id', Auth::id())
+                    ->orWhereHas('participants', fn ($participants) => $participants->whereKey(Auth::id()));
+            })
             ->findOrFail($id);
+        $date = request()->input('tanggal');
+        $date ??= $checkpoint->items->first()?->tanggal?->format('Y-m-d') ?? $checkpoint->created_at->format('Y-m-d');
+        $related = CheckPoint::with('items.images', 'items.messages.images', 'items.messages.user', 'items.messages.acknowledgement')
+            ->where(function ($query): void {
+                $query->where('user_id', Auth::id())
+                    ->orWhereHas('participants', fn ($participants) => $participants->whereKey(Auth::id()));
+            })
+            ->whereHas('items', fn ($items) => $items->whereDate('tanggal', $date))
+            ->get();
+        $checkpoint->setRelation('items', $related->flatMap->items->sortBy('urutan')->values());
         $jobs = PekerjaanCp::whereIn('id', $checkpoint->items->pluck('pekerjaan_cp_id')->filter())
             ->get()
             ->keyBy('id');
@@ -87,6 +100,12 @@ class CheckPointController extends Controller
 
 
 
+    public function workOrderFile(\App\Models\WorkOrderImage $image)
+    {
+        abort_unless($image->workOrder->user_id === Auth::id(), 403);
+        return response()->download(storage_path('app/public/' . $image->path), basename($image->path));
+    }
+
     public function create(Request $request)
     {
         if ($denied = $this->reportWindow->reject()) {
@@ -94,7 +113,7 @@ class CheckPointController extends Controller
         }
 
         $workOrder = $request->filled('work_order')
-            ? WorkOrder::with('creator')->findOrFail($request->integer('work_order'))
+            ? WorkOrder::with(['creator', 'images'])->findOrFail($request->integer('work_order'))
             : null;
 
         $selectedDate = $workOrder?->tanggal
@@ -102,8 +121,25 @@ class CheckPointController extends Controller
             : $request->input('tanggal', Carbon::today()->format('Y-m-d'));
 
         $pcp = PekerjaanCp::where('user_id', Auth::id())->get();
+        $sharedCheckpoints = CheckPoint::with(['items.images'])
+            ->whereHas('participants', fn ($query) => $query->whereKey(Auth::id()))
+            ->whereHas('items', fn ($query) => $query->whereDate('tanggal', $selectedDate))
+            ->latest('id')
+            ->get();
+        $sharedJobs = PekerjaanCp::whereIn('id', $sharedCheckpoints->flatMap(fn ($checkpoint) => $checkpoint->items->pluck('pekerjaan_cp_id'))->filter())->get()->keyBy('id');
+        $sharedUsers = Auth::user()->devisi_id == 3
+            ? User::query()
+                ->whereKeyNot(Auth::id())
+                ->where(function ($query): void {
+                    $query->where('kerjasama_id', 1)
+                        ->orWhereHas('divisi', fn ($divisi) => $divisi->where('name', 'SPV-W'));
+                })
+                ->where('name', '!=', 'admin')
+                ->orderBy('nama_lengkap')
+                ->get(['id', 'nama_lengkap', 'devisi_id'])
+            : collect();
 
-        return view('check.create', compact('pcp', 'selectedDate', 'workOrder'));
+        return view('check.create', compact('pcp', 'selectedDate', 'workOrder', 'sharedUsers', 'sharedCheckpoints', 'sharedJobs'));
     }
 
     public function store(StoreCheckPointRequest $request)
@@ -112,14 +148,15 @@ class CheckPointController extends Controller
             return $denied;
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
 
         try {
-            $this->checkPointService->store($request->validated(), $request);
+            $checkpoint = $this->checkPointService->store($request->validated(), $request);
             $this->calendarService->forget(Auth::id());
+            $checkpoint->participants()->pluck('users.id')->each(fn ($userId) => $this->calendarService->forget((int) $userId));
             toastr()->success('Data Berhasil Disimpan');
             return to_route('checkpoint-user.index');
         } catch (\Throwable $e) {
@@ -131,7 +168,7 @@ class CheckPointController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $cex = CheckPoint::with(['workOrder', 'items.images', 'items.messages.images', 'items.messages.user', 'items.messages.acknowledgement'])->findOrFail($id);
+        $cex = CheckPoint::where('user_id', Auth::id())->with(['workOrder', 'items.images', 'items.messages.images', 'items.messages.user', 'items.messages.acknowledgement'])->findOrFail($id);
 
         // Pekan laporan tertutup: halaman ini tetap dibuka hanya bila ada
         // catatan evaluasi Direksi yang boleh ditindaklanjuti karyawan.
@@ -141,6 +178,17 @@ class CheckPointController extends Controller
             return $this->reportWindow->reject();
         }
 
+        $editDate = $request->input('tanggal', $cex->items->first()?->tanggal?->format('Y-m-d'));
+        $relatedItems = CheckPoint::where('user_id', Auth::id())
+            ->whereHas('items', fn ($items) => $items->whereDate('tanggal', $editDate))
+            ->with('items.images')
+            ->get()
+            ->flatMap->items
+            ->sortBy('urutan')
+            ->values();
+        if ($relatedItems->isNotEmpty()) {
+            $cex->setRelation('items', $relatedItems);
+        }
         $pcp = PekerjaanCp::where('user_id', $cex->user_id)->get();
 
         return view('check.edit', [
@@ -154,7 +202,7 @@ class CheckPointController extends Controller
 
     public function update(UpdateCheckPointRequest $request, $id)
     {
-        $cex2 = CheckPoint::with('items')->findOrFail($id);
+        $cex2 = CheckPoint::where('user_id', Auth::id())->with('items')->findOrFail($id);
 
         // Saat pekan ditutup hanya baris bercatatan evaluasi yang boleh diubah,
         // dan sync service menolak menambah/menghapus baris lain.
@@ -164,7 +212,7 @@ class CheckPointController extends Controller
             return $this->reportWindow->reject();
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
@@ -195,7 +243,7 @@ class CheckPointController extends Controller
         // Batas pekan mengikuti pengaturan admin (default Sabtu).
         $akhirMinggu = $this->reportWindow->deadlineForWeek();
         if ($cId) {
-            $cex = CheckPoint::findOrFail($cId);
+            $cex = CheckPoint::where('user_id', Auth::id())->findOrFail($cId);
         } else {
             $cex = CheckPoint::whereBetween('created_at', [$awalMinggu, $akhirMinggu])
                 ->where('user_id', Auth::user()->id)
@@ -210,11 +258,15 @@ class CheckPointController extends Controller
 
     public function uploadBukti(Request $request)
     {
+        if ($request->filled('cpId')) {
+            abort_unless(CheckPoint::where('id', $request->cpId)->where('user_id', Auth::id())->exists(), 403);
+        }
+
         if ($denied = $this->reportWindow->reject()) {
             return $denied;
         }
 
-        if ($error = $this->syncService->imageLimitError($request)) {
+        if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
             toastr()->error($error);
             return redirect()->back()->withInput();
         }
@@ -256,7 +308,7 @@ class CheckPointController extends Controller
     }
     public function uploadNilai(Request $request, $id)
     {
-        $cex2 = CheckPoint::findOrFail($id);
+        $cex2 = CheckPoint::where('user_id', Auth::id())->findOrFail($id);
 
         $status = $request->input('approve_status');
         if (is_array($status)) {

@@ -21,6 +21,12 @@ class User extends Authenticatable implements CanBeSigned
     use HasApiTokens, HasFactory, Notifiable, RequiresSignature, SoftDeletes;
     protected $connection = 'mysql';
     protected $table = 'users';
+
+    /**
+     * Akun non-personel yang tidak ikut dihitung pada statistik mitra.
+     */
+    public const PLACEHOLDER_ACCOUNT_NAMES = ['admin', 'user', 'MITRA SAC'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -117,7 +123,12 @@ class User extends Authenticatable implements CanBeSigned
 
     public function checkPoint()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(CheckPoint::class);
+    }
+
+    public function sharedCheckPoints()
+    {
+        return $this->belongsToMany(CheckPoint::class, 'check_point_participants')->withTimestamps();
     }
     public function rating()
     {

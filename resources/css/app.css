@@ -102,9 +102,8 @@
     /* nav-item: base styles in components layer so caller utilities override */
     .nav-item {
         @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
-               text-slate-600 transition-all duration-200 ease-in-out
-               hover:bg-slate-100 hover:text-slate-900
-               dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-white;
+               text-white transition-all duration-200 ease-in-out
+               hover:bg-slate-400 hover:text-white;
     }
 
     .nav-item--active {
@@ -115,14 +114,12 @@
     /* Yellow accent variant (Slip Gaji). Defined here, not in Blade, so
        Vite HMR picks it up reliably. */
     .nav-item--accent {
-        @apply hover:bg-yellow-500 hover:text-white
-               dark:hover:bg-yellow-500 dark:hover:text-white;
+        @apply hover:bg-yellow-500 hover:text-white;
     }
 
     .nav-item--accent.nav-item--active {
         @apply bg-yellow-500 text-white
-               hover:bg-yellow-500 hover:text-white
-               dark:hover:bg-yellow-500 dark:hover:text-white;
+               hover:bg-yellow-500 hover:text-white;
     }
 }
 
@@ -164,7 +161,9 @@ select.tomselected.ts-hidden-accessible,
     font-size: 0.875rem;
     line-height: 1.25rem;
     box-shadow: none;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .ts-wrapper.single .ts-control .item {
@@ -201,7 +200,9 @@ select.tomselected.ts-hidden-accessible,
     border-radius: 0.5rem;
     border: 1px solid rgb(203 213 225);
     background: #ffffff;
-    box-shadow: 0 18px 40px -24px rgb(15 23 42 / 0.55), 0 8px 18px -14px rgb(15 23 42 / 0.35);
+    box-shadow:
+        0 18px 40px -24px rgb(15 23 42 / 0.55),
+        0 8px 18px -14px rgb(15 23 42 / 0.35);
     margin-top: 0.35rem;
     overflow: hidden;
     z-index: 9999;
@@ -221,7 +222,9 @@ select.tomselected.ts-hidden-accessible,
     font-size: 0.875rem;
     line-height: 1.25rem;
     cursor: pointer;
-    transition: background-color 100ms ease, color 100ms ease;
+    transition:
+        background-color 100ms ease,
+        color 100ms ease;
 }
 
 .ts-dropdown .active {
@@ -243,4 +246,3 @@ select.tomselected.ts-hidden-accessible,
     background: rgb(186 230 253);
     color: rgb(7 89 133);
 }
-

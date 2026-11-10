@@ -192,6 +192,9 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::resource('/laporan', LaporanController::class)->only('index', 'create', 'store');
     Route::get('/mypoint/{id}', [PointController::class, 'myPoint'])->name('mypoint');
 
+    Route::post('checkpoint-upload/chunk', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'chunk'])->name('checkpoint-upload.chunk');
+    Route::post('checkpoint-upload/complete', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'complete'])->name('checkpoint-upload.complete');
+    Route::get('checkpoint-user/work-order-file/{image}', [CheckPointController::class, 'workOrderFile'])->name('checkpoint-user.work-order-file');
     Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
     Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
@@ -249,6 +252,7 @@ Route::middleware(['auth', 'direksi'])->group(function () {
     Route::get('/direksi-work-order/{user}/create', [DireksiWorkOrderController::class, 'create'])->name('direksi.work-order.create');
     Route::post('/direksi-work-order', [DireksiWorkOrderController::class, 'store'])->name('direksi.work-order.store');
     Route::get('/direksi-checkpoint/{user}/calendar', [DireksiCheckpointController::class, 'calendar'])->name('direksi.cp.calendar');
+    Route::post('/direksi-checkpoint/{user}/final-score', [DireksiCheckpointController::class, 'saveFinalScore'])->name('direksi.cp.final-score.store');
     Route::get('/direksi-checkpoint-history', [DireksiCheckpointController::class, 'history'])->name('direksi.cp.history');
     Route::get('/direksi-checkpoint-history/{id}', [DireksiCheckpointController::class, 'historyDetail'])->name('direksi.cp.history.show');
     Route::patch('/direksi-checkpoint-history/{id}/approve', [DireksiCheckpointController::class, 'updateApproval'])->name('direksi.cp.history.approve');
@@ -272,6 +276,10 @@ Route::middleware(['auth', 'mitra'])->group(function () {
     Route::get('/mitra-lembur', [MainController::class, 'indexLembur'])->name('mitra_lembur');
     Route::get('/mitra-absensi-izin', [IzinController::class, 'indexLead'])->name('mitra_izin');
     Route::get('/mitra-rekap', [MitraController::class, 'indexRekap'])->name('mitra_rekap');
+    Route::get('/mitra-rekap/berkas/{file}', [MitraController::class, 'previewRekap'])
+        ->where('file', '.+')
+        ->name('mitra_rekap_berkas');
+    Route::get('mitra-download-berkas-pdf/{url}', [MitraController::class, 'downloadRekap'])->name('download_laporan_bulanan');
     Route::get('/mitra-absensi', [MitraController::class, 'indexKehadiran'])->name('mitra_absensi');
     Route::get('/mitra-check-koordinat/{id}', [MitraController::class, "showLocation"])->name('mitra-lihatMap');
     Route::get('/mitra-jadwal', [JadwalUserController::class, 'index'])->name('mitra_jadwal');
@@ -611,6 +619,8 @@ Route::middleware(['auth', 'admin', 'apdt'])->group(function () {
     Route::get('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'index'])->name('admin.cp.settings');
     Route::post('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'update'])->name('admin.cp.settings.update');
     Route::delete('/admin-checkpoint-settings', [CheckpointSettingsController::class, 'reset'])->name('admin.cp.settings.reset');
+    Route::post('/admin-checkpoint-settings/recap', [CheckpointSettingsController::class, 'updateRecap'])->name('admin.cp.settings.recap.update');
+    Route::delete('/admin-checkpoint-settings/recap', [CheckpointSettingsController::class, 'resetRecap'])->name('admin.cp.settings.recap.reset');
     Route::patch('/admin-check-approve/{id}', [AdminController::class, 'approveCheck'])->name('admin.cp.approve');
     Route::patch('/admin-check-denied/{id}', [AdminController::class, 'deniedCheck'])->name('admin.cp.denied');
     Route::get('/admin-lihat-check/{id}', [AdminController::class, 'lihatCheck'])->name('admin.cp.show');

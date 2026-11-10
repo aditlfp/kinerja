@@ -45,6 +45,11 @@ class WorkOrder extends Model
             ?: 'Direksi';
     }
 
+    public function images()
+    {
+        return $this->hasMany(WorkOrderImage::class)->orderBy('sort_order');
+    }
+
     public function checkPoints()
     {
         return $this->hasMany(CheckPoint::class, 'work_order_id');

@@ -38,7 +38,7 @@ class CheckPointCalendarService
      */
     public function forMonth(int $userId, Carbon $start, Carbon $end, ?string $type = null): Collection
     {
-        $maps = $this->dateMaps($userId, $type);
+        $maps = $this->dateMaps($userId, $start, $end, $type);
 
         $calendar = collect();
 
@@ -89,7 +89,7 @@ class CheckPointCalendarService
      */
     public function forget(int $userId): void
     {
-        Cache::forget($this->cacheKey($userId));
+        Cache::forget($this->cacheKey($userId, now()->startOfMonth()));
     }
 
     /**
@@ -98,23 +98,21 @@ class CheckPointCalendarService
      *
      * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
-    private function dateMaps(int $userId, ?string $type): array
+    private function dateMaps(int $userId, Carbon $start, Carbon $end, ?string $type): array
     {
         if ($type !== null) {
-            return $this->queryDateMaps($userId, $type);
+            return $this->queryDateMaps($userId, $start, $end, $type);
         }
 
-        return Cache::remember(
-            $this->cacheKey($userId),
-            now()->addSeconds(self::CACHE_TTL_SECONDS),
-            fn () => $this->queryDateMaps($userId, null),
-        );
+        // Shared checkpoints can be added by another user, so a per-user cache
+        // can hide new participant records. Query the small calendar dataset fresh.
+        return $this->queryDateMaps($userId, $start, $end, null);
     }
 
     /**
      * @return array{records: Collection<string, int>, counts: Collection<string, array{accept: int, denied: int, process: int}>, notes: Collection<string, bool>}
      */
-    private function queryDateMaps(int $userId, ?string $type): array
+    private function queryDateMaps(int $userId, Carbon $start, Carbon $end, ?string $type): array
     {
         $records = collect();
         $counts = collect();
@@ -123,13 +121,25 @@ class CheckPointCalendarService
         // Select only the columns the calendar consumes; items are eager
         // loaded so this stays at two queries no matter how many batches exist.
         CheckPoint::query()
-            ->with('items:id,check_point_id,tanggal,approve_status,note')
-            ->where('user_id', $userId)
+            ->with(['items' => function ($query) use ($start, $end): void {
+                $query->select('id', 'check_point_id', 'tanggal', 'approve_status', 'note')
+                    ->whereBetween('tanggal', [$start->toDateString(), $end->toDateString()]);
+            }])
+            ->where(function ($query) use ($userId): void {
+                $query->where('user_id', $userId)
+                    ->orWhereHas('participants', fn ($participants) => $participants->whereKey($userId));
+            })
             ->when($type, fn ($query) => $query->where('type_check', $type))
+            // Shared batch remains the primary detail target for participants;
+            // personal work is stored separately and does not replace it.
+            ->orderBy('id')
             ->get()
-            ->each(function (CheckPoint $checkPoint) use ($records, $counts, $notes): void {
+            ->each(function (CheckPoint $checkPoint) use ($records, $counts, $notes, $userId): void {
                 if ($checkPoint->items->isEmpty()) {
-                    $records->put($checkPoint->created_at->toDateString(), $checkPoint->id);
+                    $date = $checkPoint->created_at->toDateString();
+                    if (! $records->has($date)) {
+                        $records->put($date, $checkPoint->id);
+                    }
 
                     return;
                 }
@@ -139,7 +149,9 @@ class CheckPointCalendarService
                 );
 
                 foreach ($byDate as $date => $dayItems) {
-                    $records->put($date, $checkPoint->id);
+                    if (! $records->has($date)) {
+                        $records->put($date, $checkPoint->id);
+                    }
 
                     // A day can span batches, so merge counts instead of overwriting.
                     $dayCounts = self::statusCounts($dayItems);

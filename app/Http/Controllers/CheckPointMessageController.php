@@ -260,6 +260,12 @@ class CheckPointMessageController extends Controller
         $note = $note === '' ? null : $note;
 
         $existing = $message->acknowledgement;
+        $pendingMessages = $item->messages()
+            ->where('sender_role', CheckPointMessage::ROLE_MANAGEMENT)
+            ->where('requires_confirmation', true)
+            ->whereNull('retracted_at')
+            ->whereDoesntHave('acknowledgement', fn (Builder $query) => $query->whereNotNull('confirmed_at'))
+            ->get();
 
         // A double tap on "Kirim Konfirmasi" must not answer the same note twice:
         // the first answer stands, and the client is handed it back unchanged.
@@ -269,7 +275,7 @@ class CheckPointMessageController extends Controller
 
         $readAt = $existing?->read_at ?? now();
 
-        [$acknowledgement, $confirmation] = DB::transaction(function () use ($item, $user, $message, $choices, $note, $readAt): array {
+        [$acknowledgement, $confirmation] = DB::transaction(function () use ($item, $user, $message, $pendingMessages, $choices, $note, $readAt): array {
             $confirmation = $item->messages()->create([
                 'user_id' => $user->id,
                 'sender_role' => CheckPointMessage::ROLE_EMPLOYEE,
@@ -277,19 +283,20 @@ class CheckPointMessageController extends Controller
                 'body' => $this->confirmationBody($choices, $note),
             ]);
 
-            $acknowledgement = CheckPointMessageAcknowledgement::updateOrCreate(
-                ['check_point_message_id' => $message->id],
-                [
-                    'confirmation_message_id' => $confirmation->id,
-                    'user_id' => $user->id,
-                    // Answering means it has been read, whether or not the read
-                    // ping won the race.
-                    'read_at' => $readAt,
-                    'confirmed_at' => now(),
-                    'choices' => $choices,
-                    'note' => $note,
-                ],
-            );
+            $acknowledgement = null;
+            foreach ($pendingMessages as $pendingMessage) {
+                $acknowledgement = CheckPointMessageAcknowledgement::updateOrCreate(
+                    ['check_point_message_id' => $pendingMessage->id],
+                    [
+                        'confirmation_message_id' => $confirmation->id,
+                        'user_id' => $user->id,
+                        'read_at' => $pendingMessage->id === $message->id ? $readAt : now(),
+                        'confirmed_at' => now(),
+                        'choices' => $choices,
+                        'note' => $note,
+                    ],
+                );
+            }
 
             return [$acknowledgement, $confirmation];
         });

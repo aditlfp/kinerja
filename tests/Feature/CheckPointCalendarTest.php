@@ -111,6 +111,22 @@ class CheckPointCalendarTest extends TestCase
         $this->assertSame($checkpoint->id, $day['recordId']);
     }
 
+    public function test_calendar_ignores_items_outside_requested_month(): void
+    {
+        $userId = $this->user()->id;
+        $checkpoint = CheckPoint::create(['user_id' => $userId, 'type_check' => 'harian']);
+        $checkpoint->items()->createMany([
+            ['tanggal' => '2026-09-30', 'approve_status' => 'accept'],
+            ['tanggal' => '2026-10-10', 'approve_status' => 'denied'],
+        ]);
+
+        $calendar = app(CheckPointCalendarService::class)
+            ->forMonth($userId, Carbon::parse('2026-10-01'), Carbon::parse('2026-10-31'));
+
+        $this->assertTrue($calendar->firstWhere(fn ($row) => $row['date']->toDateString() === '2026-10-10')['rejected']);
+        $this->assertFalse($calendar->firstWhere(fn ($row) => $row['date']->toDateString() === '2026-10-10')['accepted']);
+    }
+
     /** Calendar rows only exist for days that carry data. */
     public function test_days_without_data_are_not_flagged(): void
     {

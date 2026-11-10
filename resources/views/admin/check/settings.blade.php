@@ -175,5 +175,62 @@
                 @endpush
             @endif
         </section>
+
+        <section class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl sm:p-5">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">Pengaturan Rekap Persentase</h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    Tentukan hari rekap persentase dapat dilihat oleh Direksi. Default: Sabtu dan Minggu.
+                    Rekap bulan yang sudah selesai tetap dapat dilihat kapan saja.
+                </p>
+            </div>
+
+            @php
+                $oldRecapDays = old('visible_days', $recapVisibleDays);
+            @endphp
+
+            <form method="POST" action="{{ route('admin.cp.settings.recap.update') }}" class="mt-4 space-y-4">
+                @csrf
+                <div class="grid gap-2 sm:grid-cols-4">
+                    @foreach ($recapDays as $value => $label)
+                        <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                            <input type="checkbox" name="visible_days[]" value="{{ $value }}"
+                                @checked(in_array($value, array_map('intval', (array) $oldRecapDays), true))
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            {{ $label }}
+                        </label>
+                    @endforeach
+                </div>
+                @error('visible_days')
+                    <p class="text-xs text-red-600">{{ $message }}</p>
+                @enderror
+                @error('visible_days.*')
+                    <p class="text-xs text-red-600">{{ $message }}</p>
+                @enderror
+
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700">
+                        Simpan Hari Rekap
+                    </button>
+                </div>
+            </form>
+
+            @if ($recapSetting)
+                <div class="mt-5 space-y-1 border-t border-gray-100 pt-4 text-sm text-gray-600">
+                    <p>Hari aktif: <span class="font-semibold text-gray-800">{{ $recapSetting->daysLabel() }}</span></p>
+                    <p>Diubah oleh: <span class="font-semibold text-gray-800">{{ $recapSetting->updater->nama_lengkap ?? '-' }}</span></p>
+                    <p>Terakhir update: <span class="font-semibold text-gray-800">{{ $recapSetting->updated_at?->format('d M Y H:i') }}</span></p>
+                    <form method="POST" action="{{ route('admin.cp.settings.recap.reset') }}" class="pt-3">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="inline-flex h-10 items-center justify-center rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition hover:bg-red-100">
+                            Reset ke Default (Sabtu & Minggu)
+                        </button>
+                    </form>
+                </div>
+            @endif
+        </section>
     </div>
 </x-admin-layout>

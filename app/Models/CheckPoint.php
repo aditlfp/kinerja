@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class CheckPoint extends Model
 {
@@ -69,6 +70,11 @@ class CheckPoint extends Model
             ->whereNotNull('note')
             ->where('note', '!=', '')
             ->exists();
+    }
+
+    public function participants(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'check_point_participants')->withTimestamps();
     }
 
     public function divisi()
