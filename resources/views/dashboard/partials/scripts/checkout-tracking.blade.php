@@ -8,7 +8,7 @@
                     labelMap: $('#labelMap, #checkoutGpsStatus'),
                     tutor: $('#tutor'),
                     pulangBtn: $('#modalPulangBtn'),
-                    pulangBtnText: $('#modalPulangBtn span'),
+                    pulangBtnText: $('#modalPulangBtn .checkout-button-label'),
                     checkoutForm: $('#checkoutForm'),
                     checkoutSubmitBtn: $('#checkoutSubmitBtn'),
                     checkoutLat: $('#checkoutForm input[name="lat_user"]'),
@@ -184,7 +184,7 @@
                             accuracy,
                             timestamp: Date.now()
                         };
-                        updateButtonState(true, 'Pulang');
+                        updateButtonState(true, 'Waktunya Pulang');
                     } else {
                         // For other coops, check if user is within any location's radius
                         checkLocationRadius(latitude, longitude);
@@ -217,7 +217,7 @@
                         timestamp: Date.now()
                     } : null;
 
-                    updateButtonState(withinAnyRadius, withinAnyRadius ? 'Pulang' : 'Diluar Radius!');
+                    updateButtonState(withinAnyRadius, withinAnyRadius ? 'Waktunya Pulang' : 'Diluar Radius!');
                 }
 
                 function isWithinAnyRadius(userLat, userLng) {

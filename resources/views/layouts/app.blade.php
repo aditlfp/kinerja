@@ -48,7 +48,14 @@
 </head>
 
 <body class="font-sans antialiased bg-slate-400">
-    <div class="min-h-screen">
+    @php
+        $isCheckpointArea = request()->routeIs('checkpoint-user.*')
+            || request()->routeIs('direksi.cp.*')
+            || request()->routeIs('direksi.work-order.*')
+            || request()->routeIs('mcs.work-order.*')
+            || request()->routeIs('mcs.cp.*');
+    @endphp
+    <div class="min-h-screen {{ $isCheckpointArea ? '' : 'app-shell' }}">
         @if (request()->routeIs('checkpoint-user.*'))
             @include('check.partials.sidebar')
         @elseif (request()->routeIs('direksi.cp.*') || request()->routeIs('direksi.work-order.*') || request()->routeIs('mcs.work-order.*') || request()->routeIs('mcs.cp.*'))
@@ -67,7 +74,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*') || request()->routeIs('direksi.work-order.*') || request()->routeIs('mcs.work-order.*') || request()->routeIs('mcs.cp.*')) ? 'lg:pl-70 pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
+        <main class="{{ $isCheckpointArea ? 'lg:pl-70 pt-14 lg:pt-0 bg-[#f4f6f8] min-h-screen' : '' }}">
             <div class="{{ (request()->routeIs('checkpoint-user.*') || request()->routeIs('direksi.cp.*') || request()->routeIs('direksi.work-order.*') || request()->routeIs('mcs.work-order.*') || request()->routeIs('mcs.cp.*')) ? 'motion-safe:animate-[fadeSlide_.5s_cubic-bezier(.22,1,.36,1)]' : '' }}">
                 {{ $slot }}
             </div>

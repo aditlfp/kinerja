@@ -1,42 +1,26 @@
-<div id="notification-dropdown" class="w-full overflow-hidden rounded-lg border border-white/60 bg-white shadow-xs ring-1 ring-slate-900/5">
+<div id="notification-dropdown" class="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     {{-- Notification Content --}}
 
         {{-- Header --}}
-        <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-4 py-3">
+        <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-4 py-3">
             <div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
-                        <i class="ri-notification-3-line"></i>
-                    </span>
-                    <h3 class="text-sm font-bold text-slate-900">
-                        Notifications
-                    </h3>
-                </div>
-
-                @if ($unreadCount > 0)
-                    <p class="text-xs text-slate-500">
-                        {{ $unreadCount }} Notification Belum Di Baca
-                    </p>
-                @else
-                    <p class="text-xs text-slate-500">
-                        kamu sudah mengikuti semua perkembangan terbaru.
-                    </p>
-                @endif
+                <h3 class="text-sm font-bold text-slate-900">Notifikasi terbaru</h3>
+                <p class="mt-0.5 text-xs text-slate-500">
+                    @if ($unreadCount > 0)
+                        {{ $unreadCount }} belum dibaca
+                    @else
+                        Semua informasi sudah dibaca
+                    @endif
+                </p>
             </div>
 
             @if ($unreadCount > 0)
-                <form
-                    method="POST"
-                    action="{{ route('notifications.read-all') }}"
-                >
+                <form method="POST" action="{{ route('notifications.read-all') }}">
                     @csrf
-
-                    <button
-                        type="submit"
-                        class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-50"
-                    >
+                    <button type="submit"
+                        class="inline-flex items-center gap-1 rounded-lg bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-100">
                         <i class="ri-check-double-line"></i>
-                        Tandai Semua Di Baca
+                        Tandai dibaca
                     </button>
                 </form>
             @endif
@@ -47,7 +31,7 @@
 
             @forelse ($notifications as $notification)
 
-                <div class="notification-swipe relative isolate overflow-hidden border-b border-slate-200" data-notification-swipe>
+                <div class="notification-swipe relative isolate overflow-hidden border-b border-slate-100 last:border-b-0" data-notification-swipe>
                     <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="notification-delete-form pointer-events-none absolute inset-y-0 right-0 z-0 flex w-14 items-center justify-center bg-rose-500 opacity-0 transition-opacity duration-200">
                         @csrf @method('DELETE')
                         <button type="submit" class="flex h-full w-full items-center justify-center text-white" aria-label="Hapus notifikasi">
@@ -56,7 +40,7 @@
                     </form>
                     <div class="notification-swipe-content relative z-10 transition-transform duration-200">
                         <a href="{{ route('notifications.open', $notification->id) }}"
-                            class="group flex gap-3 px-4 py-3 transition hover:bg-slate-50 {{ is_null($notification->read_at) ? 'bg-sky-50/70' : 'bg-white' }}">
+                            class="group flex gap-3 px-4 py-3 transition hover:bg-slate-50 {{ is_null($notification->read_at) ? 'bg-sky-50/60' : 'bg-white' }}">
                             <div class="flex-shrink-0">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-lg {{ is_null($notification->read_at) ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-500' }}">
                                     <i class="{{ $notification->data['icon'] ?? 'ri-notification-3-line' }} text-lg"></i>
@@ -115,11 +99,11 @@
                     </div>
 
                     <p class="font-semibold text-slate-800">
-                        Tidak Memiliki Notifications
+                        Belum ada notifikasi
                     </p>
 
                     <p class="mt-1 text-xs text-slate-500">
-                        Kami akan memberi tahu Anda jika ada sesuatu yang terjadi.
+                        Informasi terbaru akan tampil di sini.
                     </p>
                 </div>
 
@@ -129,14 +113,11 @@
 
         {{-- Footer --}}
         @if ($notifications->count())
-            <div class="border-t border-slate-200 bg-slate-50/80 p-2">
-                <a
-                    {{-- href="{{ route('notifications.index') }}" --}}
-                    class="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-white hover:text-sky-700"
-                >
-                    Lihat semua notifications
-                    <i class="ri-arrow-right-line"></i>
-                </a>
+            <div class="border-t border-slate-100 bg-slate-50/70 p-2">
+                <span class="flex w-full items-center justify-center gap-2 px-3 py-1 text-xs font-medium text-slate-500">
+                    Geser notifikasi ke kiri untuk menghapus
+                    <i class="ri-arrow-left-line"></i>
+                </span>
             </div>
         @endif
 </div>

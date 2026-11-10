@@ -11,7 +11,7 @@
             jam: $('#jam'),
             jam2: $('#jam2'),
             endTime: $('#endTime').attr('endTimer'),
-            btnPulang: $('#modalPulangBtn'),
+            btnPulang: $('#checkoutBar'),
             labelWaktu: $('#labelWaktu'),
             statusContainer: $('#statusAbsensiContainer'),
             statusText: $('#statusAbsensiText')
@@ -145,7 +145,7 @@
         function showCheckoutBtn(show) {
             if (show) {
                 // TAMPILKAN TOMBOL PULANG & PESAN MERAH
-                elements.btnPulang.removeClass('hidden').addClass('flex');
+                elements.btnPulang.removeClass('hidden');
 
                 if (elements.statusContainer.length > 0) {
                     elements.statusContainer
@@ -157,7 +157,7 @@
                 }
             } else {
                 // SEMBUNYIKAN TOMBOL & TAMPILKAN PESAN HIJAU
-                elements.btnPulang.addClass('hidden').removeClass('flex');
+                elements.btnPulang.addClass('hidden');
 
                 if (elements.statusContainer.length > 0) {
                     elements.statusContainer

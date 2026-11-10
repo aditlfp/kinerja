@@ -32,560 +32,7 @@
 </head>
 
 <body class="bg-slate-50 font-sans antialiased text-slate-800 max-w-full">
-    @php
-        $user = Auth::user();
-        $jabatan = $user?->divisi?->jabatan?->code_jabatan;
-        $directJabatan = $user?->jabatan?->code_jabatan;
-        $roleId = $user?->role_id;
-        $kerjasamaId = $user?->kerjasama_id;
-    @endphp
 
-    @php
-        /*
-        |--------------------------------------------------------------------------
-        | USER CONTEXT
-        |--------------------------------------------------------------------------
-        */
-        $userId = $user->id;
-        $jabatan = $user->jabatan;
-        $jabatanId = $user->jabatan_id;
-        $roleId = $roleId;
-        $kerjasamaId = $kerjasamaId;
-        $devisiId = $user->devisi_id;
-        $directJabatan = $directJabatan;
-
-        /*
-        |--------------------------------------------------------------------------
-        | ACCESS / ROLE
-        |--------------------------------------------------------------------------
-        */
-        $isMitra = $jabatan->code_jabatan == 'MITRA';
-        $isDireksi = $jabatanId == 24;
-
-        $isLeader = $jabatan->code_jabatan == 'LEADER';
-        $isCoCs = $jabatan->code_jabatan == 'CO-CS';
-        $isCoScr = $jabatan->code_jabatan == 'CO-SCR';
-        $isSPVW = $jabatan->code_jabatan == 'SPV-W';
-
-        $isManajemen = $kerjasamaId == 1;
-        $isAdmin = $roleId == 2;
-
-        $isSPV = $user->jabatan_id == 4 || $user->jabatan_id == 14;
-
-        /*
-        |--------------------------------------------------------------------------
-        | ABSENSI
-        |--------------------------------------------------------------------------
-        */
-        $hariIni = now()->dayOfWeekIso;
-
-        $isWeekend = in_array($hariIni, [6, 7]);
-
-        $tampilkanAbsensi = !$isWeekend || !$isManajemen || $devisiId != 26;
-
-        /*
-        |--------------------------------------------------------------------------
-        | ABSENSI ROUTE
-        |--------------------------------------------------------------------------
-        */
-        $absensiRoute = match ($jabatan->code_jabatan) {
-            'CO-CS' => 'absensi-karyawan-co-cs.index',
-            'CO-SCR' => 'absensi-karyawan-co-scr.index',
-            default => null,
-        };
-
-        /*
-        |--------------------------------------------------------------------------
-        | REKAP
-        |--------------------------------------------------------------------------
-        */
-        $jabatanRekap = ['CO-CS', 'CO-SCR', 'SPV-W'];
-
-        $bisaLihatRekap = in_array($jabatan->code_jabatan, $jabatanRekap) && $userId != 7;
-
-        $rekapRoute = $isSPVW ? 'spvw.rekap.index' : 'index.rekap.data.leader';
-
-        /*
-        |--------------------------------------------------------------------------
-        | KONTRAK
-        |--------------------------------------------------------------------------
-        */
-        $kontrakSelesai = $kontrak?->tgl_selesai_kontrak
-            ? \Carbon\Carbon::parse($kontrak->tgl_selesai_kontrak)->isPast()
-            : false;
-
-        $kontrakBerjalan = $kontrak && ($kontrak->isPending() || $kontrak->isActive() || $kontrak->isProses());
-
-        $bisaAjukanKontrak = !$kontrak || $kontrakSelesai || !$kontrakBerjalan;
-
-        /*
-        |--------------------------------------------------------------------------
-        | MENU KHUSUS
-        |--------------------------------------------------------------------------
-        */
-        $bisaLihatMenuManajemen = in_array($jabatanId, [4, 14]);
-
-        $bisaLihatMenuSlip = in_array($userId, [7, 10, 5]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | MENU ROLE
-        |--------------------------------------------------------------------------
-        */
-        $routes = [
-            'MITRA' => [
-                'karyawan' => 'mitra_user',
-                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'mitra_jadwal',
-                'absensi' => 'mitra_absensi',
-                'izin' => 'mitra_izin',
-                'lembur' => 'mitra_lembur',
-                'laporan' => 'mitra_laporan',
-                'rating' => 'mitra-rating.index',
-                'laporan bulanan' => 'mitra-laporan-bulanan.index',
-            ],
-
-            'LEADER' => [
-                'karyawan' => 'lead_user',
-                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'leader-jadwal.index',
-                'absensi' => 'lead_absensi',
-                'izin' => 'lead_izin',
-                'lembur' => 'lead_lembur',
-                'laporan' => 'lead_laporan',
-                'rating' => 'leader-rating.index',
-            ],
-
-            'DIREKSI' => [
-                'karyawan' => 'direksi_user',
-                'jadwal' => $isAdmin ? 'admin.jadwal.index' : 'direksi_jadwal',
-                'absensi' => 'direksi_absensi',
-                'izin' => 'direksi_izin',
-                'lembur' => 'direksi_lembur',
-                'laporan' => 'direksi_laporan',
-                'rating' => 'direksi-rating.index',
-                'kinerja' => 'direksi.cp.index',
-                'kontrak' => 'direksi-cekKontrak',
-            ],
-        ];
-
-        /*
-        |--------------------------------------------------------------------------
-        | ICON MENU
-        |--------------------------------------------------------------------------
-        */
-        $icons = [
-            'karyawan' => 'ri-pass-pending-line',
-            'jadwal' => 'ri-calendar-check-line',
-            'absensi' => 'ri-todo-line',
-            'izin' => 'ri-shield-user-line',
-            'lembur' => 'ri-time-line',
-            'laporan' => 'ri-image-add-line',
-            'laporan bulanan' => 'ri-image-add-line',
-            'rating' => 'ri-sparkling-line',
-            'kinerja' => 'ri-sparkling-line',
-            'kontrak' => 'ri-pass-pending-line',
-        ];
-    @endphp
-    @php
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD MENU UTAMA
-        |--------------------------------------------------------------------------
-        */
-
-        $dashboardMenus = [
-            // base menu
-            [
-                'key' => 'kehadiran',
-                'label' => 'Kehadiran',
-                'route' => 'absensi.index',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-            ],
-
-            [
-                'key' => 'data-rekap',
-                'label' => 'Data Rekap',
-                'route' => $rekapRoute,
-                'icon' => 'ri-database-line',
-                'color' => 'indigo',
-                'show' => $bisaLihatRekap,
-            ],
-
-            [
-                'key' => 'izin',
-                'label' => 'Izin',
-                'route' => 'izin.create',
-                'icon' => 'ri-file-line',
-                'color' => 'blue',
-            ],
-
-            [
-                'key' => 'kinerja',
-                'label' => 'Kinerja',
-                'route' => 'checkpoint-user.index',
-                'icon' => 'ri-bar-chart-line',
-                'color' => 'amber',
-                'show' => !$isDireksi || $isManajemen, // Hide for Direksi
-            ],
-
-            [
-                'key' => 'rating',
-                'label' => 'Rating',
-                'route' => 'ratingSaya',
-                'params' => [$user->id],
-                'icon' => 'ri-star-line',
-                'color' => 'indigo',
-                'show' => !$isDireksi, // Hide for Direksi
-            ],
-
-            [
-                'key' => 'laporan',
-                'label' => 'Laporan',
-                'route' => 'laporan.index',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => !$isDireksi, // Hide for Direksi
-            ],
-
-            [
-                'key' => 'kontrak',
-                'label' => 'Pengajuan Kontrak',
-                'route' => 'form-kontrak-request',
-                'icon' => 'ri-file-add-line',
-                'color' => 'green',
-                'show' => $bisaAjukanKontrak && !$isDireksi, // Show if user can submit contract or is not Direksi
-            ],
-
-            // addons
-            [
-                'key' => 'alquran',
-                'label' => "Al Qur'an",
-                'url' => 'https://baca-alquran.sac-po.com',
-                'icon' => 'ri-book-line',
-                'color' => 'amber',
-            ],
-
-            [
-                'key' => 'sppd',
-                'label' => 'SPPD',
-                'url' => 'https://sppd-online.sac-po.com/login',
-                'icon' => 'ri-road-map-line',
-                'color' => 'sky',
-                'show' => $isManajemen,
-            ],
-        ];
-
-        // menu tambahan sesuai role
-        $dashboardAddMenus = [
-            // direksi menu
-            [
-                'key' => 'karyawan-direksi',
-                'label' => 'Karyawan',
-                'route' => 'direksi_user',
-                'icon' => 'ri-team-line',
-                'color' => 'blue',
-                'show' => $isDireksi,
-            ],
-
-            [
-                'key' => 'absensi-direksi',
-                'label' => 'Absensi',
-                'route' => 'direksi_absensi',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isDireksi,
-            ],
-
-            [
-                'key' => 'izin-direksi',
-                'label' => 'Izin',
-                'route' => 'direksi_izin',
-                'icon' => 'ri-shield-user-line',
-                'color' => 'blue',
-                'show' => $isDireksi,
-            ],
-
-            [
-                'key' => 'kinerja-direksi',
-                'label' => 'Kinerja',
-                'route' => 'direksi.cp.index',
-                'icon' => 'ri-bar-chart-line',
-                'color' => 'amber',
-                'show' => $isDireksi,
-            ],
-
-            [
-                'key' => 'kontrak-direksi',
-                'label' => 'Kontrak',
-                'route' => 'direksi-cekKontrak',
-                'icon' => 'ri-file-add-line',
-                'color' => 'green',
-                'show' => $isDireksi,
-            ],
-
-            // SPV menu
-            [
-                'key' => 'data-rekap',
-                'label' => 'Data Rekap',
-                'route' => 'manajemen_rekap',
-                'icon' => 'ri-database-line',
-                'color' => 'purple',
-                'show' => $isSPV,
-            ],
-
-            [
-                'key' => 'slip-gaji-karyawan',
-                'label' => 'Slip Gaji Karyawan',
-                'route' => 'slip-karyawan',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => $isSPV,
-            ],
-
-            [
-                'key' => 'absensi-karyawan',
-                'label' => 'Absensi Karyawan',
-                'route' => 'manajemen_absensi',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isSPV,
-            ],
-
-            [
-                'key' => 'laporan-karyawan',
-                'label' => 'Laporan Karyawan',
-                'route' => 'manajemen_laporan',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => $isSPV,
-            ],
-
-            [
-                'key' => 'data-karyawan',
-                'label' => 'Data Karyawan',
-                'route' => 'manajemen_user',
-                'icon' => 'ri-user-line',
-                'color' => 'green',
-                'show' => $isSPV,
-            ],
-
-            // menu SPV-W
-            [
-                'key' => 'data-karyawan-spvw',
-                'label' => 'Data Karyawan',
-                'route' => 'spvw_user',
-                'icon' => 'ri-user-line',
-                'color' => 'green',
-                'show' => $isSPVW,
-            ],
-
-            [
-                'key' => 'data-absensi-spvw',
-                'label' => 'Data Absensi',
-                'route' => 'spvw_absensi',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isSPVW,
-            ],
-
-            [
-                'key' => 'data-izin-spvw',
-                'label' => 'Data Izin',
-                'route' => 'spvw_izin',
-                'icon' => 'ri-file-line',
-                'color' => 'blue',
-                'show' => $isSPVW,
-            ],
-
-            [
-                'key' => 'data-rating-spvw',
-                'label' => 'Data Rating',
-                'route' => 'spvw-rating.index',
-                'icon' => 'ri-star-line',
-                'color' => 'yellow',
-                'show' => $isSPVW,
-            ],
-
-            [
-                'key' => 'data-checklist-spvw',
-                'label' => 'Data Checklist',
-                'route' => 'spvw-checklist.index',
-                'icon' => 'ri-list-check',
-                'color' => 'indigo',
-                'show' => $isSPVW,
-            ],
-
-            [
-                'key' => 'data-slip-spvw',
-                'label' => 'Slip Gaji Karyawan',
-                'route' => 'spvw-slip',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => $isSPVW,
-            ],
-
-            // menu co-cs
-            [
-                'key' => 'data-karyawan-leader',
-                'label' => 'Data Karyawan',
-                'route' => 'lead_user',
-                'icon' => 'ri-user-line',
-                'color' => 'green',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-absensi-leader',
-                'label' => 'Data Absensi',
-                'route' => 'lead_absensi',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-izin-leader',
-                'label' => 'Data Izin',
-                'route' => 'lead_izin',
-                'icon' => 'ri-file-line',
-                'color' => 'blue',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-absen-sholat-leader',
-                'label' => 'Data Sholat',
-                'route' => 'leader-absenSholat',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-rating-leader',
-                'label' => 'Data Rating',
-                'route' => 'leader-rating.index',
-                'icon' => 'ri-star-line',
-                'color' => 'yellow',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-checklist-leader',
-                'label' => 'Data Checklist',
-                'route' => 'leader-checklist.index',
-                'icon' => 'ri-list-check',
-                'color' => 'indigo',
-                'show' => $isCoCs,
-            ],
-
-            [
-                'key' => 'data-slip-leader',
-                'label' => 'Slip Gaji Karyawan',
-                'route' => 'leader-slip',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => $isCoCs,
-            ],
-
-            // menu co-scr
-            [
-                'key' => 'data-karyawan-leader',
-                'label' => 'Data Karyawan',
-                'route' => 'danru_user',
-                'icon' => 'ri-user-line',
-                'color' => 'green',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-absensi-leader',
-                'label' => 'Data Absensi',
-                'route' => 'danru_absensi',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-izin-leader',
-                'label' => 'Data Izin',
-                'route' => 'danru_izin',
-                'icon' => 'ri-file-line',
-                'color' => 'blue',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-absen-sholat-leader',
-                'label' => 'Data Absen Sholat',
-                'route' => 'leader-absenSholat',
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-rating-leader',
-                'label' => 'Data Rating',
-                'route' => 'danru-rating.index',
-                'icon' => 'ri-star-line',
-                'color' => 'yellow',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-checklist-leader',
-                'label' => 'Data Checklist',
-                'route' => 'leader-checklist.index',
-                'icon' => 'ri-list-check',
-                'color' => 'indigo',
-                'show' => $isCoScr,
-            ],
-
-            [
-                'key' => 'data-slip-leader',
-                'label' => 'Slip Gaji Karyawan',
-                'route' => 'danru-slip',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-                'show' => $isCoScr,
-            ],
-        ];
-
-        // history menu
-        $historyMenus = [
-            [
-                'label' => 'Kehadiran',
-                'url' => url('historyAbsensi'),
-                'icon' => 'ri-calendar-line',
-                'color' => 'emerald',
-            ],
-            [
-                'label' => 'Izin',
-                'url' => route('izin.index'),
-                'icon' => 'ri-file-line',
-                'color' => 'blue',
-            ],
-            [
-                'label' => 'Kinerja',
-                'url' => route('checkpoint-user.history'),
-                'icon' => 'ri-bar-chart-line',
-                'color' => 'amber',
-            ],
-            [
-                'label' => 'Laporan',
-                'url' => 'https://laporan-sac.sac-po.com',
-                'icon' => 'ri-file-text-line',
-                'color' => 'sky',
-            ],
-        ];
-
-        // Hanya tampilkan menu yang memenuhi kondisi
-        $dashboardMenus = collect($dashboardMenus)->filter(fn($menu) => $menu['show'] ?? true)->values();
-
-        $dashboardAddMenus = collect($dashboardAddMenus)->filter(fn($menu) => $menu['show'] ?? true)->values();
-    @endphp
     <div class="min-h-screen pb-24 relative">
         {{-- @include('../layouts/navbar') --}}
 
@@ -632,7 +79,7 @@
                 <span
                     class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
                     <i class="ri-time-line text-lg"></i>
-                    <span>Kamu sedang dalam shift</span>
+                    <span>Kamu sedang di dalam shift</span>
                 </span>
             @else
                 <span
@@ -871,11 +318,34 @@
             <div id="dashboardPanelTrack" class="flex w-[300%] transition-transform duration-300 ease-in-out">
                 {{-- menu informasi --}}
                 <section class="w-1/3 shrink-0">
-                    @if (auth()->user()->kerjasama_id == 1)
-                        <div class="px-6 py-2">
-                            <x-notification-dropdown />
+                    <div class="space-y-3 px-6 py-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+                                    <i class="ri-notification-3-line text-lg"></i>
+                                </span>
+                                <div>
+                                    <h2 class="font-black text-lg leading-tight text-slate-900">Informasi</h2>
+                                    <p class="text-xs text-slate-500">Pembaruan terbaru untukmu</p>
+                                </div>
+                            </div>
+                            <span class="rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-sky-700">
+                                Update
+                            </span>
                         </div>
-                    @endif
+
+                        @if (auth()->user()->kerjasama_id == 1)
+                            <x-notification-dropdown />
+                        @else
+                            <div class="flex flex-col items-center rounded-xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center shadow-xs">
+                                <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                                    <i class="ri-notification-off-line text-2xl"></i>
+                                </div>
+                                <p class="font-semibold text-slate-700">Belum ada informasi</p>
+                                <p class="mt-1 text-xs text-slate-500">Informasi terbaru akan tampil di sini.</p>
+                            </div>
+                        @endif
+                    </div>
                 </section>
 
                 {{-- menu utama --}}
@@ -886,17 +356,16 @@
                                 <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                                 <span class="font-black text-lg">Menu Utama</span>
                             </div>
-                            <div class="grid grid-cols-4 gap-1 items-start text-center">
+                            <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
                                 @foreach ($dashboardMenus as $menu)
                                     <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
                                         class="flex flex-col items-center justify-center
                                         gap-1 rounded-lg px-3 py-2">
 
                                         <i
-                                            class="{{ $menu['icon'] }} text-3xl font-bold
+                                            class="{{ $menu['icon'] }} flex h-14 w-14 items-center justify-center text-2xl font-bold
                                             text-{{ $menu['color'] }}-700
-                                            bg-{{ $menu['color'] }}-200
-                                            py-3 px-4 rounded-2xl"></i>
+                                            bg-{{ $menu['color'] }}-200 rounded-2xl"></i>
 
                                         <span class="font-extrabold text-sm">
                                             {{ $menu['label'] }}
@@ -915,7 +384,7 @@
                                 <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                                 <span class="font-black text-lg">Menu Tambahan</span>
                             </div>
-                            <div class="grid grid-cols-4 gap-1 items-start text-center">
+                            <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
                                 @foreach ($dashboardAddMenus as $menu)
                                     <a href="{{ isset($menu['url']) ? $menu['url'] : route($menu['route'], $menu['params'] ?? []) }}"
                                         class="flex flex-col items-center justify-center
@@ -923,10 +392,9 @@
 
                                         <i
                                             class="{{ $menu['icon'] }}
-                                            text-3xl font-bold
+                                            flex h-14 w-14 items-center justify-center text-2xl font-bold
                                             text-{{ $menu['color'] }}-700
-                                            bg-{{ $menu['color'] }}-300
-                                            py-3 px-4 rounded-2xl"></i>
+                                            bg-{{ $menu['color'] }}-300 rounded-2xl"></i>
 
                                         <span class="font-extrabold text-sm">
                                             {{ $menu['label'] }}
@@ -946,7 +414,7 @@
                         <span class="w-1 h-5 rounded-full bg-sky-500"></span>
                         <span class="font-black text-lg">Menu Riwayat</span>
                     </div>
-                    <div class="grid grid-cols-4 gap-1 items-start text-center">
+                    <div class="grid grid-cols-3 gap-3 items-start text-center sm:grid-cols-4">
                         @foreach ($historyMenus as $menu)
                             <a href="{{ $menu['url'] }}"
                                 class="flex flex-col items-center justify-center
@@ -954,10 +422,9 @@
 
                                 <i
                                     class="{{ $menu['icon'] }}
-                                        text-3xl font-bold
+                                        flex h-14 w-14 items-center justify-center text-2xl font-bold
                                         text-{{ $menu['color'] }}-700
-                                        bg-{{ $menu['color'] }}-300
-                                        py-3 px-4 rounded-2xl"></i>
+                                        bg-{{ $menu['color'] }}-300 rounded-2xl"></i>
 
                                 <span class="font-extrabold text-sm">
                                     {{ $menu['label'] }}
@@ -973,7 +440,7 @@
 
         {{-- Tombol Pulang --}}
         @if ($absenP && $absenP?->absensi_type_pulang == null)
-            <div
+            <div id="checkoutBar"
                 class="fixed inset-x-0 bottom-0 z-30 hidden
                 flex justify-center
                 px-4 pb-4
@@ -1006,7 +473,7 @@
                             <i class="ri-run-line text-xl"></i>
                         </span>
 
-                        <span class="text-sm font-extrabold">
+                        <span class="checkout-button-label text-sm font-extrabold">
                             Waktunya Pulang
                         </span>
 

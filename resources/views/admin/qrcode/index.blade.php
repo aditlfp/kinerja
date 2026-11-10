@@ -1,8 +1,11 @@
 <x-admin-layout :fullWidth="true">
-		<div class="py-10 px-5">
-			<h1 class="text-2xl font-normal leading-8 tracking-tight text-(--md-sys-color-on-surface)">Data QR Code</h1>
+		<div class="space-y-6 p-4 sm:p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">Data QR Code</h1>
+                <a href="{{ url('admin/qrcode/create') }}" class="btn btn-sm bg-indigo-600 text-white hover:bg-indigo-700">Tambah QR</a>
+            </div>
 			<div class="flex justify-end ">
-				<div class="input flex items-center w-fit input-bordered my-10">
+				<div class="input flex w-full max-w-sm items-center border-slate-300 bg-white sm:w-fit">
 					<i class="ri-search-2-line"></i>
 					<input type="search" id="searchInput" class="border-none rounded-sm ml-1" placeholder="Search..." required>
 				</div>
@@ -11,9 +14,8 @@
 			<!--Form Export-->
 			<form action="{{ route('qrcode.export')}}" id="exportForm" method="POST" class="flex justify-between items-center">
 			    @csrf
-				<div class="flex justify-end gap-2 mx-16 py-3">
-					<a href="{{ route('admin.index') }}" class="btn btn-error">Kembali</a>
-					<a href="{{ url('admin/qrcode/create') }}" class="btn btn-primary">+ NEW QR</a>
+				<div class="flex justify-end gap-2 py-3">
+                    <a href="{{ route('admin.index') }}" class="btn btn-sm border-slate-300 text-slate-700">Kembali</a>
 				</div>
 				<div class="flex items-end justify-end mx-10 mb-2 gap-x-3">
     			    <div class="flex flex-col gap-2">
@@ -45,16 +47,16 @@
 				<table class="table table-fixed table-zebra w-full shadow-md bg-slate-50" id="searchTable">
 					<thead>
 						<tr>
-						    <th class="bg-slate-300 rounded-tl-2xl" style="width: 136px;">
+						    <th class="bg-slate-100 text-slate-700 rounded-tl-2xl" style="width: 136px;">
 						        <div class="flex items-center flex-row gap-x-3">
 						            <input id="selectAllCheckbox" type="checkbox" class="checkbox checkbox-bordered"/><span>Pilih Semua</span>
 						        </div>
 						    </th>
-							<th class="bg-slate-300" style="width: 20px;">#</th>
-							<th class="bg-slate-300 text-center">QR Code</th>
-							<th class="bg-slate-300">Mitra</th>
-							<th class="bg-slate-300">Ruangan</th>
-							<th class="bg-slate-300 rounded-tr-2xl" style="width: 108px;">Action</th>
+							<th class="bg-slate-100 text-slate-700" style="width: 20px;">#</th>
+							<th class="bg-slate-100 text-slate-700 text-center">QR Code</th>
+							<th class="bg-slate-100 text-slate-700">Mitra</th>
+							<th class="bg-slate-100 text-slate-700">Ruangan</th>
+							<th class="bg-slate-100 text-slate-700 rounded-tr-2xl" style="width: 108px;">Action</th>
 						</tr>
 					</thead>
 					<tbody class=" text-sm my-10">
