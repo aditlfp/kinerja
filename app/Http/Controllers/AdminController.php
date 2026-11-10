@@ -9,7 +9,6 @@ use App\Models\Client;
 use App\Models\Divisi;
 use App\Models\Kerjasama;
 use App\Models\Point;
-use App\Models\Shift;
 use App\Models\User;
 use App\Models\Izin;
 use App\Models\SlipGaji;
@@ -21,11 +20,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+
 
 
 class AdminController extends Controller
