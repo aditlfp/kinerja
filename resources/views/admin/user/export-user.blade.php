@@ -57,7 +57,7 @@
                         <th>#</th>
                         <th>User ID</th>
                         <th>Nama Lengkap</th>
-                        <th>Nama</th>
+                        <th>User Name</th>
                         <th>Password</th>
                     </tr>
                 </thead>
