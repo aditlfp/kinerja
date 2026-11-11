@@ -11,6 +11,23 @@ class StoreAbsensiRequest extends FormRequest
         return $this->user() !== null;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $defaults = [];
+
+        if (! $this->filled('user_id')) {
+            $defaults['user_id'] = $this->user()?->id;
+        }
+
+        if (! $this->filled('kerjasama_id')) {
+            $defaults['kerjasama_id'] = $this->user()?->kerjasama_id;
+        }
+
+        if ($defaults !== []) {
+            $this->merge($defaults);
+        }
+    }
+
     public function rules(): array
     {
         $requiresImage = $this->user()->kerjasama_id != 1

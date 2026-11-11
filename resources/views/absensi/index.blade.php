@@ -60,8 +60,8 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('absensi.store') }}" method="POST" enctype="multipart/form-data"
-                        id="form-absen">
+                    <form action="{{ route(str_replace('.index', '.store', Route::currentRouteName())) }}" method="POST"
+                        enctype="multipart/form-data" id="form-absen">
                         @method('POST')
                         @csrf
                         @if (Auth::user()->kerjasama_id != 1 || !in_array(Auth::user()->devisi_id, [2, 3, 7, 8, 12, 14, 18]))
