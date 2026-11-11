@@ -74,7 +74,7 @@ class AbsensiController extends Controller
             ->get();
 
         // Shift direksi (di-cache karena konstan)
-        $dirShift = Cache::rememberForever('shift.direksi', fn () => Shift::firstWhere('shift_name', 'DIREKSI'));
+        $dirShift = Cache::rememberForever('shift.direksi', fn() => Shift::firstWhere('shift_name', 'DIREKSI'));
 
         // Users belum absen hari ini
         $absenUserIdsToday = Absensi::where('tanggal_absen', $today)
@@ -139,7 +139,7 @@ class AbsensiController extends Controller
             ->whereHas('client')
             ->get(['id', 'client_id', 'latitude', 'longtitude', 'radius']);
 
-        $penempatan = Cache::remember('absensi.penempatan', 300, fn () => Kerjasama::query()
+        $penempatan = Cache::remember('absensi.penempatan', 300, fn() => Kerjasama::query()
             ->with('client:id,name')
             ->get(['id', 'client_id']));
 
@@ -270,16 +270,17 @@ class AbsensiController extends Controller
         $longUser = (float) $request->long_user;
 
         $authUser = Auth::user();
-        $selectedUser = User::query()->with('kerjasama')->find($request->user_id);
+        $selectedUser = User::query()->with('kerjasama')->find($request->user_id ?: $authUser->id);
         $isLeaderAttendanceRoute = in_array($request->route()->getName(), [
             'absensi-karyawan-co-cs.store',
             'absensi-karyawan-co-scr.store',
         ], true);
 
-        if (!$selectedUser
+        if (
+            !$selectedUser
             || ($selectedUser->id !== $authUser->id && !$isLeaderAttendanceRoute)
-            || $selectedUser->kerjasama_id !== $authUser->kerjasama_id
-            || (int) $request->kerjasama_id !== (int) $selectedUser->kerjasama_id) {
+            || (int) $selectedUser->kerjasama_id !== (int) $authUser->kerjasama_id
+        ) {
             toastr()->error('Data absensi tidak sesuai kewenangan.');
 
             return redirect()->back()->withInput();
