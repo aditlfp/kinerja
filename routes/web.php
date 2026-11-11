@@ -150,7 +150,10 @@ use Illuminate\Http\Request;
 
 Route::delete('/notifications/{notification}', function (Request $request, string $notification) {
     $request->user()->notifications()->whereKey($notification)->firstOrFail()->delete();
-    return back();
+
+    return $request->expectsJson()
+        ? response()->json(['ok' => true])
+        : back();
 })->middleware('auth')->name('notifications.delete');
 
 Route::post('/notifications/read-all', function (Request $request) {
@@ -158,8 +161,10 @@ Route::post('/notifications/read-all', function (Request $request) {
         ->unreadNotifications
         ->markAsRead();
 
-    return back();
-})->name('notifications.read-all');
+    return $request->expectsJson()
+        ? response()->json(['ok' => true])
+        : back();
+})->middleware('auth')->name('notifications.read-all');
 
 Route::get('/notifications', function (Request $request) {
     $notifications = $request->user()

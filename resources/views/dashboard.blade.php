@@ -105,7 +105,7 @@
             </div>
 
             {{-- Cards --}}
-            <div class="flex items-stretch gap-1">
+            <div class="grid grid-cols-2 items-stretch gap-1 sm:gap-2">
 
                 {{-- =========================
                     CARD TANGGAL & JAM
@@ -113,7 +113,7 @@
                 <div
                     class="relative overflow-hidden
                         bg-emerald-500
-                        min-h-[130px] w-[45%]
+                        min-h-[130px] w-full min-w-0
                         rounded-xl p-3
                         text-white
                         flex flex-col justify-between">
@@ -180,11 +180,11 @@
                         </div>    
                         @if ($jabatan == 'DIREKSI' && $direksiRecapAvailable)
                         <a href="{{ route('direksi.cp.index') }}"
-                            class="mt-4 mx-2 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-left text-emerald-900 shadow-sm hover:bg-emerald-100">
-                            <i class="ri-bar-chart-grouped-line text-xl text-emerald-600"></i>
-                            <span>
-                                <span class="block text-sm font-bold">Rekap persentase tersedia</span>
-                                <span class="block text-xs text-emerald-700">Buka rekap kinerja karyawan.</span>
+                            class="mt-4 mx-0 flex min-w-0 items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-2 py-2 text-left text-emerald-900 shadow-sm hover:bg-emerald-100 sm:mx-2 sm:gap-3 sm:px-4 sm:py-3">
+                            <i class="ri-bar-chart-grouped-line mt-0.5 shrink-0 text-lg text-emerald-600 sm:text-xl"></i>
+                            <span class="min-w-0 break-words">
+                                <span class="block text-xs font-bold leading-tight sm:text-sm">Rekap persentase tersedia</span>
+                                <span class="mt-1 block text-[10px] leading-relaxed text-emerald-700 sm:text-xs">Buka rekap kinerja karyawan.</span>
                             </span>
                         </a>
                         @endif      
@@ -199,7 +199,7 @@
                 <div
                     class="relative overflow-hidden
                         bg-amber-400
-                        min-h-[130px] w-[55%]
+                        min-h-[130px] w-full min-w-0
                         rounded-xl p-3
                         text-slate-800
                         flex flex-col justify-between">
@@ -306,6 +306,14 @@
                     min-h-[40px] w-[100px]
                     transition-all duration-300">
                 Info
+                @if ($hasUnreadInformation || ($unreadCount ?? 0) > 0)
+                    <span data-information-badge
+                        class="absolute -right-1 -top-1 flex h-3 w-3"
+                        title="Ada informasi baru" aria-label="Ada informasi baru">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75"></span>
+                        <span class="relative inline-flex h-3 w-3 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                    </span>
+                @endif
             </button>
 
             {{-- Utama --}}
@@ -339,9 +347,6 @@
                                 <div>
                                     <h2 class="flex items-center gap-2 font-black text-lg leading-tight text-slate-900">
                                         Informasi
-                                        @if ($hasUnreadInformation)
-                                            <span class="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-rose-500" title="Ada informasi baru" aria-label="Ada informasi baru"></span>
-                                        @endif
                                     </h2>
                                     <p class="text-xs text-slate-500">Pembaruan terbaru untukmu</p>
                                 </div>
