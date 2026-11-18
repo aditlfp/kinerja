@@ -52,7 +52,7 @@ class ListPekerjaanController extends Controller
         $pekerjaan['name'] = json_encode($nameArray);
 
         ListPekerjaan::create($pekerjaan);
-        toastr()->success('Data List Berhasil Disimpan');
+        toastSuccess('Data List Berhasil Disimpan');
         return to_route('admin.list-pekerjaan.index');
     }
 
@@ -89,10 +89,10 @@ class ListPekerjaanController extends Controller
             
             
             $listPekerjaan->update($pekerjaan);
-            toastr()->success('Data List Berhasil Di Update');
+            toastSuccess('Data List Berhasil Di Update');
             return to_route('admin.list-pekerjaan.index');
         }else{
-            toastr()->error('Eitss Input nya Kok Kosong!');
+            toastError('Eitss Input nya Kok Kosong!');
             return redirect()->back();
         }
         
@@ -101,7 +101,7 @@ class ListPekerjaanController extends Controller
     public function destroy(ListPekerjaan $listPekerjaan)
     {
         $listPekerjaan->delete();
-        toastr()->warning('Data List Berhasil Di Deleted');
+        toastWarning('Data List Berhasil Di Deleted');
         return to_route('admin.list-pekerjaan.index');
     }
     
@@ -109,7 +109,7 @@ class ListPekerjaanController extends Controller
     {
          try {
             Excel::import(new ListImport,  $request->file);
-            toastr()->success('Data Berhasil Di Upload');
+            toastSuccess('Data Berhasil Di Upload');
             return redirect()->back();
         } catch (\Exception $e) {
             // Handle other exceptions
@@ -124,7 +124,7 @@ class ListPekerjaanController extends Controller
                         $duplicateValue = $matches[1];
         
                         // Handle the duplicate value as needed
-                        toastr()->error('Data Gagal Di Upload');
+                        toastError('Data Gagal Di Upload');
                         return redirect()->back()->with('failures', $duplicateValue);
                     }
                 }

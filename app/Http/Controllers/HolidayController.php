@@ -31,7 +31,7 @@ class HolidayController extends Controller
         ];
 
         Holiday::create($holiday);
-        toastr()->success('Berhasil Menambahkan Hari Libur');
+        toastSuccess('Berhasil Menambahkan Hari Libur');
         return to_route('admin.holiday.index');
    }
 
@@ -41,7 +41,7 @@ class HolidayController extends Controller
         $holidayId = Holiday::findorFail($id);
         return view('admin.holiday.edit', ['holiday' => $holidayId]);
     } catch (ModelNotFoundException $th) {
-        toastr()->error('Hari Libur Tidak Ditemukan');
+        toastError('Hari Libur Tidak Ditemukan');
         return redirect()->back();
     }
    }
@@ -55,7 +55,7 @@ class HolidayController extends Controller
 
         $holidayId = Holiday::findorFail($id);
         $holidayId->update($holiday);
-        toastr()->success('Hari Libur Telah Di Update');
+        toastSuccess('Hari Libur Telah Di Update');
         return to_route('admin.holiday.index');
 
    }
@@ -65,10 +65,10 @@ class HolidayController extends Controller
         try {
             $holidayId = Holiday::findorFail($id);
             $holidayId->delete();
-            toastr()->warning('Hari Libur Telah Di Delete');
+            toastWarning('Hari Libur Telah Di Delete');
             return redirect()->back();
         } catch (ModelNotFoundException $th) {
-            toastr()->error('Hari Libur Tidak Ditemukan');
+            toastError('Hari Libur Tidak Ditemukan');
             return redirect()->back();
         }
    }

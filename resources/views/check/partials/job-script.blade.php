@@ -336,7 +336,7 @@
         // input.click(). In every case the same button opens the gallery,
         // because a photo still has to get attached.
         const notifyPhoto = (message) => {
-            if (window.toastr?.info) window.toastr.info(message);
+            window.showAppToast?.('info', message);
         };
 
         // A picker that opens blurs the window; a swallowed click does nothing
@@ -467,7 +467,7 @@
             });
             const totalBytes = uploads.reduce((total, upload) => total + upload.file.size, 0);
             if (totalBytes > 20 * 1024 * 1024) {
-                window.toastr?.error('Total ukuran foto maksimal 20 MB per simpan.');
+                window.showAppToast?.('error', 'Total ukuran foto maksimal 20 MB per simpan.');
                 return;
             }
             const button = $('#submit-job').prop('disabled', true).text('Mengunggah foto...');
@@ -513,7 +513,7 @@
                 window.removeEventListener('beforeunload', warnLeaving);
                 modal.remove();
                 button.prop('disabled', false).text('Simpan pekerjaan');
-                window.toastr?.error(error.message || 'Upload foto gagal.');
+                window.showAppToast?.('error', error.message || 'Upload foto gagal.');
             }
         });
 

@@ -69,7 +69,7 @@ class QrCodeController extends Controller
         
         $qrId->update($qr);
         
-        toastr()->success('Qr Code Has Update & Generate');
+        toastSuccess('Qr Code Has Update & Generate');
         return to_route('qrcode.index');
     }
 
@@ -103,7 +103,7 @@ class QrCodeController extends Controller
             'kerjasama_id' => $request->kerjasama_id,
         ]);
         
-        toastr()->success('QR Code has been generated successfully');
+        toastSuccess('QR Code has been generated successfully');
         return redirect()->route('qrcode.index');
 
     }
@@ -113,7 +113,7 @@ class QrCodeController extends Controller
         $qrId = QrCode::findOrFail($id);
         Storage::disk('public')->delete('images/'.$qrId->qr_code);
         $qrId->delete();
-        toastr()->warning('Qr Code Has Deleted');
+        toastWarning('Qr Code Has Deleted');
         return redirect()->back();
     }
     
@@ -126,7 +126,7 @@ class QrCodeController extends Controller
         }elseif($request->has(['kerjasama_id']) && $request->type_export == 0){
             $qr = QrCode::where('kerjasama_id', $request->kerjasama_id)->get();
         }else{
-            toastr()->error('Mohon Masukkan Filter Export');
+            toastError('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
         

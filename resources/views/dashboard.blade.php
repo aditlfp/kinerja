@@ -550,7 +550,7 @@
     @include('dashboard.partials.scripts.checkout-tracking')
     @include('dashboard.partials.scripts.dashboard-ui')
     @include('dashboard.partials.scripts.shift-timer')
-    <x-flasher-theme />
+    <x-session-toast />
 
     <script>
         navigator.geolocation.getCurrentPosition(

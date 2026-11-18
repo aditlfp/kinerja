@@ -121,7 +121,7 @@ class JadwalUserController extends Controller
             ->whereBetween('tanggal', [$start->toDateString(), $start->copy()->endOfMonth()->toDateString()])
             ->exists();
         if ($alreadyExists) {
-            toastr()->error("Jadwal bulan {$start->translatedFormat('F Y')} sudah dibuat.");
+            toastError("Jadwal bulan {$start->translatedFormat('F Y')} sudah dibuat.");
             return redirect()->route('leader-jadwal.index');
         }
 
@@ -152,7 +152,7 @@ class JadwalUserController extends Controller
             $shift = Shift::all();
             return view('leader_view.jadwalUser.create', compact('user', 'shift', 'totalHari', 'area', 'jadwal', 'str1', 'end1', 'kerj', 'filter'));
         } else {
-            toastr()->error('Mohon Masukkan Taggal');
+            toastError('Mohon Masukkan Taggal');
             return redirect()->back();
         }
 
@@ -187,7 +187,7 @@ class JadwalUserController extends Controller
     {
         $jadwalId = JadwalUser::findOrFail($id);
         $jadwalId->delete();
-        toastr()->warning('Jadwal Telah Dihapus');
+        toastWarning('Jadwal Telah Dihapus');
         return redirect()->back();
     }
 
@@ -240,7 +240,7 @@ class JadwalUserController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Filter Export');
+            toastError('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }
@@ -266,7 +266,7 @@ class JadwalUserController extends Controller
             }
         }
         JadwalUser::upsert($rows, ['user_id', 'tanggal'], ['status', 'shift_id', 'area_id', 'updated_at']);
-        toastr()->success('Jadwal berhasil disimpan');
+        toastSuccess('Jadwal berhasil disimpan');
         return redirect()->route('leader-jadwal.create', ['month' => $data['month']]);
     }
 
@@ -279,7 +279,7 @@ class JadwalUserController extends Controller
         foreach ($userIDs as $index => $userID) {
             JadwalUser::create(['user_id' => $userID, 'shift_id' => $shifts[$index], 'tanggal' => $request->input('hari'), 'status' => 'M']);
         }
-        toastr()->success('Data berhasil ditambahkan');
+        toastSuccess('Data berhasil ditambahkan');
         return redirect()->back();
     }
 
@@ -329,7 +329,7 @@ class JadwalUserController extends Controller
     public function import(Request $request)
     {
         Excel::import(new JadwalImport,  $request->file);
-        toastr()->success('Data Success To Add');
+        toastSuccess('Data Success To Add');
         return redirect()->back();
     }
 }

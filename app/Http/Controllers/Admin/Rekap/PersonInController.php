@@ -69,10 +69,10 @@ class PersonInController extends Controller
             $personIn = PersonIn::findOrFail($id);
             $personIn->delete();
 
-            toastr()->success('Data personil masuk berhasil dihapus.');
+            toastSuccess('Data personil masuk berhasil dihapus.');
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus data personil masuk.');
+            toastError('Gagal menghapus data personil masuk.');
             return back();
         }
     }

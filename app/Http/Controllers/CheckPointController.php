@@ -149,7 +149,7 @@ class CheckPointController extends Controller
         }
 
         if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
-            toastr()->error($error);
+            toastError($error);
             return redirect()->back()->withInput();
         }
 
@@ -157,11 +157,11 @@ class CheckPointController extends Controller
             $checkpoint = $this->checkPointService->store($request->validated(), $request);
             $this->calendarService->forget(Auth::id());
             $checkpoint->participants()->pluck('users.id')->each(fn ($userId) => $this->calendarService->forget((int) $userId));
-            toastr()->success('Data Berhasil Disimpan');
+            toastSuccess('Data Berhasil Disimpan');
             return to_route('checkpoint-user.index');
         } catch (\Throwable $e) {
             report($e);
-            toastr()->error('Data gagal disimpan');
+            toastError('Data gagal disimpan');
             return redirect()->back();
         }
     }
@@ -213,18 +213,18 @@ class CheckPointController extends Controller
         }
 
         if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
-            toastr()->error($error);
+            toastError($error);
             return redirect()->back()->withInput();
         }
 
         try {
             $this->checkPointService->update($cex2, $request, $evaluationRowsOnly);
             $this->calendarService->forget($cex2->user_id);
-            toastr()->success('Data berhasil diedit');
+            toastSuccess('Data berhasil diedit');
             return to_route('checkpoint-user.index');
         } catch (\Throwable $e) {
             report($e);
-            toastr()->error('Data gagal diedit');
+            toastError('Data gagal diedit');
             return redirect()->back();
         }
     }
@@ -267,7 +267,7 @@ class CheckPointController extends Controller
         }
 
         if ($error = $this->syncService->imageLimitError($request) ?? $this->syncService->uploadSizeError($request)) {
-            toastr()->error($error);
+            toastError($error);
             return redirect()->back()->withInput();
         }
 
@@ -297,12 +297,12 @@ class CheckPointController extends Controller
             $this->calendarService->forget($userId);
             DB::commit();
 
-            toastr()->success('Data Berhasil Diupload');
+            toastSuccess('Data Berhasil Diupload');
             return to_route('checkpoint-user.index', 'type=dikerjakan');
         } catch (\Throwable $e) {
             DB::rollback();
             report($e);
-            toastr()->error('Data Tidak Berhasil Dikirim');
+            toastError('Data Tidak Berhasil Dikirim');
             return redirect()->back();
         }
     }
@@ -323,7 +323,7 @@ class CheckPointController extends Controller
         $item = $this->resolveItem($cex2, $request->input('arrKe'));
 
         if (! $item) {
-            toastr()->error('Pekerjaan tidak ditemukan');
+            toastError('Pekerjaan tidak ditemukan');
             return redirect()->back();
         }
 
@@ -334,10 +334,10 @@ class CheckPointController extends Controller
             $item->note = filled($note) ? $note : null;
             $item->save();
 
-            toastr()->success('Data berhasil diedit');
+            toastSuccess('Data berhasil diedit');
         } catch (\Throwable $e) {
             report($e);
-            toastr()->error('Gagal menyimpan data');
+            toastError('Gagal menyimpan data');
         }
 
         return redirect()->back();
@@ -372,7 +372,7 @@ class CheckPointController extends Controller
             $item = $this->resolveItem($cek, $request->input('arrKe'));
 
             if (! $item) {
-                toastr()->error('Parameter arrKe Tidak Ditemukan');
+                toastError('Parameter arrKe Tidak Ditemukan');
                 return redirect()->back();
             }
 
@@ -381,9 +381,9 @@ class CheckPointController extends Controller
             }
             $item->delete();
 
-            toastr()->warning('Data Telah Dihapus');
+            toastWarning('Data Telah Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            toastr()->error('Data Tidak Ditemukan');
+            toastError('Data Tidak Ditemukan');
         }
 
         return redirect()->back();
@@ -404,10 +404,10 @@ class CheckPointController extends Controller
 
             $this->calendarService->forget($userId);
 
-            toastr()->warning('Data Telah Dihapus');
+            toastWarning('Data Telah Dihapus');
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
-            toastr()->error('Data Tidak Ditemukan');
+            toastError('Data Tidak Ditemukan');
             return redirect()->back();
         }
     }
@@ -462,7 +462,7 @@ class CheckPointController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Filter Export');
+            toastError('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }

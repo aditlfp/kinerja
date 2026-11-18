@@ -273,9 +273,7 @@
             </p>
         </footer>
     </main>
-    <x-flasher />
     <x-session-toast />
-    <x-flasher-theme />
     <x-analytic-component />
 
 </body>

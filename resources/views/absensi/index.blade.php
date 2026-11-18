@@ -388,16 +388,6 @@
     <script src="{{ URL::asset('js/jquery.min.js') }}"></script>
     <script src="{{ URL::asset('js/moment.min.js') }}"></script>
     <script>
-        window.toastr = window.toastr || {
-            options: {},
-            success: function () {},
-            error: function () {},
-            info: function () {},
-            warning: function () {},
-            remove: function () {},
-            clear: function () {}
-        };
-
         let absenOverlayTimer = null;
 
         function showAbsenSubmitOverlay() {
@@ -445,8 +435,7 @@
             if (progress) progress.style.width = '0';
         }
     </script>
-    <x-flasher />
-    <x-flasher-theme />
+    <x-session-toast />
 
     @if (Auth::user()->kerjasama_id != 1 || !in_array(Auth::user()->devisi_id, [2, 3, 7, 8, 12, 14, 18]))
         <!--Camera logic moved to resources/js/absensi/camera.js -->

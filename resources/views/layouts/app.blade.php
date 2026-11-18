@@ -117,9 +117,7 @@
     <!-- cdnjs -->
     <script type="text/javascript" src="{{ URL::asset('js/jquery.lazy.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/jquery.lazy.plugins.min.js') }}"></script>
-    <x-flasher />
     <x-session-toast />
-    <x-flasher-theme />
     <x-analytic-component />
     <script>
         window.openConfirmModal = function(config = {}) {

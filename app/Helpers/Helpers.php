@@ -228,6 +228,44 @@ function capitalizeWords($string)
     return ucwords(strtolower($string));
 }
 
+if (! function_exists('flashToast')) {
+    function flashToast(string $type, string|\Stringable $message): void
+    {
+        session()->flash('toast', [
+            'type' => $type,
+            'message' => (string) $message,
+        ]);
+    }
+}
+
+if (! function_exists('toastSuccess')) {
+    function toastSuccess(string|\Stringable $message): void
+    {
+        flashToast('success', $message);
+    }
+}
+
+if (! function_exists('toastError')) {
+    function toastError(string|\Stringable $message): void
+    {
+        flashToast('error', $message);
+    }
+}
+
+if (! function_exists('toastWarning')) {
+    function toastWarning(string|\Stringable $message): void
+    {
+        flashToast('warning', $message);
+    }
+}
+
+if (! function_exists('toastInfo')) {
+    function toastInfo(string|\Stringable $message): void
+    {
+        flashToast('info', $message);
+    }
+}
+
 if (! function_exists('monthBounds')) {
     /**
      * Inclusive [start, end] bounds for the month of the given date.

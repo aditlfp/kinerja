@@ -175,7 +175,7 @@ class DireksiCheckpointController extends Controller
             ],
         );
 
-        toastr()->success('Nilai akhir berhasil disimpan.');
+        toastSuccess('Nilai akhir berhasil disimpan.');
 
         return redirect()->route('direksi.cp.calendar', [
             'user' => $user->id,

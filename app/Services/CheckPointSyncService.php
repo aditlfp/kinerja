@@ -278,7 +278,7 @@ class CheckPointSyncService
             }
 
             if (count($uploads) + count($tokenUploads) > self::MAX_IMAGES_PER_ITEM) {
-                // The controller checks first and shows a friendly toastr; this
+                // The controller checks first and shows a friendly toast; this
                 // guarantees the cap is never exceeded silently.
                 throw new \RuntimeException('Foto maksimal ' . self::MAX_IMAGES_PER_ITEM . ' per pekerjaan.');
             }

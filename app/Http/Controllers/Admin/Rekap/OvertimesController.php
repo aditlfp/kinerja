@@ -125,10 +125,10 @@ class OvertimesController extends Controller
             $overtime = Overtime::findOrFail($id);
             $overtime->delete();
 
-            toastr()->success('Data lembur berhasil dihapus.');
+            toastSuccess('Data lembur berhasil dihapus.');
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus data lembur.');
+            toastError('Gagal menghapus data lembur.');
             return back();
         }
     }

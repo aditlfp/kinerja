@@ -834,9 +834,7 @@
         </div>
     </div>
 
-    <x-flasher />
     <x-session-toast />
-    <x-flasher-theme />
 
     <script>
         (function() {

@@ -215,7 +215,7 @@ class AdminController extends Controller
         $item = $this->resolveCheckPointItem($checkPoint, $request->input('arrKe'));
 
         if (! $item) {
-            toastr()->error('Pekerjaan tidak ditemukan');
+            toastError('Pekerjaan tidak ditemukan');
             return redirect()->back();
         }
 
@@ -223,7 +223,7 @@ class AdminController extends Controller
         $item->note = filled($note) ? $note : null;
         $item->save();
 
-        toastr()->success('Check Point Has Approve');
+        toastSuccess('Check Point Has Approve');
         return redirect()->back();
     }
 
@@ -243,7 +243,7 @@ class AdminController extends Controller
         $item = $this->resolveCheckPointItem($checkPoint, $request->input('arrKe'));
 
         if (! $item) {
-            toastr()->error('Pekerjaan tidak ditemukan');
+            toastError('Pekerjaan tidak ditemukan');
             return redirect()->back();
         }
 
@@ -251,7 +251,7 @@ class AdminController extends Controller
         $item->note = filled($note) ? $note : null;
         $item->save();
 
-        toastr()->warning('Check Point Has Denied');
+        toastWarning('Check Point Has Denied');
         return redirect()->back();
     }
 
@@ -282,10 +282,10 @@ class AdminController extends Controller
             }
             $cek->delete();
 
-            toastr()->warning('Data Telah Dihapus');
+            toastWarning('Data Telah Dihapus');
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
-            toastr()->error('Data Tidak Ditemukan');
+            toastError('Data Tidak Ditemukan');
             return redirect()->back();
         }
     }
@@ -506,7 +506,7 @@ class AdminController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Hari Libur');
+            toastError('Mohon Masukkan Hari Libur');
             return redirect()->back();
         }
     }
@@ -754,7 +754,7 @@ class AdminController extends Controller
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } else {
-            toastr()->error('Mohon Masukkan Filter Export');
+            toastError('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }
@@ -877,7 +877,7 @@ class AdminController extends Controller
             // dd($check, $request->all());
             User::destroy($check);
 
-            toastr()->success('User berhasil dihapus');
+            toastSuccess('User berhasil dihapus');
             return redirect()->back();
         } else {
             $options = new Options();
@@ -931,7 +931,7 @@ class AdminController extends Controller
             $abs->delete();
         }
 
-        toastr()->warning('Data Sudah Dihapus');
+        toastWarning('Data Sudah Dihapus');
         return redirect()->back();
     }
 
@@ -1035,7 +1035,7 @@ class AdminController extends Controller
                 $user->delete();
             });
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus: ' . $e->getMessage());
+            toastError('Gagal menghapus: ' . $e->getMessage());
             return redirect()->back();
         }
 
@@ -1043,7 +1043,7 @@ class AdminController extends Controller
         Cache::forget('not_active_users');
         Cache::forget('admin.dashboard.inactive-users-count');
 
-        toastr()->warning('User ' . $userName . ' dan semua data terkait berhasil dihapus.');
+        toastWarning('User ' . $userName . ' dan semua data terkait berhasil dihapus.');
         return redirect()->route('admin.index');
     }
 
@@ -1059,7 +1059,7 @@ class AdminController extends Controller
         }
 
         Cache::forget('admin.dashboard.inactive-users');
-        toastr()->warning(count($ids) . ' user berhasil dihapus.');
+        toastWarning(count($ids) . ' user berhasil dihapus.');
         return redirect()->route('admin.index');
     }
 

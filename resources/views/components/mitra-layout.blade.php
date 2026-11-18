@@ -537,9 +537,7 @@
     <script defer src="{{ URL::asset('js/nselect.js') }}?v={{ filemtime(public_path('js/nselect.js')) }}"></script>
 </head>
 <body id="mainBody" class="font-sans antialiased">
-    <x-flasher />
     <x-session-toast />
-    <x-flasher-theme />
 
     <div class="relative min-h-screen lg:flex">
         <aside id="sidebar" class="fixed inset-y-0 -left-10 sm:left-0 z-50 flex flex-col max-h-screen p-4 -translate-x-full shadow-sm lg:translate-x-0">

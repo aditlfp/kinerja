@@ -34,16 +34,16 @@ class NewsController extends Controller
          if ($request->hasFile('image')) {
             $news['image'] = UploadImage($request, 'image');
         }else{
-            toastr()->error('Image harus ditambahkan');
+            toastError('Image harus ditambahkan');
         }
         
          try {
             News::create($news);
         } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Sudah Ada');
+           toastError('Data Sudah Ada');
            return redirect()->back();
         }
-            toastr()->success('News Berhasil Ditambahkan');
+            toastSuccess('News Berhasil Ditambahkan');
             return redirect()->to(route('admin.news.index'));
     }
     
@@ -53,7 +53,7 @@ class NewsController extends Controller
         if ($newsId != null) {
             return view('admin.news.edit', compact('newsId'));
         }
-        toastr()->error('Data Tidak Ditemukan');
+        toastError('Data Tidak Ditemukan');
         return redirect()->back();
     }
     
@@ -83,11 +83,11 @@ class NewsController extends Controller
         try {
             $news->update($data);
         } catch (\Illuminate\Database\QueryException $e) {
-            toastr()->error('Data Tidak Tersimpan');
+            toastError('Data Tidak Tersimpan');
             return redirect()->back();
         }
 
-        toastr()->success('Data berhasil diedit');
+        toastSuccess('Data berhasil diedit');
         return redirect()->to(route('admin.news.index'));
     }
     
@@ -96,7 +96,7 @@ class NewsController extends Controller
         $news = News::find($id);
 
         if ($news === null) {
-            toastr()->error('Data Tidak Ditemukan');
+            toastError('Data Tidak Ditemukan');
             return redirect()->back();
         }
 
@@ -105,7 +105,7 @@ class NewsController extends Controller
         }
 
         $news->delete();
-        toastr()->success('Berita berhasil dihapus');
+        toastSuccess('Berita berhasil dihapus');
         return redirect()->back();
     }
     

@@ -55,7 +55,7 @@ class RatingController extends Controller
         // dd($rate);
 
         Rating::create($rate);
-        toastr()->success('Berhasil Memberikan Rating');
+        toastSuccess('Berhasil Memberikan Rating');
         return redirect()->back();
     }
     
@@ -74,7 +74,7 @@ class RatingController extends Controller
         
         $rateId = Rating::findOrFail($id);
         $rateId->update($rate);
-        toastr()->success('Berhasil update Rating');
+        toastSuccess('Berhasil update Rating');
         return redirect()->back();
     }
 

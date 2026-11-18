@@ -321,7 +321,7 @@ class MainController extends Controller
                 ->update([$field[0] => $fileName, $field[1] => 1]);
         }
 
-        toastr()->success('Berhasil Absen Sholat');
+        toastSuccess('Berhasil Absen Sholat');
         return to_route('dashboard.index');
     }
 }

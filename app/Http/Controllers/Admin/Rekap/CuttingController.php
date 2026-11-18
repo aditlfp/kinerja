@@ -73,10 +73,10 @@ class CuttingController extends Controller
             $cutting = PerformanceCuts::findOrFail($id);
             $cutting->delete();
 
-            toastr()->success('Data cutting berhasil dihapus.');
+            toastSuccess('Data cutting berhasil dihapus.');
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus data cutting.');
+            toastError('Gagal menghapus data cutting.');
             return back();
         }
     }

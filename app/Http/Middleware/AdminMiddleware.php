@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         if (Auth::user()->role_id != 2) {
             redirect()->to(url('/'));
-            toastr()->error('You Dont Have Previllage');
+            toastError('You Dont Have Previllage');
             Auth::logout();
 
         }

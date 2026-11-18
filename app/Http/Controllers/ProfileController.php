@@ -58,7 +58,7 @@ class ProfileController extends Controller
         if ($dataUser != null) {
             return view('profile.edit', compact('dataUser', 'datas'));
         }
-        toastr()->error('Data tidak tidak ditemukan');
+        toastError('Data tidak tidak ditemukan');
 
         return redirect()->back();
     }
@@ -87,7 +87,7 @@ class ProfileController extends Controller
         }
         User::findOrFail($id)->update($user);
 
-        toastr()->success('Data Berhasil diupdate');
+        toastSuccess('Data Berhasil diupdate');
 
         return to_route('profile.index');
     }
@@ -158,7 +158,7 @@ class ProfileController extends Controller
         $id = $this->decodeKontrakToken($token);
 
         if ($id === null) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('dashboard.index');
         }
@@ -173,7 +173,7 @@ class ProfileController extends Controller
         }
 
         if (!$kontrak) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('profile.index');
         }
@@ -206,7 +206,7 @@ class ProfileController extends Controller
             'alamat_pk_kda' => ['required', 'string', 'max:500'],
         ]);
         if ($kontrak?->isPending() || $kontrak?->isActive()) {
-            toastr()->error('Pengajuan kontrak tidak dapat dilakukan saat ini.');
+            toastError('Pengajuan kontrak tidak dapat dilakukan saat ini.');
             return back()->withErrors([
                 'kontrak' => 'Pengajuan kontrak tidak dapat dilakukan saat ini.'
             ]);
@@ -257,7 +257,7 @@ class ProfileController extends Controller
             Kontrak::create($kontrak);
             Cache::forget('navbar.kontrak.' . $user->id);
 
-            toastr()->success('Form Pengajuan berhasil dikirim');
+            toastSuccess('Form Pengajuan berhasil dikirim');
 
             return to_route('dashboard.index');
         }
@@ -268,7 +268,7 @@ class ProfileController extends Controller
         $id = $this->decodeKontrakToken($token);
 
         if ($id === null) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('dashboard.index');
         }
@@ -280,7 +280,7 @@ class ProfileController extends Controller
         }
 
         if (!$kontrak) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('dashboard.index');
         }
@@ -329,7 +329,7 @@ class ProfileController extends Controller
         $id = $this->decodeKontrakToken($token);
 
         if ($id === null) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('profile.index');
         }
@@ -340,7 +340,7 @@ class ProfileController extends Controller
             ->first();
 
         if (!$kontrak) {
-            toastr()->error('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
+            toastError('Tautan kontrak tidak valid atau Anda tidak memiliki akses');
 
             return to_route('dashboard.index');
         }
@@ -366,7 +366,7 @@ class ProfileController extends Controller
             }
         }
 
-        toastr()->success('Form kontrak berhasil dikirim');
+        toastSuccess('Form kontrak berhasil dikirim');
 
         return to_route('dashboard.index');
     }
@@ -392,7 +392,7 @@ class ProfileController extends Controller
         $ids = array_filter($ids, 'is_numeric');
 
         if (empty($ids)) {
-            toastr()->error('Tidak ada kontrak yang dipilih');
+            toastError('Tidak ada kontrak yang dipilih');
             return redirect()->back();
         }
 
@@ -410,7 +410,7 @@ class ProfileController extends Controller
 
         $processedCount = $kontraks->count();
 
-        toastr()->success($processedCount . ' Kontrak Berhasil di ' . ($acc ? 'Acc' : 'Tolak'));
+        toastSuccess($processedCount . ' Kontrak Berhasil di ' . ($acc ? 'Acc' : 'Tolak'));
 
         return redirect()->back();
     }

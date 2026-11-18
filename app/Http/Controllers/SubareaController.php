@@ -35,7 +35,7 @@ class SubareaController extends Controller
         $validator = Validator::make($request->all(), $rules, $customMessages);
     
         if ($validator->fails()) {
-            toastr()->error('Formulir tidak lengkap. Mohon isi semua kolom.');
+            toastError('Formulir tidak lengkap. Mohon isi semua kolom.');
             return redirect()->back()->withErrors($validator)->withInput();
         }
         
@@ -46,7 +46,7 @@ class SubareaController extends Controller
                 'name' => $name,
             ]);
         }
-        toastr()->success('Sub Area Berhasil ditambahkan');
+        toastSuccess('Sub Area Berhasil ditambahkan');
         return redirect()->back();
     }
     
@@ -64,7 +64,7 @@ class SubareaController extends Controller
         
         $subId = Subarea::findOrFail($id);
         $subId->update($subData);
-        toastr()->success('Sub Area Berhasil Di Update');
+        toastSuccess('Sub Area Berhasil Di Update');
         return to_route('admin.subarea.index');
     }
     
@@ -72,7 +72,7 @@ class SubareaController extends Controller
     {
         $subId = Subarea::findOrFail($id);
         $subId->delete();
-        toastr()->warning('Sub Area Dihapus Permanent');
+        toastWarning('Sub Area Dihapus Permanent');
     }
     
     public function editSubarea($areaId)
@@ -91,7 +91,7 @@ class SubareaController extends Controller
 
         $area->Subarea()->attach($equipmentIds);
         // dd($divisi);
-        toastr()->success('Devisi berhasil dibuat');
+        toastSuccess('Devisi berhasil dibuat');
         return redirect()->back();
     }
     

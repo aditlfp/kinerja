@@ -31,4 +31,29 @@ trait UsesToastRedirects
             'message' => $message,
         ];
     }
+
+    protected function flashToast(string $type, string $message): void
+    {
+        flashToast($type, $message);
+    }
+
+    protected function toastSuccess(string $message): void
+    {
+        toastSuccess($message);
+    }
+
+    protected function toastError(string $message): void
+    {
+        toastError($message);
+    }
+
+    protected function toastWarning(string $message): void
+    {
+        toastWarning($message);
+    }
+
+    protected function toastInfo(string $message): void
+    {
+        toastInfo($message);
+    }
 }

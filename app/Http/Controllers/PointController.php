@@ -32,7 +32,7 @@ class PointController extends Controller
         ];
 
         Point::create($point);
-        toastr()->success('Point Berhasil Ditambahkan');
+        toastSuccess('Point Berhasil Ditambahkan');
         return to_route('admin.point.index');
     }
 
@@ -52,7 +52,7 @@ class PointController extends Controller
 
         $pointId = Point::findOrFail($id);
         $pointId->update($point);
-        toastr()->success('Point Berhasil Diedit');
+        toastSuccess('Point Berhasil Diedit');
         return to_route('admin.point.index');
     }
 
@@ -60,7 +60,7 @@ class PointController extends Controller
     {
         $pointId = Point::findOrFail($id);
         $pointId->delete();
-        toastr()->warning('Point Telah Terhapus');
+        toastWarning('Point Telah Terhapus');
         return redirect()->back();
     }
 

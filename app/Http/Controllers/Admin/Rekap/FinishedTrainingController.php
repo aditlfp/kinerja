@@ -77,10 +77,10 @@ class FinishedTrainingController extends Controller
             $item = FinishedTraining::findOrFail($id);
             $item->delete();
 
-            toastr()->success('Data lepas training berhasil dihapus.');
+            toastSuccess('Data lepas training berhasil dihapus.');
             return back();
         } catch (\Throwable $e) {
-            toastr()->error('Gagal menghapus data lepas training.');
+            toastError('Gagal menghapus data lepas training.');
             return back();
         }
     }

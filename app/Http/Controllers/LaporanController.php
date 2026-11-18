@@ -100,11 +100,11 @@ class LaporanController extends Controller
             }
             
             Laporan::create($laporan);
-            toastr()->success('Laporan Berhasil Disimpan');
+            toastSuccess('Laporan Berhasil Disimpan');
             return to_route('laporan.index');
         } catch (\Throwable $th) {
             // dd($th);
-            toastr()->error('Image Must Be Insert Or Large Image');
+            toastError('Image Must Be Insert Or Large Image');
             return redirect()->back();
         }
 
@@ -124,10 +124,10 @@ class LaporanController extends Controller
             }
             
             $laporan->delete();
-            toastr()->warning('Laporan Berhasil Dihapus');
+            toastWarning('Laporan Berhasil Dihapus');
             return redirect()->back();
         } catch (\Throwable $th) {
-            toastr()->error('Laporan Tidak Ditemukan');
+            toastError('Laporan Tidak Ditemukan');
         }
     }
     public function exportWith(Request $request)
@@ -210,7 +210,7 @@ class LaporanController extends Controller
             ->header('Content-Disposition', 'inline; filename="'.$filename.'"');
                     
         }else{
-            toastr()->error('Mohon Masukkan Filter Export');
+            toastError('Mohon Masukkan Filter Export');
             return redirect()->back();
         }
     }
@@ -245,7 +245,7 @@ class LaporanController extends Controller
             $abs->delete();
         }
         
-        toastr()->warning('Data Sudah Dihapus');
+        toastWarning('Data Sudah Dihapus');
         return redirect()->back();
     }
     
@@ -275,16 +275,16 @@ class LaporanController extends Controller
         if ($request->hasFile('file_pdf')) {
             $laporan['file_pdf'] = UploadFile($request, 'file_pdf');
         }else{
-            toastr()->error('File harus ditambahkan');
+            toastError('File harus ditambahkan');
         }
         // dd($request->all(), $laporan);
         try {
             LaporanMitra::create($laporan);
         } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Sudah Ada');
+           toastError('Data Sudah Ada');
            return redirect()->back();
         }
-            toastr()->success('Laporan Berhasil Ditambahkan');
+            toastSuccess('Laporan Berhasil Ditambahkan');
             return redirect()->to(route('laporanMitra.index'));
     }
     public function editLaporanMitra($id) {
@@ -313,10 +313,10 @@ class LaporanController extends Controller
          try {
             LaporanMitra::findOrFail($id)->update($laporan);
         } catch(\Illuminate\Database\QueryException $e){
-           toastr()->error('Data Sudah Ada');
+           toastError('Data Sudah Ada');
            return redirect()->back();
         }
-        toastr()->success('Laporan berhasil diedit');
+        toastSuccess('Laporan berhasil diedit');
         return redirect()->back();
         
         // $laporanMitra = LaporanMitra::all();
@@ -326,14 +326,14 @@ class LaporanController extends Controller
         $laporan = LaporanMitra::find($id);
         if ($laporan != null) {
             if ($laporan->file_pdf == null) {
-                toastr()->error('File Tidak Ditemukan');
+                toastError('File Tidak Ditemukan');
             }
                 if ($laporan->logo) {
                     Storage::disk('public')->delete('pdf/'.$laporan->file_pdf);
                 }
         }
         $laporan->delete();
-        toastr()->error('Data Telah Dihapus');
+        toastError('Data Telah Dihapus');
         return redirect()->back();
     }
 }

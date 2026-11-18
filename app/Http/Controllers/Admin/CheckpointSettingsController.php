@@ -43,7 +43,7 @@ class CheckpointSettingsController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
-        toastr()->success('Batas laporan bukti pekerjaan berhasil diperbarui.');
+        toastSuccess('Batas laporan bukti pekerjaan berhasil diperbarui.');
 
         return back();
     }
@@ -60,7 +60,7 @@ class CheckpointSettingsController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
-        toastr()->success('Hari tampil rekap persentase berhasil diperbarui.');
+        toastSuccess('Hari tampil rekap persentase berhasil diperbarui.');
 
         return back();
     }
@@ -69,7 +69,7 @@ class CheckpointSettingsController extends Controller
     {
         CheckPointReportSetting::query()->delete();
 
-        toastr()->success('Pengaturan dihapus. Batas laporan kembali ke default: Sabtu.');
+        toastSuccess('Pengaturan dihapus. Batas laporan kembali ke default: Sabtu.');
 
         return back();
     }
@@ -78,7 +78,7 @@ class CheckpointSettingsController extends Controller
     {
         PerformanceRecapSetting::query()->delete();
 
-        toastr()->success('Pengaturan dihapus. Rekap persentase kembali tampil pada Sabtu dan Minggu.');
+        toastSuccess('Pengaturan dihapus. Rekap persentase kembali tampil pada Sabtu dan Minggu.');
 
         return back();
     }

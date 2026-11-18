@@ -5,9 +5,7 @@
 <x-admin-layout.head />
 
 <body class="font-sans antialiased">
-    <x-flasher />
     <x-session-toast />
-    <x-flasher-theme />
     @php
         $isDashboardActive = request()->routeIs('admin.index');
         $isUserMenuActive = request()->routeIs('admin.user.*');

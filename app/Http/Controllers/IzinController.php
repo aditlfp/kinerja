@@ -68,10 +68,10 @@ class IzinController extends Controller
         if ($request->hasFile('img')) {
             $izin['img'] = UploadImage($request, 'img');
         }else{
-            toastr()->error('Image harus ditambahkan');
+            toastError('Image harus ditambahkan');
         }
             Izin::create($izin);
-            toastr()->success('Data izin Berhasil Disimpan');
+            toastSuccess('Data izin Berhasil Disimpan');
             return redirect()->to(route('izin.index'));
     }
 
@@ -96,7 +96,7 @@ class IzinController extends Controller
     {
         $izinId = Izin::findOrFail($id);
         $izinId->delete();
-        toastr()->warning('Data Izin Dihapus');
+        toastWarning('Data Izin Dihapus');
         return redirect()->back();
     }
 }

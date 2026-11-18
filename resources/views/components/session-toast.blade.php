@@ -1,6 +1,84 @@
+<style>
+    #session-toast {
+        box-sizing: border-box !important;
+        top: calc(env(safe-area-inset-top) + 0.75rem) !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: min(320px, calc(100vw - 1.5rem)) !important;
+        max-width: calc(100vw - 1.5rem) !important;
+        min-width: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        will-change: transform, opacity, border-radius !important;
+        border: 1px solid rgb(15 23 42 / 0.08) !important;
+        border-radius: 22px !important;
+        background: rgb(255 255 255 / 0.88) !important;
+        color: #0f172a !important;
+        backdrop-filter: blur(18px) saturate(140%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(140%) !important;
+        box-shadow: 0 14px 35px rgb(15 23 42 / 0.18), 0 2px 8px rgb(15 23 42 / 0.08) !important;
+        isolation: isolate !important;
+        transform-origin: 50% 0 !important;
+        opacity: 0;
+    }
+
+    #session-toast.is-entering {
+        animation: session-toast-expand 520ms cubic-bezier(.2, .9, .3, 1) both !important;
+    }
+
+    #session-toast [data-toast-title] { color: #0f172a !important; }
+    #session-toast [data-toast-message],
+    #session-toast [data-toast-title] { overflow-wrap: anywhere !important; word-break: break-word !important; }
+    #session-toast [data-toast-icon-wrap] { flex: 0 0 1.75rem !important; }
+    #session-toast [data-toast-close] { flex: 0 0 auto !important; }
+    #session-toast .min-w-0 { min-width: 0 !important; }
+    #session-toast [data-toast-message] { color: #475569 !important; }
+    #session-toast [data-toast-progress] { border-radius: 999px; }
+    #session-toast .relative.px-3\.5.py-3,
+    #session-toast .relative.px-3.py-2\.5 { padding: 0.625rem 0.75rem !important; }
+    #session-toast [data-toast-icon-wrap] { width: 1.75rem !important; height: 1.75rem !important; }
+    #session-toast [data-toast-title] { font-size: 0.8rem !important; }
+    #session-toast [data-toast-message] { font-size: 0.7rem !important; line-height: 1.35 !important; }
+    #session-toast [data-toast-timer] { font-size: 0.62rem !important; }
+
+
+    #session-toast.is-closing {
+        animation: session-toast-collapse 360ms cubic-bezier(.4, 0, 1, 1) both !important;
+    }
+
+    @keyframes session-toast-expand {
+        0% { opacity: 0; transform: translate3d(0, -8px, 0) scaleX(.16) scaleY(.72); border-radius: 999px; }
+        55% { opacity: 1; transform: translate3d(0, 1px, 0) scaleX(1.04) scaleY(.94); border-radius: 26px; }
+        78% { transform: translate3d(0, 0, 0) scaleX(.98) scaleY(1.02); border-radius: 23px; }
+        100% { opacity: 1; transform: translate3d(0, 0, 0) scaleX(1) scaleY(1); border-radius: 22px; }
+    }
+
+    @keyframes session-toast-collapse {
+        0% { opacity: 1; transform: translate3d(0, 0, 0) scaleX(1) scaleY(1); border-radius: 22px; }
+        45% { opacity: 1; transform: translate3d(0, -2px, 0) scaleX(1.03) scaleY(.88); border-radius: 26px; }
+        100% { opacity: 0; transform: translate3d(0, -7px, 0) scaleX(.16) scaleY(.72); border-radius: 999px; }
+    }
+
+    @media (max-width: 380px) {
+        #session-toast {
+            width: calc(100vw - 1rem) !important;
+            max-width: calc(100vw - 1rem) !important;
+            border-radius: 18px !important;
+        }
+
+        #session-toast .relative.px-3\\.5.py-3,
+        #session-toast .relative.px-3.py-2\\.5 {
+            padding: 0.55rem 0.65rem !important;
+        }
+
+
+    }
+
+</style>
+
 @if (session('toast'))
     <div id="session-toast"
-        class="fixed left-1/2 top-4 z-99999 w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5"
+        class="fixed inset-x-0 top-4 z-99999 mx-auto w-[calc(100%-1.5rem)] max-w-[320px] overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5"
         data-type="{{ session('toast.type') }}">
         <div class="relative px-3.5 py-3">
             <div class="flex items-start gap-3">
@@ -15,15 +93,7 @@
                     <p class="mt-1 text-[0.78rem] font-medium leading-[1.4] text-slate-600" data-toast-message>
                         {{ session('toast.message') }}
                     </p>
-                    <p class="mt-1.5 text-[0.7rem] text-slate-500" data-toast-timer>
-                        Menutup dalam <span data-toast-countdown>3</span> detik. <button type="button" class="font-semibold text-slate-700 hover:text-slate-900" data-toast-stop>Hentikan</button>
-                    </p>
                 </div>
-                <button type="button"
-                    class="absolute right-2.5 top-2.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-500/10 hover:text-slate-700"
-                    data-toast-close aria-label="Tutup notifikasi">
-                    <i class="ri-close-line text-sm"></i>
-                </button>
             </div>
         </div>
         <div class="absolute inset-x-0 bottom-0 h-[2.5px] bg-slate-200/50">
@@ -75,7 +145,7 @@
 
         const toastMarkup = (type, message) => `
             <div id="session-toast"
-                class="fixed left-1/2 top-4 z-99999 w-[calc(100%-1.5rem)] max-w-[400px] -translate-x-1/2 overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5 opacity-0 -translate-y-2 transition-all duration-200"
+                class="fixed inset-x-0 top-4 z-99999 mx-auto w-[calc(100%-1.5rem)] max-w-[320px] overflow-hidden rounded-xl border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.15)] ring-1 ring-slate-900/5 opacity-0 -translate-y-2 transition-all duration-200"
                 data-type="${type}">
                 <div class="relative px-3.5 py-3">
                     <div class="flex items-start gap-3">
@@ -88,15 +158,7 @@
                                 <p class="text-[0.9rem] font-bold leading-[1.2]" data-toast-title></p>
                             </div>
                             <p class="mt-1 text-[0.78rem] font-medium leading-[1.4] text-slate-600" data-toast-message>${message}</p>
-                            <p class="mt-1.5 text-[0.7rem] text-slate-500" data-toast-timer>
-                                Menutup dalam <span data-toast-countdown>3</span> detik. <button type="button" class="font-semibold text-slate-700 hover:text-slate-900" data-toast-stop>Hentikan</button>
-                            </p>
                         </div>
-                        <button type="button"
-                            class="absolute right-2.5 top-2.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-500/10 hover:text-slate-700"
-                            data-toast-close aria-label="Tutup notifikasi">
-                            <i class="ri-close-line text-sm"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="absolute inset-x-0 bottom-0 h-[2.5px] bg-slate-200/50">
@@ -116,10 +178,7 @@
             const titleIcon = toast.querySelector('[data-toast-title-icon]');
             const title = toast.querySelector('[data-toast-title]');
             const progress = toast.querySelector('[data-toast-progress]');
-            const countdown = toast.querySelector('[data-toast-countdown]');
-            const stopBtn = toast.querySelector('[data-toast-stop]');
-            const closeBtn = toast.querySelector('[data-toast-close]');
-            const timerText = toast.querySelector('[data-toast-timer]');
+
 
             toast.style.borderColor = theme.border;
             toast.style.background = theme.background;
@@ -138,6 +197,7 @@
             }
 
             requestAnimationFrame(() => {
+                toast.classList.add('is-entering');
                 toast.classList.remove('opacity-0', '-translate-y-2');
             });
 
@@ -150,39 +210,18 @@
                 });
             }
 
-            let timeLeft = 3;
             let timerInterval = null;
-            let isStopped = false;
-
-            const updateCountdown = () => {
-                if (countdown) countdown.textContent = timeLeft;
-            };
 
             const closeToast = () => {
                 if (timerInterval) clearInterval(timerInterval);
-                toast.classList.add('opacity-0', 'translate-y-1', 'pointer-events-none');
-                setTimeout(() => toast.remove(), 220);
+                toast.classList.remove('is-entering');
+                toast.classList.add('is-closing', 'pointer-events-none');
+                setTimeout(() => toast.remove(), 360);
             };
 
-            timerInterval = setInterval(() => {
-                if (isStopped) return;
-                timeLeft -= 1;
-                updateCountdown();
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    closeToast();
-                }
-            }, 1000);
+            timerInterval = setTimeout(closeToast, 3000);
 
-            stopBtn?.addEventListener('click', () => {
-                isStopped = true;
-                if (timerInterval) clearInterval(timerInterval);
-                if (progress) progress.style.transition = 'none';
-                if (timerText) timerText.innerHTML = 'Timer dihentikan.';
-            });
 
-            closeBtn?.addEventListener('click', closeToast);
-            updateCountdown();
         };
 
         window.showAppToast = (rawType, rawMessage) => {
@@ -198,12 +237,20 @@
             bindToast(document.getElementById('session-toast'));
         };
 
-        const initialToast = document.getElementById('session-toast');
-        if (initialToast) {
+        const showInitialToastAfterLoad = () => {
+            const initialToast = document.getElementById('session-toast');
+            if (!initialToast) return;
+
             const initialType = initialToast.dataset.type;
             const initialMessage = initialToast.querySelector('[data-toast-message]')?.textContent?.trim() || '';
             initialToast.remove();
             window.showAppToast(initialType, initialMessage);
+        };
+
+        if (document.readyState === 'complete') {
+            requestAnimationFrame(showInitialToastAfterLoad);
+        } else {
+            window.addEventListener('load', showInitialToastAfterLoad, { once: true });
         }
     })();
 </script>
