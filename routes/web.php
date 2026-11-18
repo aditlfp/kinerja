@@ -89,8 +89,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
-})->middleware('guest');
+    // Halaman statis: bisa di-cache browser/CDN dan tidak membebani boot Laravel setiap kali.
+    return response()->make(file_get_contents(public_path('splash.html')), 200, [
+        'Content-Type' => 'text/html; charset=UTF-8',
+        'Cache-Control' => 'private, max-age=600, stale-while-revalidate=86400',
+    ]);
+})->middleware('guest')->name('splash');
 
 
 Route::view('/map', 'absensi.maps');
@@ -150,10 +154,7 @@ use Illuminate\Http\Request;
 
 Route::delete('/notifications/{notification}', function (Request $request, string $notification) {
     $request->user()->notifications()->whereKey($notification)->firstOrFail()->delete();
-
-    return $request->expectsJson()
-        ? response()->json(['ok' => true])
-        : back();
+    return back();
 })->middleware('auth')->name('notifications.delete');
 
 Route::post('/notifications/read-all', function (Request $request) {
@@ -161,10 +162,8 @@ Route::post('/notifications/read-all', function (Request $request) {
         ->unreadNotifications
         ->markAsRead();
 
-    return $request->expectsJson()
-        ? response()->json(['ok' => true])
-        : back();
-})->middleware('auth')->name('notifications.read-all');
+    return back();
+})->name('notifications.read-all');
 
 Route::get('/notifications', function (Request $request) {
     $notifications = $request->user()
@@ -197,10 +196,8 @@ Route::middleware(['auth', 'apdt'])->group(function () {
     Route::resource('/laporan', LaporanController::class)->only('index', 'create', 'store');
     Route::get('/mypoint/{id}', [PointController::class, 'myPoint'])->name('mypoint');
 
-    Route::post('checkpoint-upload/chunk', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'chunk'])->name('checkpoint-upload.chunk');
-    Route::post('checkpoint-upload/complete', [\App\Http\Controllers\CheckPointChunkUploadController::class, 'complete'])->name('checkpoint-upload.complete');
     Route::get('checkpoint-user/work-order-file/{image}', [CheckPointController::class, 'workOrderFile'])->name('checkpoint-user.work-order-file');
-    Route::resource('checkpoint-user', CheckPointController::class);
+Route::resource('checkpoint-user', CheckPointController::class);
     Route::get('checkpoint-user-history', [CheckPointController::class, 'history'])->name('checkpoint-user.history');
     Route::get('checkpoint-user-history/{id}', [CheckPointController::class, 'historyShow'])->name('checkpoint-user.history.show');
     Route::post('checkpoint-item/{item}/messages', [CheckPointMessageController::class, 'store'])->name('checkpoint-item.messages.store');
@@ -284,7 +281,6 @@ Route::middleware(['auth', 'mitra'])->group(function () {
     Route::get('/mitra-rekap/berkas/{file}', [MitraController::class, 'previewRekap'])
         ->where('file', '.+')
         ->name('mitra_rekap_berkas');
-    Route::get('mitra-download-berkas-pdf/{url}', [MitraController::class, 'downloadRekap'])->name('download_laporan_bulanan');
     Route::get('/mitra-absensi', [MitraController::class, 'indexKehadiran'])->name('mitra_absensi');
     Route::get('/mitra-check-koordinat/{id}', [MitraController::class, "showLocation"])->name('mitra-lihatMap');
     Route::get('/mitra-jadwal', [JadwalUserController::class, 'index'])->name('mitra_jadwal');
