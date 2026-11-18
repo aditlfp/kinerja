@@ -711,7 +711,7 @@ class AbsensiController extends Controller
             return redirect()->back();
         }
 
-        if ($isRegionalAttendanceUser) {
+        if ($isRegionalAttendanceUser && (int) Auth::user()->kerjasama_id !== 1) {
             $withinRegionalLocation = $this->regionalLocations(Auth::user())->contains(function ($lokasi) use ($latUser, $longUser) {
                 return $this->distance($lokasi->latitude, $lokasi->longtitude, $latUser, $longUser)['meters'] <= (float) $lokasi->radius;
             });
