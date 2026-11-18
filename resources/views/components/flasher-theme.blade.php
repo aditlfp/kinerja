@@ -3,12 +3,13 @@
     .fl-main-container {
         left: 50% !important;
         right: auto !important;
-        top: 0.85rem !important;
+        top: max(0.85rem, env(safe-area-inset-top)) !important;
         transform: translateX(-50%) !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 0.5rem !important;
-        width: min(400px, calc(100vw - 1.5rem)) !important;
+        width: min(390px, calc(100vw - 1.5rem)) !important;
+        z-index: 99999 !important;
         pointer-events: none !important;
     }
 
@@ -20,21 +21,37 @@
         min-height: auto !important;
         margin: 0 !important;
         padding: 0.75rem 0.9rem !important;
-        border-radius: 12px !important;
+        border-radius: 18px !important;
         border: 1px solid transparent !important;
         background-image: none !important;
         background-repeat: no-repeat !important;
-        box-shadow: 0 12px 32px rgb(15 23 42 / 0.15) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        box-shadow: 0 16px 38px rgb(15 23 42 / 0.18), 0 2px 8px rgb(15 23 42 / 0.08) !important;
         overflow: hidden !important;
         opacity: 1 !important;
-        transition: opacity 180ms ease, transform 180ms ease !important;
+        transform-origin: top center !important;
+        animation: dynamicIslandIn 360ms cubic-bezier(.22, 1, .36, 1) both !important;
+        transition: opacity 220ms ease, transform 220ms ease !important;
         transform: translateY(0) scale(1) !important;
     }
 
     #toast-container>div.toast-closing,
     .fl-main-container .fl-container.toast-closing {
         opacity: 0 !important;
-        transform: translateY(-4px) scale(.98) !important;
+        transform: translateY(-10px) scale(.82) !important;
+        animation: dynamicIslandOut 220ms ease both !important;
+    }
+
+    @keyframes dynamicIslandIn {
+        0% { opacity: 0; transform: translateY(-18px) scale(.58, .72); border-radius: 999px; }
+        55% { opacity: 1; transform: translateY(2px) scale(1.03, .96); border-radius: 24px; }
+        100% { transform: translateY(0) scale(1); border-radius: 18px; }
+    }
+
+    @keyframes dynamicIslandOut {
+        from { opacity: 1; transform: translateY(0) scale(1); }
+        to { opacity: 0; transform: translateY(-10px) scale(.82); }
     }
 
     #toast-container .toast-title,
@@ -109,6 +126,14 @@
     @keyframes toastTimerShrink {
         from { transform: scaleX(1); }
         to { transform: scaleX(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .fl-main-container .fl-container,
+        #toast-container > div {
+            animation: none !important;
+            transition: none !important;
+        }
     }
 </style>
 
