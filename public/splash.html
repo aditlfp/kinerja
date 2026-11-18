@@ -4,18 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#05060B">
+    <meta name="theme-color" content="#FAFAF7">
     <meta name="robots" content="noindex">
     <title>Kinerja SAC-PO</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet">
     <style>
         :root {
-            --ink: #F4F7FF;
-            --muted: rgba(244, 247, 255, .48);
+            --ink: #0C1017;
+            --muted: #7A8090;
             --brand: #2B59FF;
             --brand-soft: #6E8CFF;
-            --cyan: #67D6FF;
+            --cyan: #26A8D6;
+            --paper: #FAFAF7;
             --ease: cubic-bezier(.32, .72, 0, 1);
         }
 
@@ -37,7 +38,7 @@
         }
 
         body {
-            background: #05060B;
+            background: var(--paper);
             color: var(--ink);
             font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
             -webkit-font-smoothing: antialiased;
@@ -61,9 +62,10 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(760px 520px at 50% -8%, rgba(43, 89, 255, .38), transparent 62%),
-                radial-gradient(620px 460px at 92% 104%, rgba(103, 214, 255, .16), transparent 60%),
-                radial-gradient(520px 420px at 4% 92%, rgba(118, 92, 255, .16), transparent 62%);
+                radial-gradient(780px 520px at 50% -10%, rgba(43, 89, 255, .14), transparent 64%),
+                radial-gradient(640px 460px at 94% 104%, rgba(38, 168, 214, .12), transparent 62%),
+                radial-gradient(520px 420px at 2% 94%, rgba(118, 92, 255, .09), transparent 64%),
+                radial-gradient(900px 620px at 50% 60%, rgba(255, 255, 255, .9), transparent 70%);
         }
 
         .mesh::after {
@@ -71,8 +73,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(to right, rgba(255, 255, 255, .045) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, .045) 1px, transparent 1px);
+                linear-gradient(to right, rgba(12, 16, 23, .055) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(12, 16, 23, .055) 1px, transparent 1px);
             background-size: 80px 80px;
             -webkit-mask-image: radial-gradient(58% 58% at 50% 38%, #000 10%, transparent 76%);
             mask-image: radial-gradient(58% 58% at 50% 38%, #000 10%, transparent 76%);
@@ -95,10 +97,10 @@
         .mark-shell {
             padding: 9px;
             border-radius: 38px;
-            background: rgba(255, 255, 255, .06);
+            background: rgba(255, 255, 255, .78);
             box-shadow:
-                inset 0 0 0 1px rgba(255, 255, 255, .10),
-                0 40px 90px -50px rgba(43, 89, 255, .95);
+                inset 0 0 0 1px rgba(12, 16, 23, .06),
+                0 34px 70px -52px rgba(43, 89, 255, .55);
             animation: settle 1s var(--ease) both;
         }
 
@@ -110,7 +112,10 @@
             height: 96px;
             border-radius: 29px;
             background: #fff;
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, .9), 0 18px 40px -26px rgba(0, 0, 0, .9);
+            box-shadow:
+                inset 0 1px 1px #fff,
+                0 0 0 1px rgba(12, 16, 23, .05),
+                0 16px 34px -24px rgba(12, 16, 23, .42);
         }
 
         .mark-core img {
@@ -124,7 +129,7 @@
             position: absolute;
             inset: -12px;
             border-radius: 40px;
-            box-shadow: 0 0 0 1px rgba(103, 214, 255, .28);
+            box-shadow: 0 0 0 1px rgba(43, 89, 255, .16);
             animation: halo 3.2s var(--ease) infinite;
         }
 
@@ -160,7 +165,7 @@
             font-weight: 600;
             letter-spacing: .28em;
             text-transform: uppercase;
-            color: rgba(244, 247, 255, .42);
+            color: #8A8F9C;
             animation: rise .9s var(--ease) .12s both;
         }
 
@@ -170,7 +175,7 @@
             font-weight: 800;
             letter-spacing: -.035em;
             line-height: 1.06;
-            background: linear-gradient(180deg, #FFFFFF 30%, #B9C8FF 100%);
+            background: linear-gradient(180deg, #0C1017 34%, #5A6782 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -179,7 +184,7 @@
 
         .wordmark b {
             font-weight: 800;
-            background: linear-gradient(92deg, var(--brand-soft), var(--cyan));
+            background: linear-gradient(92deg, var(--brand), var(--cyan));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -219,7 +224,7 @@
         }
 
         .pct {
-            color: #fff;
+            color: var(--ink);
             font-variant-numeric: tabular-nums;
             letter-spacing: -.01em;
         }
@@ -228,8 +233,8 @@
             position: relative;
             height: 6px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, .075);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05);
+            background: rgba(12, 16, 23, .07);
+            box-shadow: inset 0 0 0 1px rgba(12, 16, 23, .035);
             overflow: hidden;
         }
 
@@ -240,7 +245,7 @@
             background: linear-gradient(90deg, var(--brand) 0%, var(--brand-soft) 46%, var(--cyan) 100%);
             transform: scaleX(0);
             transform-origin: left center;
-            box-shadow: 0 0 18px rgba(43, 89, 255, .75), 0 0 40px rgba(103, 214, 255, .35);
+            box-shadow: 0 0 16px rgba(43, 89, 255, .32), 0 0 34px rgba(38, 168, 214, .18);
             will-change: transform;
         }
 
@@ -270,17 +275,19 @@
             font-size: 12px;
             font-weight: 600;
             letter-spacing: .01em;
-            color: rgba(244, 247, 255, .66);
+            color: #4C5262;
             text-decoration: none;
-            background: rgba(255, 255, 255, .04);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+            background: rgba(255, 255, 255, .86);
+            box-shadow:
+                inset 0 0 0 1px rgba(12, 16, 23, .07),
+                0 14px 28px -24px rgba(12, 16, 23, .55);
             transition: color .45s var(--ease), background .45s var(--ease), transform .45s var(--ease);
             animation: rise .9s var(--ease) .34s both;
         }
 
         .skip:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, .09);
+            color: var(--ink);
+            background: #fff;
             transform: translateY(-1px);
         }
 
@@ -292,8 +299,8 @@
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: var(--cyan);
-            box-shadow: 0 0 12px var(--cyan);
+            background: var(--brand);
+            box-shadow: 0 0 10px rgba(43, 89, 255, .5);
         }
 
         .foot {
@@ -305,7 +312,7 @@
             font-weight: 500;
             letter-spacing: .22em;
             text-transform: uppercase;
-            color: rgba(244, 247, 255, .22);
+            color: #A6ABB6;
         }
 
         @media (prefers-reduced-motion:reduce) {

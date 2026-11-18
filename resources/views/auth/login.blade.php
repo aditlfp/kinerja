@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --ink: #080B14;
+            --ink: #F3F4EF;
             --text: #10131C;
             --muted: #6D7383;
             --line: #E8E9EE;
@@ -57,8 +57,8 @@
             position: relative;
             overflow: hidden;
             padding: 40px 40px 34px;
-            background: var(--ink);
-            color: #F4F7FF;
+            background: linear-gradient(158deg, #F5F5F0 0%, #E9EEF9 100%);
+            color: var(--text);
         }
 
         .panel::before {
@@ -66,8 +66,8 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(680px 460px at 12% -6%, rgba(43, 89, 255, .42), transparent 64%),
-                radial-gradient(560px 420px at 92% 96%, rgba(103, 214, 255, .14), transparent 62%);
+                radial-gradient(680px 460px at 12% -6%, rgba(43, 89, 255, .13), transparent 64%),
+                radial-gradient(560px 420px at 92% 96%, rgba(38, 168, 214, .10), transparent 62%);
             pointer-events: none;
         }
 
@@ -76,8 +76,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(to right, rgba(255, 255, 255, .04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, .04) 1px, transparent 1px);
+                linear-gradient(to right, rgba(12, 16, 23, .05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(12, 16, 23, .05) 1px, transparent 1px);
             background-size: 84px 84px;
             -webkit-mask-image: radial-gradient(70% 60% at 30% 20%, #000 0%, transparent 78%);
             mask-image: radial-gradient(70% 60% at 30% 20%, #000 0%, transparent 78%);
@@ -106,8 +106,8 @@
         .brand-shell {
             padding: 6px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, .07);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .11);
+            background: rgba(255, 255, 255, .85);
+            box-shadow: inset 0 0 0 1px rgba(12, 16, 23, .06);
         }
 
         .brand-core {
@@ -138,7 +138,7 @@
             font-weight: 500;
             letter-spacing: .22em;
             text-transform: uppercase;
-            color: rgba(244, 247, 255, .42);
+            color: #8A8F9C;
         }
 
         .pill {
@@ -151,17 +151,17 @@
             font-weight: 600;
             letter-spacing: .2em;
             text-transform: uppercase;
-            color: rgba(244, 247, 255, .6);
-            background: rgba(255, 255, 255, .045);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+            color: #6D7383;
+            background: rgba(255, 255, 255, .78);
+            box-shadow: inset 0 0 0 1px rgba(12, 16, 23, .06);
         }
 
         .pill i {
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: var(--cyan);
-            box-shadow: 0 0 10px var(--cyan);
+            background: var(--brand);
+            box-shadow: 0 0 10px rgba(43, 89, 255, .5);
         }
 
         .panel h1 {
@@ -170,7 +170,7 @@
             font-weight: 800;
             letter-spacing: -.045em;
             line-height: .98;
-            background: linear-gradient(180deg, #FFFFFF 42%, #B9C8FF 100%);
+            background: linear-gradient(180deg, #0C1017 38%, #5A6782 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -178,7 +178,7 @@
 
         .panel h1 b {
             font-weight: 800;
-            background: linear-gradient(92deg, #8AA3FF, var(--cyan));
+            background: linear-gradient(92deg, var(--brand), #1E9BC9);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -190,7 +190,7 @@
             font-size: 13.5px;
             font-weight: 400;
             line-height: 1.75;
-            color: rgba(244, 247, 255, .56);
+            color: #6D7383;
         }
 
         .facts {
@@ -207,25 +207,25 @@
             padding: 13px 0;
             font-size: 12.5px;
             font-weight: 500;
-            color: rgba(244, 247, 255, .68);
-            border-top: 1px solid rgba(255, 255, 255, .07);
+            color: #565C6B;
+            border-top: 1px solid rgba(12, 16, 23, .08);
             transition: color .5s var(--ease);
         }
 
         .facts li:last-child {
-            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            border-bottom: 1px solid rgba(12, 16, 23, .08);
         }
 
         .facts li:hover {
-            color: #fff;
+            color: var(--text);
         }
 
         .facts i {
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: rgba(103, 214, 255, .75);
-            box-shadow: 0 0 8px rgba(103, 214, 255, .6);
+            background: var(--brand);
+            box-shadow: 0 0 8px rgba(43, 89, 255, .45);
         }
 
         .panel-foot {
@@ -233,7 +233,7 @@
             font-weight: 500;
             letter-spacing: .2em;
             text-transform: uppercase;
-            color: rgba(244, 247, 255, .26);
+            color: #A6ABB6;
         }
 
         /* ---------- Hero mobile ---------- */
@@ -241,8 +241,8 @@
             position: relative;
             overflow: hidden;
             padding: 34px 22px 66px;
-            background: var(--ink);
-            color: #F4F7FF;
+            background: linear-gradient(162deg, #F6F6F1 0%, #E8EEFA 100%);
+            color: var(--text);
             text-align: left;
         }
 
@@ -251,8 +251,8 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(460px 320px at 18% -20%, rgba(43, 89, 255, .45), transparent 62%),
-                radial-gradient(380px 300px at 96% 110%, rgba(103, 214, 255, .14), transparent 60%);
+                radial-gradient(460px 320px at 18% -20%, rgba(43, 89, 255, .16), transparent 62%),
+                radial-gradient(380px 300px at 96% 110%, rgba(38, 168, 214, .12), transparent 58%);
         }
 
         .hero-mobile::after {
@@ -260,8 +260,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(to right, rgba(255, 255, 255, .04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, .04) 1px, transparent 1px);
+                linear-gradient(to right, rgba(12, 16, 23, .05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(12, 16, 23, .05) 1px, transparent 1px);
             background-size: 64px 64px;
             -webkit-mask-image: radial-gradient(80% 70% at 20% 0%, #000 0%, transparent 80%);
             mask-image: radial-gradient(80% 70% at 20% 0%, #000 0%, transparent 80%);
@@ -278,7 +278,7 @@
             font-weight: 800;
             letter-spacing: -.04em;
             line-height: 1.04;
-            background: linear-gradient(180deg, #FFFFFF 40%, #C2CFFF 100%);
+            background: linear-gradient(180deg, #0C1017 36%, #5A6782 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -289,7 +289,7 @@
             font-size: 12.5px;
             font-weight: 400;
             line-height: 1.6;
-            color: rgba(244, 247, 255, .55);
+            color: #6D7383;
         }
 
         /* ---------- Form ---------- */
