@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Masuk - {{ config('app.name', 'Kinerja SAC-PO') }}</title>
+    <title>Masuk - {{ config('app.name', 'Kinerja PT. SAC') }}</title>
     <style>html[data-no-debugbar] .phpdebugbar,html[data-no-debugbar] #phpdebugbar,html[data-no-debugbar] .phpdebugbar-openhandler{display:none !important}</style>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -691,11 +691,11 @@
                 <div class="brand">
                     <div class="brand-shell">
                         <div class="brand-core">
-                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO">
+                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja PT. SAC">
                         </div>
                     </div>
                     <div class="brand-text">
-                        Kinerja SAC-PO
+                        Kinerja PT. SAC
                         <span>Sistem Kinerja</span>
                     </div>
                 </div>
@@ -727,11 +727,11 @@
                 <div class="brand">
                     <div class="brand-shell">
                         <div class="brand-core">
-                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO">
+                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja PT. SAC">
                         </div>
                     </div>
                     <div class="brand-text">
-                        Kinerja SAC-PO
+                        Kinerja PT. SAC
                         <span>Sistem Kinerja</span>
                     </div>
                 </div>
