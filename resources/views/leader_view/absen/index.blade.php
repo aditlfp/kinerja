@@ -6,11 +6,11 @@
                 <a href="{{ route('dashboard.index') }}" class="inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-3 text-sm font-semibold text-slate-700 shadow-xs ring-1 ring-slate-200 hover:bg-slate-50"><i class="ri-home-4-line"></i> Dashboard</a>
             </div>
             <div class="rounded-2xl bg-white py-6 shadow-xs ring-1 ring-slate-900/5 sm:py-10">
-                <p class="border-l-4 border-sky-500 text-lg font-bold text-center uppercase sm:text-2xl">Riwayat Absensi, <br>{{ auth()->user()->kerjasama->client->name }}</p>
+                <p class="border-l-4 border-sky-500 text-lg font-bold text-center uppercase sm:text-2xl">Riwayat Absensi <br>{{ auth()->user()->kerjasama->client_id == 1 ? '' : ', '.auth()->user()->kerjasama->client->name }}</p>
             <div class="flex flex-col items-center justify-start mx-2 my-2 sm:justify-center">
                 <div class="flex items-center justify-center my-5 sm:justify-between">
                     <div class="flex flex-col items-center justify-center w-full gap-2 sm:flex-row sm:gap-5 sm:justify-between">
-                        <div class="w-full p-4 mx-5 rounded-md bg-slate-100">
+                        <div class="w-full min-w-0 rounded-md">
                             @php
                                 $isMitra = Auth::user()->divisi->jabatan->code_jabatan === 'MITRA';
                                 $isCoScr = Auth::user()->divisi->jabatan->code_jabatan === 'CO-SCR';
@@ -34,10 +34,10 @@
                                 </form>
 
                             @elseif($isCoScr)
-                                <form action="{{ route('danru_absensi') }}" method="GET" class="sm:flex sm:justify-start">
-                                    <div class="w-full join sm:ml-10">
-                                        <div style="width: 75%;" class="flex flex-col w-3/4 join-item">
-                                            <input type="month" name="search" id="search" value="{{ $defaultMonth }}" max="{{ $now }}" placeholder="pilih bulan..." class="w-full text-sm rounded-none input input-sm input-bordered" />
+                                <form action="{{ route('danru_absensi') }}" method="GET" class="w-full sm:flex sm:justify-start">
+                                    <div class="join w-full sm:ml-10">
+                                        <div class="flex flex-col w-full join-item">
+                                            <input type="month" name="search" id="search" value="{{ $defaultMonth }}" max="{{ $now }}" placeholder="pilih bulan..." class="w-full text-sm rounded-none input input-md input-bordered" />
                                             @if(Auth::user()->jabatan->code_jabatan == 'SPV-W')
                                                 <select name="mitra" class="w-full text-xs text-black rounded-none select select-bordered select-sm">
                                                     <option disabled selected>~Pilih Mitra~</option>
@@ -49,15 +49,15 @@
                                                 </select>
                                             @endif
                                         </div>
-                                        <div style="width: 25%;" class="w-1/4 join-item">
+                                        <div class="join-item">
                                             <button type="submit" class="w-full h-full rounded-none btn btn-info">FILTER</button>
                                         </div>
                                     </div>
                                 </form>
 
                             @elseif($isDireksi)
-                                <form action="{{ route('direksi_absensi') }}" method="GET" class="w-full gap-2 sm:flex sm:justify-start">
-                                    <div class="flex flex-col items-center justify-center w-full gap-2">
+                                <form action="{{ route('direksi_absensi') }}" method="GET" class="grid w-full gap-2 sm:flex sm:items-end sm:justify-start">
+                                    <div class="flex min-w-0 w-full flex-col items-center justify-center gap-2 sm:flex-1">
                                         <select name="mitra" class="w-full text-xs text-black select select-bordered">
                                             <option disabled selected>~Pilih Mitra~</option>
                                             @forelse($mitra as $i)
@@ -73,16 +73,16 @@
                                     </div>
                                 </form>
                             @elseif($isSpvW)
-                                <form method="GET" class="flex flex-wrap items-end gap-3 p-4 bg-base-100 rounded-xl shadow-xs border border-base-200">
-                                    <div class="form-control w-full sm:w-auto">
+                                <form method="GET" class="relative left-1/2 grid w-[calc(100vw-1.5rem)] min-w-0 -translate-x-1/2 gap-3 self-stretch rounded-xl border border-base-200 bg-base-100 p-3 shadow-xs sm:static sm:w-full sm:translate-x-0 sm:flex sm:items-end sm:p-4">
+                                    <div class="form-control w-full min-w-0 sm:w-48 sm:flex-none">
                                         <label class="label pb-1"><span class="label-text text-xs font-semibold">Bulan</span></label>
                                         <input type="month" name="search" id="search" value="{{ $defaultMonth }}" max="{{ $now }}"
-                                            class="input input-bordered input-sm focus:input-primary text-xs" />
+                                            class="input input-bordered input-sm !w-full focus:input-primary text-xs" />
                                     </div>
 
-                                    <div class="form-control w-full sm:w-48">
+                                    <div class="form-control w-full min-w-0 sm:w-48 sm:flex-none">
                                         <label class="label pb-1"><span class="label-text text-xs font-semibold">Mitra</span></label>
-                                        <select name="mitra" class="select select-bordered select-sm focus:select-primary text-xs">
+                                        <select name="mitra" class="select select-bordered select-sm !w-full min-w-0 focus:select-primary text-xs">
                                             <option disabled selected>Pilih Mitra</option>
                                             @forelse($mitra as $i)
                                                 <option value="{{ $i->id }}" {{ $filterMitra == $i->id ? 'selected' : '' }}>
@@ -94,10 +94,10 @@
                                         </select>
                                     </div>
 
-                                    <div class="form-control w-full sm:w-48">
+                                    <div class="form-control w-full min-w-0 sm:w-48 sm:flex-none">
                                         <label class="label pb-1"><span class="label-text text-xs font-semibold">User</span></label>
                                         <select name="user" id="user" {{ $filterMitra ? '' : 'disabled' }}
-                                                class="select select-bordered select-sm focus:select-primary text-xs">
+                                                class="select select-bordered select-sm !w-full min-w-0 focus:select-primary text-xs">
                                             <option disabled selected>Pilih User</option>
                                             @forelse($users as $u)
                                                 <option value="{{ $u->id }}" {{ request('user') == $u->id ? 'selected' : '' }}>
@@ -109,7 +109,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="w-full sm:w-auto">
+                                    <div class="w-full sm:w-auto sm:flex-none">
                                         <button type="submit" class="btn btn-info btn-sm w-full px-8 text-white">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -136,8 +136,8 @@
                     </div>
                 </div>
 
-                <div class="w-full mx-2 overflow-x-auto md:overflow-hidden sm:mx-10">
-                    <table id="searchTable" class="table text-xs font-semibold table-xs table-zebra sm:table-md bg-slate-50 sm:text-md ">
+                <div class="table-scroll w-full min-w-0 mx-0 overflow-x-auto sm:mx-10">
+                    <table id="searchTable" class="table w-max min-w-[900px] text-xs font-semibold table-xs table-zebra sm:table-md bg-slate-50 sm:text-md ">
                         <thead>
 							<tr class="text-center">
 								<th class="p-1 py-2 bg-slate-300 rounded-tl-2xl px-8">Foto</th>

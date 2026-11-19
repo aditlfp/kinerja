@@ -674,6 +674,30 @@
             }
         }
 
+        #login-splash { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; overflow: hidden; background: #FAFAF7; transition: opacity .55s var(--ease), visibility .55s; }
+        #login-splash::before, #login-splash::after { content: ''; position: absolute; width: 70vw; height: 70vw; max-width: 680px; max-height: 680px; border-radius: 50%; filter: blur(8px); pointer-events: none; }
+        #login-splash::before { top: -38%; left: 18%; background: radial-gradient(circle, rgba(43,89,255,.16), transparent 68%); }
+        #login-splash::after { right: -34%; bottom: -42%; background: radial-gradient(circle, rgba(38,168,214,.15), transparent 68%); }
+        #login-splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+        #login-splash .splash-inner { position: relative; z-index: 1; width: min(370px, 84vw); text-align: center; }
+        #login-splash .logo-orbit { position: relative; width: 132px; height: 132px; margin: 0 auto 30px; display: grid; place-items: center; }
+        #login-splash .logo-orbit::before, #login-splash .logo-orbit::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(43,89,255,.18); border-radius: 38%; transform: rotate(45deg); animation: orbit 4s var(--ease) infinite; }
+        #login-splash .logo-orbit::after { inset: 12px; border-color: rgba(38,168,214,.22); transform: rotate(-45deg); animation-duration: 3.2s; animation-direction: reverse; }
+        #login-splash img { position: relative; z-index: 1; width: 96px; height: 96px; object-fit: contain; border-radius: 29px; background: rgba(255,255,255,.92); padding: 16px; box-shadow: 0 18px 45px -24px rgba(43,89,255,.55), inset 0 1px 1px #fff; animation: logo-in .8s var(--ease) both; }
+        #login-splash h1 { margin: 0; font-size: clamp(27px, 7.4vw, 38px); font-weight: 800; letter-spacing: -.045em; animation: rise .8s var(--ease) .1s both; }
+        #login-splash h1 span { background: linear-gradient(92deg,#2B59FF,#26A8D6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        #login-splash p { margin: 11px 0 26px; color: #7A8090; font-size: 11.5px; animation: rise .8s var(--ease) .18s both; }
+        #login-splash .loader-meta { display: flex; justify-content: space-between; margin-bottom: 9px; color: #7A8090; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+        #login-splash .pct { color: #10131C; font-variant-numeric: tabular-nums; }
+        #login-splash .track { height: 7px; overflow: hidden; border-radius: 999px; background: rgba(12,16,23,.07); box-shadow: inset 0 0 0 1px rgba(12,16,23,.035); }
+        #login-splash .fill { position: relative; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; border-radius: inherit; background: linear-gradient(90deg,#2B59FF,#6E8CFF,#26A8D6); transition: transform 1.6s var(--ease); box-shadow: 0 0 18px rgba(43,89,255,.3); }
+        #login-splash .fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); transform: translateX(-100%); animation: sweep 1.3s var(--ease) infinite; }
+        #login-splash .splash-note { margin-top: 25px; color: #A0A5B0; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; animation: rise .8s var(--ease) .25s both; }
+        @keyframes orbit { to { transform: rotate(405deg); } }
+        @keyframes logo-in { from { opacity: 0; transform: scale(.72) rotate(-8deg); } to { opacity: 1; transform: none; } }
+        @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @keyframes sweep { to { transform: translateX(100%); } }
+        @media (prefers-reduced-motion: reduce) { #login-splash *, #login-splash::before, #login-splash::after { animation: none !important; transition: none !important; } }
         @media (hover: none) and (pointer: coarse) {
             .field {
                 font-size: 16px;
@@ -683,6 +707,16 @@
 </head>
 
 <body>
+    <div id="login-splash" role="status" aria-label="Memuat aplikasi">
+        <div class="splash-inner">
+            <div class="logo-orbit"><img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO"></div>
+            <h1>KINERJA <span>SAC-PO</span></h1>
+            <p>Menyiapkan ruang kerja Anda</p>
+            <div class="loader-meta"><span id="splash-status">Menghubungkan sistem</span><span class="pct" id="splash-pct">0%</span></div>
+            <div class="track"><div class="fill"></div></div>
+            <div class="splash-note">Sistem Kinerja &amp; Absensi</div>
+        </div>
+    </div>
     <div class="shell">
 
         {{-- ================= Panel brand: desktop ================= --}}
@@ -835,6 +869,20 @@
     </div>
 
     <x-session-toast />
+
+    <script>
+        const splash = document.getElementById('login-splash');
+        const fill = splash.querySelector('.fill');
+        const pct = document.getElementById('splash-pct');
+        const status = document.getElementById('splash-status');
+        requestAnimationFrame(() => fill.style.transform = 'scaleX(1)');
+        [25, 55, 82, 100].forEach((value, index) => setTimeout(() => {
+            pct.textContent = `${value}%`;
+            status.textContent = ['Menghubungkan sistem', 'Memuat profil', 'Menyiapkan ruang kerja', 'Siap'][index];
+        }, [350, 750, 1150, 1600][index]));
+        setTimeout(() => splash.classList.add('is-leaving'), 1600);
+        setTimeout(() => splash.remove(), 2000);
+    </script>
 
     <script>
         (function() {
