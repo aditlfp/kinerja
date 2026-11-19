@@ -1,425 +1,489 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#FAFAF7">
-    <meta name="robots" content="noindex">
-    <title>Kinerja SAC-PO</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet">
-    <style>
-        :root {
-            --ink: #0C1017;
-            --muted: #7A8090;
-            --brand: #2B59FF;
-            --brand-soft: #6E8CFF;
-            --cyan: #26A8D6;
-            --paper: #FAFAF7;
-            --ease: cubic-bezier(.32, .72, 0, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-        }
-
-        /* Jangan tampilkan toolbar debug di halaman splash */
-        .phpdebugbar,
-        #phpdebugbar,
-        .phpdebugbar-openhandler {
-            display: none !important;
-        }
-
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            background: var(--paper);
-            color: var(--ink);
-            font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden;
-            transition: opacity .4s var(--ease);
-        }
-
-        body.is-leaving {
-            opacity: 0;
-        }
-
-        /* ---------- Tekstur latar ---------- */
-        .mesh {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .mesh::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(780px 520px at 50% -10%, rgba(43, 89, 255, .14), transparent 64%),
-                radial-gradient(640px 460px at 94% 104%, rgba(38, 168, 214, .12), transparent 62%),
-                radial-gradient(520px 420px at 2% 94%, rgba(118, 92, 255, .09), transparent 64%),
-                radial-gradient(900px 620px at 50% 60%, rgba(255, 255, 255, .9), transparent 70%);
-        }
-
-        .mesh::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(to right, rgba(12, 16, 23, .055) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(12, 16, 23, .055) 1px, transparent 1px);
-            background-size: 80px 80px;
-            -webkit-mask-image: radial-gradient(58% 58% at 50% 38%, #000 10%, transparent 76%);
-            mask-image: radial-gradient(58% 58% at 50% 38%, #000 10%, transparent 76%);
-        }
-
-        /* ---------- Konten ---------- */
-        .stage {
-            position: relative;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 24px calc(40px + env(safe-area-inset-bottom));
-            text-align: center;
-        }
-
-        /* Double-bezel: shell kaca + core putih */
-        .mark-shell {
-            padding: 9px;
-            border-radius: 38px;
-            background: rgba(255, 255, 255, .78);
-            box-shadow:
-                inset 0 0 0 1px rgba(12, 16, 23, .06),
-                0 34px 70px -52px rgba(43, 89, 255, .55);
-            animation: settle 1s var(--ease) both;
-        }
-
-        .mark-core {
-            position: relative;
-            display: grid;
-            place-items: center;
-            width: 96px;
-            height: 96px;
-            border-radius: 29px;
-            background: #fff;
-            box-shadow:
-                inset 0 1px 1px #fff,
-                0 0 0 1px rgba(12, 16, 23, .05),
-                0 16px 34px -24px rgba(12, 16, 23, .42);
-        }
-
-        .mark-core img {
-            width: 62px;
-            height: 62px;
-            object-fit: contain;
-        }
-
-        .mark-core::after {
-            content: "";
-            position: absolute;
-            inset: -12px;
-            border-radius: 40px;
-            box-shadow: 0 0 0 1px rgba(43, 89, 255, .16);
-            animation: halo 3.2s var(--ease) infinite;
-        }
-
-        @keyframes settle {
-            from {
-                opacity: 0;
-                transform: translateY(18px) scale(.94);
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#FAFAF7" />
+        <meta name="robots" content="noindex" />
+        <title>Kinerja PT. SAC</title>
+        <link rel="preconnect" href="https://fonts.bunny.net" />
+        <link
+            href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --ink: #0c1017;
+                --muted: #7a8090;
+                --brand: #2b59ff;
+                --brand-soft: #6e8cff;
+                --cyan: #26a8d6;
+                --paper: #fafaf7;
+                --ease: cubic-bezier(0.32, 0.72, 0, 1);
             }
 
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        @keyframes halo {
-
-            0%,
-            100% {
-                opacity: .55;
-                transform: scale(1);
+            * {
+                box-sizing: border-box;
+                margin: 0;
             }
 
-            50% {
-                opacity: 0;
-                transform: scale(1.06);
-            }
-        }
-
-        .eyebrow {
-            margin-top: 34px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: .28em;
-            text-transform: uppercase;
-            color: #8A8F9C;
-            animation: rise .9s var(--ease) .12s both;
-        }
-
-        .wordmark {
-            margin-top: 12px;
-            font-size: clamp(27px, 7.4vw, 38px);
-            font-weight: 800;
-            letter-spacing: -.035em;
-            line-height: 1.06;
-            background: linear-gradient(180deg, #0C1017 34%, #5A6782 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: rise .9s var(--ease) .18s both;
-        }
-
-        .wordmark b {
-            font-weight: 800;
-            background: linear-gradient(92deg, var(--brand), var(--cyan));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        @keyframes rise {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
+            /* Jangan tampilkan toolbar debug di halaman splash */
+            .phpdebugbar,
+            #phpdebugbar,
+            .phpdebugbar-openhandler {
+                display: none !important;
             }
 
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        /* ---------- Progress ---------- */
-        .loader {
-            width: min(352px, 84vw);
-            margin-top: 46px;
-            animation: rise .9s var(--ease) .26s both;
-        }
-
-        .loader-head {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 11.5px;
-            font-weight: 600;
-            letter-spacing: .02em;
-        }
-
-        .status {
-            color: var(--muted);
-        }
-
-        .pct {
-            color: var(--ink);
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -.01em;
-        }
-
-        .track {
-            position: relative;
-            height: 6px;
-            border-radius: 999px;
-            background: rgba(12, 16, 23, .07);
-            box-shadow: inset 0 0 0 1px rgba(12, 16, 23, .035);
-            overflow: hidden;
-        }
-
-        .fill {
-            position: absolute;
-            inset: 0;
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--brand) 0%, var(--brand-soft) 46%, var(--cyan) 100%);
-            transform: scaleX(0);
-            transform-origin: left center;
-            box-shadow: 0 0 16px rgba(43, 89, 255, .32), 0 0 34px rgba(38, 168, 214, .18);
-            will-change: transform;
-        }
-
-        .fill::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent);
-            transform: translateX(-100%);
-            animation: sweep 1.6s var(--ease) infinite;
-        }
-
-        @keyframes sweep {
-            to {
-                transform: translateX(100%);
-            }
-        }
-
-        /* ---------- CTA ---------- */
-        .skip {
-            margin-top: 38px;
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 10px 18px 10px 16px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .01em;
-            color: #4C5262;
-            text-decoration: none;
-            background: rgba(255, 255, 255, .86);
-            box-shadow:
-                inset 0 0 0 1px rgba(12, 16, 23, .07),
-                0 14px 28px -24px rgba(12, 16, 23, .55);
-            transition: color .45s var(--ease), background .45s var(--ease), transform .45s var(--ease);
-            animation: rise .9s var(--ease) .34s both;
-        }
-
-        .skip:hover {
-            color: var(--ink);
-            background: #fff;
-            transform: translateY(-1px);
-        }
-
-        .skip:active {
-            transform: scale(.985);
-        }
-
-        .skip i {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: var(--brand);
-            box-shadow: 0 0 10px rgba(43, 89, 255, .5);
-        }
-
-        .foot {
-            position: absolute;
-            bottom: calc(20px + env(safe-area-inset-bottom));
-            left: 0;
-            right: 0;
-            font-size: 9.5px;
-            font-weight: 500;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            color: #A6ABB6;
-        }
-
-        @media (prefers-reduced-motion:reduce) {
-
-            .mark-shell,
-            .mark-core::after,
-            .fill::after,
-            .eyebrow,
-            .wordmark,
-            .loader,
-            .skip {
-                animation: none !important;
+            html,
+            body {
+                height: 100%;
             }
 
             body {
-                transition: none;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="mesh" aria-hidden="true"></div>
-
-    <main class="stage">
-        <div class="mark-shell">
-            <div class="mark-core">
-                <img src="/logo/logo_admin_splash.png" alt="Logo Kinerja SAC-PO" width="62" height="62">
-            </div>
-        </div>
-
-        <p class="eyebrow">Sistem Kinerja &amp; Absensi</p>
-        <h1 class="wordmark">KINERJA <b>SAC-PO</b></h1>
-
-        <div class="loader" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
-            <div class="loader-head">
-                <span class="status" id="status">Menyiapkan aplikasi</span>
-                <span class="pct" id="pct">0%</span>
-            </div>
-            <div class="track">
-                <div class="fill" id="fill"></div>
-            </div>
-        </div>
-
-        <a class="skip" id="skip" href="/login"><i></i> Lewati</a>
-
-        <p class="foot">PT. Surya Amanah Cendekia</p>
-    </main>
-
-    <script>
-        (function() {
-            var TOTAL = 1600;
-            var start = null;
-            var done = false;
-            // Jaring pengaman: rAF bisa di-throttle di tab background,
-            // jadi redirect tetap dijadwalkan lewat timer.
-            var deadline = setTimeout(go, TOTAL);
-
-            var fill = document.getElementById('fill');
-            var pct = document.getElementById('pct');
-            var status = document.getElementById('status');
-            var bar = document.getElementById('progress');
-            var body = document.body;
-
-            function go() {
-                if (done) return;
-                done = true;
-                clearTimeout(deadline);
-                body.classList.add('is-leaving');
-                setTimeout(function() {
-                    window.location.href = '/login';
-                }, 380);
+                background: var(--paper);
+                color: var(--ink);
+                font-family:
+                    "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                overflow: hidden;
+                transition: opacity 0.4s var(--ease);
             }
 
-            function tick(now) {
-                if (start === null) start = now;
+            body.is-leaving {
+                opacity: 0;
+            }
 
-                var p = Math.min(1, (now - start) / TOTAL);
-                var eased = 1 - Math.pow(1 - p, 3);
-                var val = Math.round(eased * 100);
+            /* ---------- Tekstur latar ---------- */
+            .mesh {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+            }
 
-                fill.style.transform = 'scaleX(' + eased + ')';
-                pct.textContent = val + '%';
-                if (bar) bar.setAttribute('aria-valuenow', String(val));
+            .mesh::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        780px 520px at 50% -10%,
+                        rgba(43, 89, 255, 0.14),
+                        transparent 64%
+                    ),
+                    radial-gradient(
+                        640px 460px at 94% 104%,
+                        rgba(38, 168, 214, 0.12),
+                        transparent 62%
+                    ),
+                    radial-gradient(
+                        520px 420px at 2% 94%,
+                        rgba(118, 92, 255, 0.09),
+                        transparent 64%
+                    ),
+                    radial-gradient(
+                        900px 620px at 50% 60%,
+                        rgba(255, 255, 255, 0.9),
+                        transparent 70%
+                    );
+            }
 
-                if (val >= 55 && val < 92) {
-                    status.textContent = 'Menyiapkan akses';
-                } else if (val >= 92) {
-                    status.textContent = 'Hampir selesai';
+            .mesh::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-image:
+                    linear-gradient(
+                        to right,
+                        rgba(12, 16, 23, 0.055) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        to bottom,
+                        rgba(12, 16, 23, 0.055) 1px,
+                        transparent 1px
+                    );
+                background-size: 80px 80px;
+                -webkit-mask-image: radial-gradient(
+                    58% 58% at 50% 38%,
+                    #000 10%,
+                    transparent 76%
+                );
+                mask-image: radial-gradient(
+                    58% 58% at 50% 38%,
+                    #000 10%,
+                    transparent 76%
+                );
+            }
+
+            /* ---------- Konten ---------- */
+            .stage {
+                position: relative;
+                min-height: 100vh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 24px calc(40px + env(safe-area-inset-bottom));
+                text-align: center;
+            }
+
+            /* Double-bezel: shell kaca + core putih */
+            .mark-shell {
+                padding: 9px;
+                border-radius: 38px;
+                background: rgba(255, 255, 255, 0.78);
+                box-shadow:
+                    inset 0 0 0 1px rgba(12, 16, 23, 0.06),
+                    0 34px 70px -52px rgba(43, 89, 255, 0.55);
+                animation: settle 1s var(--ease) both;
+            }
+
+            .mark-core {
+                position: relative;
+                display: grid;
+                place-items: center;
+                width: 96px;
+                height: 96px;
+                border-radius: 29px;
+                background: #fff;
+                box-shadow:
+                    inset 0 1px 1px #fff,
+                    0 0 0 1px rgba(12, 16, 23, 0.05),
+                    0 16px 34px -24px rgba(12, 16, 23, 0.42);
+            }
+
+            .mark-core img {
+                width: 62px;
+                height: 62px;
+                object-fit: contain;
+            }
+
+            .mark-core::after {
+                content: "";
+                position: absolute;
+                inset: -12px;
+                border-radius: 40px;
+                box-shadow: 0 0 0 1px rgba(43, 89, 255, 0.16);
+                animation: halo 3.2s var(--ease) infinite;
+            }
+
+            @keyframes settle {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px) scale(0.94);
                 }
 
-                if (p < 1) {
-                    requestAnimationFrame(tick);
-                } else {
-                    fill.style.willChange = 'auto';
-                    go();
+                to {
+                    opacity: 1;
+                    transform: none;
                 }
             }
 
-            requestAnimationFrame(tick);
+            @keyframes halo {
+                0%,
+                100% {
+                    opacity: 0.55;
+                    transform: scale(1);
+                }
 
-            document.getElementById('skip').addEventListener('click', function(e) {
-                e.preventDefault();
-                go();
-            });
-        })();
-    </script>
-</body>
+                50% {
+                    opacity: 0;
+                    transform: scale(1.06);
+                }
+            }
 
+            .eyebrow {
+                margin-top: 34px;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: 0.28em;
+                text-transform: uppercase;
+                color: #8a8f9c;
+                animation: rise 0.9s var(--ease) 0.12s both;
+            }
+
+            .wordmark {
+                margin-top: 12px;
+                font-size: clamp(27px, 7.4vw, 38px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                line-height: 1.06;
+                background: linear-gradient(180deg, #0c1017 34%, #5a6782 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: rise 0.9s var(--ease) 0.18s both;
+            }
+
+            .wordmark b {
+                font-weight: 800;
+                background: linear-gradient(92deg, var(--brand), var(--cyan));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+            @keyframes rise {
+                from {
+                    opacity: 0;
+                    transform: translateY(14px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+
+            /* ---------- Progress ---------- */
+            .loader {
+                width: min(352px, 84vw);
+                margin-top: 46px;
+                animation: rise 0.9s var(--ease) 0.26s both;
+            }
+
+            .loader-head {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                margin-bottom: 12px;
+                font-size: 11.5px;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+            }
+
+            .status {
+                color: var(--muted);
+            }
+
+            .pct {
+                color: var(--ink);
+                font-variant-numeric: tabular-nums;
+                letter-spacing: -0.01em;
+            }
+
+            .track {
+                position: relative;
+                height: 6px;
+                border-radius: 999px;
+                background: rgba(12, 16, 23, 0.07);
+                box-shadow: inset 0 0 0 1px rgba(12, 16, 23, 0.035);
+                overflow: hidden;
+            }
+
+            .fill {
+                position: absolute;
+                inset: 0;
+                border-radius: 999px;
+                background: linear-gradient(
+                    90deg,
+                    var(--brand) 0%,
+                    var(--brand-soft) 46%,
+                    var(--cyan) 100%
+                );
+                transform: scaleX(0);
+                transform-origin: left center;
+                box-shadow:
+                    0 0 16px rgba(43, 89, 255, 0.32),
+                    0 0 34px rgba(38, 168, 214, 0.18);
+                will-change: transform;
+            }
+
+            .fill::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.55),
+                    transparent
+                );
+                transform: translateX(-100%);
+                animation: sweep 1.6s var(--ease) infinite;
+            }
+
+            @keyframes sweep {
+                to {
+                    transform: translateX(100%);
+                }
+            }
+
+            /* ---------- CTA ---------- */
+            .skip {
+                margin-top: 38px;
+                display: inline-flex;
+                align-items: center;
+                gap: 9px;
+                padding: 10px 18px 10px 16px;
+                border-radius: 999px;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.01em;
+                color: #4c5262;
+                text-decoration: none;
+                background: rgba(255, 255, 255, 0.86);
+                box-shadow:
+                    inset 0 0 0 1px rgba(12, 16, 23, 0.07),
+                    0 14px 28px -24px rgba(12, 16, 23, 0.55);
+                transition:
+                    color 0.45s var(--ease),
+                    background 0.45s var(--ease),
+                    transform 0.45s var(--ease);
+                animation: rise 0.9s var(--ease) 0.34s both;
+            }
+
+            .skip:hover {
+                color: var(--ink);
+                background: #fff;
+                transform: translateY(-1px);
+            }
+
+            .skip:active {
+                transform: scale(0.985);
+            }
+
+            .skip i {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--brand);
+                box-shadow: 0 0 10px rgba(43, 89, 255, 0.5);
+            }
+
+            .foot {
+                position: absolute;
+                bottom: calc(20px + env(safe-area-inset-bottom));
+                left: 0;
+                right: 0;
+                font-size: 9.5px;
+                font-weight: 500;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: #a6abb6;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .mark-shell,
+                .mark-core::after,
+                .fill::after,
+                .eyebrow,
+                .wordmark,
+                .loader,
+                .skip {
+                    animation: none !important;
+                }
+
+                body {
+                    transition: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="mesh" aria-hidden="true"></div>
+
+        <main class="stage">
+            <div class="mark-shell">
+                <div class="mark-core">
+                    <img
+                        src="/logo/logo_admin_splash.png"
+                        alt="Logo Kinerja SAC-PO"
+                        width="62"
+                        height="62"
+                    />
+                </div>
+            </div>
+
+            <p class="eyebrow">Sistem Kinerja &amp; Absensi</p>
+            <h1 class="wordmark">KINERJA <b>SAC-PO</b></h1>
+
+            <div
+                class="loader"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                id="progress"
+            >
+                <div class="loader-head">
+                    <span class="status" id="status">Menyiapkan aplikasi</span>
+                    <span class="pct" id="pct">0%</span>
+                </div>
+                <div class="track">
+                    <div class="fill" id="fill"></div>
+                </div>
+            </div>
+
+            <a class="skip" id="skip" href="/login?show=1"><i></i> Lewati</a>
+
+            <p class="foot">PT. Surya Amanah Cendekia</p>
+        </main>
+
+        <script>
+            (function () {
+                var TOTAL = 1600;
+                var start = null;
+                var done = false;
+                // Jaring pengaman: rAF bisa di-throttle di tab background,
+                // jadi redirect tetap dijadwalkan lewat timer.
+                var deadline = setTimeout(go, TOTAL);
+
+                var fill = document.getElementById("fill");
+                var pct = document.getElementById("pct");
+                var status = document.getElementById("status");
+                var bar = document.getElementById("progress");
+                var body = document.body;
+
+                function go() {
+                    if (done) return;
+                    done = true;
+                    clearTimeout(deadline);
+                    body.classList.add("is-leaving");
+                    setTimeout(function () {
+                        window.location.href = "/login?show=1";
+                    }, 380);
+                }
+
+                function tick(now) {
+                    if (start === null) start = now;
+
+                    var p = Math.min(1, (now - start) / TOTAL);
+                    var eased = 1 - Math.pow(1 - p, 3);
+                    var val = Math.round(eased * 100);
+
+                    fill.style.transform = "scaleX(" + eased + ")";
+                    pct.textContent = val + "%";
+                    if (bar) bar.setAttribute("aria-valuenow", String(val));
+
+                    if (val >= 55 && val < 92) {
+                        status.textContent = "Menyiapkan akses";
+                    } else if (val >= 92) {
+                        status.textContent = "Hampir selesai";
+                    }
+
+                    if (p < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        fill.style.willChange = "auto";
+                        go();
+                    }
+                }
+
+                requestAnimationFrame(tick);
+
+                document
+                    .getElementById("skip")
+                    .addEventListener("click", function (e) {
+                        e.preventDefault();
+                        go();
+                    });
+            })();
+        </script>
+    </body>
 </html>
