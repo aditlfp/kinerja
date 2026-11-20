@@ -208,6 +208,8 @@ Route::resource('checkpoint-user', CheckPointController::class);
     Route::delete('checkpoint-item/message/{message}', [CheckPointMessageController::class, 'destroy'])->name('checkpoint-item.messages.destroy');
     Route::get('editBukti-checkpoint-user', [CheckPointController::class, 'editBukti'])->name('editBukti-checkpoint-user');
     Route::post('uploadBukti-checkpoint-user', [CheckPointController::class, 'uploadBukti'])->name('uploadBukti-checkpoint-user');
+    Route::post('checkpoint-upload/chunk', [CheckPointController::class, 'uploadChunk'])->name('checkpoint-upload.chunk');
+    Route::post('checkpoint-upload/complete', [CheckPointController::class, 'completeUpload'])->name('checkpoint-upload.complete');
 
     Route::get('/riwayat-kerja/{id}', [RatingController::class, 'rateKerja'])->name('rate.kerja');
     Route::get('/getJadwal/{id}', [JadwalUserController::class, 'getJadwal'])->name('get-jadwal');
