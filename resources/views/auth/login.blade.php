@@ -707,16 +707,18 @@
 </head>
 
 <body>
-    <div id="login-splash" role="status" aria-label="Memuat aplikasi">
-        <div class="splash-inner">
-            <div class="logo-orbit"><img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO"></div>
-            <h1>KINERJA <span>SAC-PO</span></h1>
-            <p>Menyiapkan ruang kerja Anda</p>
-            <div class="loader-meta"><span id="splash-status">Menghubungkan sistem</span><span class="pct" id="splash-pct">0%</span></div>
-            <div class="track"><div class="fill"></div></div>
-            <div class="splash-note">Sistem Kinerja &amp; Absensi</div>
+    @if (!request()->boolean('show'))
+        <div id="login-splash" role="status" aria-label="Memuat aplikasi">
+            <div class="splash-inner">
+                <div class="logo-orbit"><img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO"></div>
+                <h1>KINERJA <span>SAC-PO</span></h1>
+                <p>Menyiapkan ruang kerja Anda</p>
+                <div class="loader-meta"><span id="splash-status">Menghubungkan sistem</span><span class="pct" id="splash-pct">0%</span></div>
+                <div class="track"><div class="fill"></div></div>
+                <div class="splash-note">Sistem Kinerja &amp; Absensi</div>
+            </div>
         </div>
-    </div>
+    @endif
     <div class="shell">
 
         {{-- ================= Panel brand: desktop ================= --}}
@@ -872,6 +874,9 @@
 
     <script>
         const splash = document.getElementById('login-splash');
+        if (!splash) {
+            // Splash already shown on /.
+        } else {
         const fill = splash.querySelector('.fill');
         const pct = document.getElementById('splash-pct');
         const status = document.getElementById('splash-status');
@@ -882,6 +887,7 @@
         }, [350, 750, 1150, 1600][index]));
         setTimeout(() => splash.classList.add('is-leaving'), 1600);
         setTimeout(() => splash.remove(), 2000);
+        }
     </script>
 
     <script>
