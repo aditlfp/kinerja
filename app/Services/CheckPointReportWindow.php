@@ -51,6 +51,32 @@ class CheckPointReportWindow
         return $this->weekStart($at)->addWeek();
     }
 
+    public function acceptsDate(Carbon|string $date, ?Carbon $at = null): bool
+    {
+        $date = $date instanceof Carbon ? $date->copy()->startOfDay() : Carbon::parse($date)->startOfDay();
+        $at ??= now();
+
+        return $date->betweenIncluded($this->weekStart($at), $at->copy()->startOfDay())
+            && $date->lte($this->deadlineForWeek($at));
+    }
+
+    public function lockMessage(?Carbon $at = null): string
+    {
+        return 'Laporan pekan ini sudah ditutup. Dibuka lagi '
+            .$this->nextOpenAt($at)->translatedFormat('l, d F Y').' pukul 00:00.';
+    }
+
+    public function rejectDate(Carbon|string $date): ?RedirectResponse
+    {
+        if ($this->isExempt() || $this->acceptsDate($date)) {
+            return null;
+        }
+
+        return redirect()
+            ->route('checkpoint-user.index')
+            ->with('checkpoint_locked', $this->lockMessage());
+    }
+
     public function isLocked(?Carbon $at = null): bool
     {
         return ($at ?? now())->dayOfWeekIso > $this->lastDay();
@@ -100,7 +126,7 @@ class CheckPointReportWindow
             return null;
         }
 
-        $message = $this->message();
+        $message = $this->lockMessage();
 
         if (request()->expectsJson() || request()->ajax()) {
             return response()->json([

@@ -120,6 +120,10 @@ class CheckPointController extends Controller
             ? Carbon::parse($workOrder->tanggal)->format('Y-m-d')
             : $request->input('tanggal', Carbon::today()->format('Y-m-d'));
 
+        if ($denied = $this->reportWindow->rejectDate($selectedDate)) {
+            return $denied;
+        }
+
         $pcp = PekerjaanCp::where('user_id', Auth::id())->get();
         $sharedCheckpoints = CheckPoint::with(['items.images'])
             ->whereHas('participants', fn ($query) => $query->whereKey(Auth::id()))
@@ -145,6 +149,11 @@ class CheckPointController extends Controller
     public function store(StoreCheckPointRequest $request)
     {
         if ($denied = $this->reportWindow->reject()) {
+            return $denied;
+        }
+
+        $date = collect((array) $request->input('tanggal', []))->filter()->first();
+        if ($date && ($denied = $this->reportWindow->rejectDate($date))) {
             return $denied;
         }
 
@@ -254,6 +263,54 @@ class CheckPointController extends Controller
 
         // dd($cId);
         return view('check.editBukti', compact('cex', 'pcp', 'cId'));
+    }
+
+    public function uploadChunk(Request $request)
+    {
+        $data = $request->validate([
+            'upload_id' => ['required', 'uuid'],
+            'chunk' => ['required', 'integer', 'min:0'],
+            'total' => ['required', 'integer', 'min:1', 'max:10000'],
+            'file' => ['required', 'file', 'max:2048'],
+        ]);
+        abort_if($data['chunk'] >= $data['total'], 422, 'Chunk tidak valid.');
+
+        $directory = 'checkpoint-chunks/' . Auth::id() . '/' . $data['upload_id'];
+        Storage::disk('local')->putFileAs($directory, $request->file('file'), $data['chunk'] . '.part');
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function completeUpload(Request $request)
+    {
+        $data = $request->validate(['upload_id' => ['required', 'uuid']]);
+        $directory = 'checkpoint-chunks/' . Auth::id() . '/' . $data['upload_id'];
+        $disk = Storage::disk('local');
+        $parts = collect($disk->files($directory))
+            ->filter(fn (string $path): bool => preg_match('/\\/\\d+\\.part$/', str_replace('\\', '/', $path)) === 1)
+            ->sortBy(fn (string $path): int => (int) pathinfo($path, PATHINFO_FILENAME))
+            ->values();
+        abort_if($parts->isEmpty(), 422, 'Upload tidak ditemukan.');
+
+        $token = (string) \Illuminate\Support\Str::uuid();
+        $assembled = storage_path('app/checkpoint-complete/' . Auth::id() . '/' . $token . '.upload');
+        if (! is_dir(dirname($assembled))) {
+            mkdir(dirname($assembled), 0700, true);
+        }
+        $output = fopen($assembled, 'wb');
+        foreach ($parts as $part) {
+            $input = fopen($disk->path($part), 'rb');
+            stream_copy_to_stream($input, $output);
+            fclose($input);
+        }
+        fclose($output);
+        $disk->deleteDirectory($directory);
+        $disk->put('checkpoint-complete/' . Auth::id() . '/' . $token . '.json', json_encode([
+            'path' => $assembled,
+            'name' => $data['upload_id'] . '.jpg',
+        ], JSON_THROW_ON_ERROR));
+
+        return response()->json(['token' => $token]);
     }
 
     public function uploadBukti(Request $request)
