@@ -33,7 +33,11 @@ class MainController extends Controller
         $isDiv18 = $user->devisi_id == '18';
 
         // Data for the view
-        $mitra = Kerjasama::with('client')->get();
+        if (auth()->user()->divisi->name != 'DIREKSI') {
+            $mitra = Kerjasama::with('client')->whereNot('client_id', 1)->get();
+        } else {
+            $mitra = Kerjasama::with('client')->get();
+        }
 
         // --- 3. Start Building the Query ---
         $query = Absensi::with('user.divisi.jabatan')->latest();
@@ -124,7 +128,7 @@ class MainController extends Controller
         // dd($absen);
 
         // --- 7. Return the View ---
-        return view('leader_view/absen/index', compact('absen', 'mitra', 'filterMitra', 'filter', 'users'));
+        return view('leader_view.absen.index', compact('absen', 'mitra', 'filterMitra', 'filter', 'users'));
     }
 
     public function indexLaporan()
