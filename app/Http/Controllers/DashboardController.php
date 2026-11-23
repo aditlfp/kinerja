@@ -156,6 +156,10 @@ class DashboardController extends Controller
         $isDireksi = $user->jabatan_id === 24;
         $direksiRecapAvailable = $isDireksi && $recapService->isVisible($now);
         $hasUnreadInformation = $user->unreadNotifications()->exists();
+        $showSlipNotification = $now->isLastOfMonth() || $now->day === 1;
+        $slipNotificationPeriod = $now->day === 1
+            ? $now->copy()->subMonth()->format('Y-m')
+            : $now->format('Y-m');
 
         $pendingDireksiCheckpoints = $isDireksi
             ? $this->pendingDireksiCheckpoints($now->copy()->startOfYear(), $now->copy()->endOfYear())
@@ -222,7 +226,9 @@ class DashboardController extends Controller
                 'rejectedCheckpoints',
                 'pendingDireksiCheckpoints',
                 'direksiRecapAvailable',
-                'hasUnreadInformation'
+                'hasUnreadInformation',
+                'showSlipNotification',
+                'slipNotificationPeriod'
             ))->with($this->dashboardViewContext($user, $kontrak));
         }
     }

@@ -29,6 +29,24 @@
 
     @include('dashboard.partials.styles')
 
+    <style>
+        a, button {
+            transition: transform 150ms ease, background-color 150ms ease, color 150ms ease;
+        }
+
+        a:active, button:active {
+            transform: scale(0.95);
+        }
+
+        .logout-button i {
+            transition: transform 200ms ease;
+        }
+
+        .logout-button:active i {
+            transform: translateX(3px) rotate(12deg);
+        }
+    </style>
+
 </head>
 
 <body class="bg-slate-50 font-sans antialiased text-slate-800 max-w-full">
@@ -39,12 +57,17 @@
         {{-- navbar --}}
         <div class="px-6 pt-5">
             <div id="dashboardNavbar"
-                class="fixed inset-x-0 top-0 z-50 bg-slate-50 px-6 pb-3 pt-5 transition-[box-shadow,background-color] duration-300 ease-out">
+                class="fixed inset-x-0 top-0 z-50 bg-slate-50 px-6 pb-1 pt-2 transition-[box-shadow,background-color] duration-500 ease-out">
                 <div class="flex items-center justify-between">
                 <img src="{{ URL::asset('logo/logo_kinerja.png') }}" alt="Logo" srcset="" class="w-32 h-auto">
                 <div class="flex items-center justify-center gap-2">
-                    <a href="{{ route('slip-gaji.index', ['bulan' => now()->format('Y-m')]) }}"
-                        class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-2xl">
+                    <a id="slipButton" href="{{ route('slip-gaji.index', ['bulan' => now()->format('Y-m')]) }}"
+                        data-slip-period="{{ $slipNotificationPeriod }}"
+                        class="relative slip-button flex items-center gap-2 bg-amber-500/10 border border-amber-500/15 py-1 px-3 rounded-2xl">
+                        @if ($showSlipNotification)
+                            <span data-slip-pulse class="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber-200 animate-ping"></span>
+                            <span data-slip-pulse class="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber-300"></span>
+                        @endif
                         <i class="ri-wallet-3-line text-xl"></i>
                         <span class="font-medium">Slip</span>
                     </a>
@@ -53,14 +76,14 @@
                         @csrf
                         @method('POST')
                         <button type="submit"
-                            class="flex w-full flex-col items-center gap-1 rounded-lg">
+                            class="logout-button flex w-full flex-col items-center gap-1 rounded-lg">
                             <i class="ri-logout-box-r-line text-lg text-red-500"></i>
                         </button>
                     </form>
                 </div>
                 </div>
             </div>
-            <div class="mt-4 pt-20">
+            <div class="mt-3 pt-16">
                 <a href="{{ route('profile.index') }}" class="flex items-center justify-start font-extrabold text-lg gap-2 max-w-[55svw]">
                     <i class="ri-user-line text-lg"></i>
                     <span class="truncate">
@@ -347,6 +370,12 @@
                                 <div>
                                     <h2 class="flex items-center gap-2 font-black text-lg leading-tight text-slate-900">
                                         Informasi
+                                        @if ($hasUnreadInformation)
+                                            <span class="relative flex h-3 w-3" title="Ada informasi baru" aria-label="Ada informasi baru">
+                                                <span class="absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75 animate-ping"></span>
+                                                <span class="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                                            </span>
+                                        @endif
                                     </h2>
                                     <p class="text-xs text-slate-500">Pembaruan terbaru untukmu</p>
                                 </div>
@@ -366,6 +395,22 @@
                                         @if ($kontrak->isActive())
                                             <a href="{{ route('form-kontrak-preview', ['token' => \Illuminate\Support\Facades\Crypt::encryptString($kontrak->id)]) }}" target="_blank" class="mt-3 inline-flex rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Lihat detail</a>
                                         @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($showSlipNotification)
+                            <div data-slip-information class="relative rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+                                <span class="pointer-events-none absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber-200 animate-ping"></span>
+                                <span class="pointer-events-none absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber-300"></span>
+                                <div class="flex items-start gap-3">
+                                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                                        <i class="ri-wallet-3-line text-xl"></i>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-black text-amber-900">Slip gaji tersedia</p>
+                                        <p class="mt-1 text-xs text-amber-700">Cek slip gaji terbaru melalui tombol Slip.</p>
                                     </div>
                                 </div>
                             </div>
@@ -553,6 +598,23 @@
     <x-session-toast />
 
     <script>
+        const slipButton = document.getElementById('slipButton');
+        const slipPeriod = slipButton?.dataset.slipPeriod;
+        const slipDismissedKey = `slip-notification-dismissed-${slipPeriod}`;
+
+        if (slipButton && slipPeriod && localStorage.getItem(slipDismissedKey) === '1') {
+            slipButton.querySelectorAll('[data-slip-pulse]').forEach((item) => item.remove());
+            document.querySelector('[data-slip-information]')?.remove();
+        }
+
+        slipButton?.addEventListener('click', () => {
+            if (!slipPeriod) return;
+            localStorage.setItem(slipDismissedKey, '1');
+            slipButton.querySelectorAll('[data-slip-pulse]').forEach((item) => item.remove());
+            document.querySelector('[data-slip-information]')?.remove();
+        });
+    </script>
+    <script>
         navigator.geolocation.getCurrentPosition(
             position => {
                 const lat = position.coords.latitude;
@@ -694,6 +756,9 @@
             navbarScrolledClasses.forEach(className => {
                 dashboardNavbar.classList.toggle(className, scrolled);
             });
+            dashboardNavbar.style.boxShadow = scrolled
+                ? '0 2px 10px rgba(15, 23, 42, 0.05)'
+                : 'none';
         }
 
         window.addEventListener('scroll', updateNavbar, { passive: true });
