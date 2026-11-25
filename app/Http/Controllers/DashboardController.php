@@ -143,11 +143,11 @@ class DashboardController extends Controller
             $filledDates = CheckPoint::where('user_id', $user->id)
                 ->where(function ($query) use ($weekStart, $now) {
                     $query->whereBetween('created_at', [$weekStart, $now])
-                        ->orWhereHas('items', fn ($q) => $q->whereBetween('tanggal', [$weekStart->toDateString(), $now->toDateString()]));
+                        ->orWhereHas('items', fn($q) => $q->whereBetween('tanggal', [$weekStart->toDateString(), $now->toDateString()]));
                 })
                 ->with('items:id,check_point_id,tanggal')
                 ->get(['id', 'created_at'])
-                ->flatMap(fn ($checkpoint) => $checkpoint->items->pluck('tanggal')->filter()->map(fn ($date) => Carbon::parse($date)->toDateString()))
+                ->flatMap(fn($checkpoint) => $checkpoint->items->pluck('tanggal')->filter()->map(fn($date) => Carbon::parse($date)->toDateString()))
                 ->merge(CheckPoint::where('user_id', $user->id)->whereBetween('created_at', [$weekStart, $now])->pluck('created_at')->map->toDateString())
                 ->unique();
             $missingCheckpointDates = $dates->reject(fn($date) => $filledDates->contains($date->toDateString()));
@@ -282,7 +282,7 @@ class DashboardController extends Controller
             ['key' => 'kontrak', 'label' => 'Pengajuan Kontrak', 'route' => 'form-kontrak-request', 'icon' => 'ri-file-add-line', 'color' => 'green', 'show' => $bisaAjukanKontrak && !$isDireksi],
             ['key' => 'alquran', 'label' => "Al Qur'an", 'url' => 'https://baca-alquran.sac-po.com', 'icon' => 'ri-book-line', 'color' => 'amber'],
             ['key' => 'sppd', 'label' => 'SPPD', 'url' => 'https://sppd-online.sac-po.com/login', 'icon' => 'ri-road-map-line', 'color' => 'sky', 'show' => $isManajemen],
-        ])->filter(fn ($menu) => $menu['show'] ?? true)->values();
+        ])->filter(fn($menu) => $menu['show'] ?? true)->values();
 
         $dashboardAddMenus = collect([
             ['key' => 'karyawan-direksi', 'label' => 'Karyawan', 'route' => 'direksi_user', 'icon' => 'ri-team-line', 'color' => 'blue', 'show' => $isDireksi],
@@ -308,7 +308,7 @@ class DashboardController extends Controller
             ['key' => 'data-rating-leader', 'label' => 'Data Rating', 'route' => $isCoCs ? 'leader-rating.index' : 'danru-rating.index', 'icon' => 'ri-star-line', 'color' => 'yellow', 'show' => $isCoCs || $isCoScr],
             ['key' => 'data-checklist-leader', 'label' => 'Data Checklist', 'route' => 'leader-checklist.index', 'icon' => 'ri-list-check', 'color' => 'indigo', 'show' => $isCoCs || $isCoScr],
             ['key' => 'data-slip-leader', 'label' => 'Slip Gaji Karyawan', 'route' => $isCoCs ? 'leader-slip' : 'danru-slip', 'icon' => 'ri-file-text-line', 'color' => 'sky', 'show' => $isCoCs || $isCoScr],
-        ])->filter(fn ($menu) => $menu['show'] ?? true)->values();
+        ])->filter(fn($menu) => $menu['show'] ?? true)->values();
 
         $historyMenus = collect([
             ['label' => 'Kehadiran', 'url' => url('historyAbsensi'), 'icon' => 'ri-calendar-line', 'color' => 'emerald'],
@@ -329,13 +329,13 @@ class DashboardController extends Controller
             ->select(['id', 'user_id', 'created_at'])
             ->with([
                 'user:id,nama_lengkap',
-                'items' => fn ($query) => $query
+                'items' => fn($query) => $query
                     ->select(['id', 'check_point_id', 'tanggal', 'approve_status', 'pekerjaan_cp_id', 'input_manual'])
                     ->where('approve_status', 'proccess'),
             ])
             ->where('type_check', 'dikerjakan')
             ->whereBetween('created_at', [$start, $end])
-            ->whereHas('items', fn ($query) => $query->where('approve_status', 'proccess'))
+            ->whereHas('items', fn($query) => $query->where('approve_status', 'proccess'))
             ->latest('id')
             ->get()
             ->flatMap(function (CheckPoint $checkpoint) {
@@ -355,7 +355,7 @@ class DashboardController extends Controller
                 return (object) [
                     'id' => $items->first()->id,
                     'employee' => $items->first()->employee,
-                    'dates' => $items->map(fn ($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
+                    'dates' => $items->map(fn($item) => Carbon::parse($item->date)->day)->unique()->sort()->values()->implode(', '),
                     'month' => $month,
                 ];
             })
@@ -531,7 +531,7 @@ class DashboardController extends Controller
             ->get(['id', 'user_id', 'created_at'])
             ->unique('user_id')
             ->take(5)
-            ->map(fn (Absensi $absen) => [
+            ->map(fn(Absensi $absen) => [
                 'nama' => $absen->user?->nama_lengkap ?? '-',
                 'jam' => optional($absen->created_at)->format('H:i'),
             ])
@@ -594,7 +594,7 @@ class DashboardController extends Controller
             'seri' => $seri,
             'seriPengajuan' => $seriPengajuan,
             'persenPengajuan' => array_map(
-                fn (int $jumlah) => (int) round(($jumlah / $puncakPengajuan) * 100),
+                fn(int $jumlah) => (int) round(($jumlah / $puncakPengajuan) * 100),
                 $seriPengajuan
             ),
             'distribusi' => $distribusi,
@@ -613,7 +613,7 @@ class DashboardController extends Controller
      */
     private function lengkapiSeriGrafik(array $titik, int $totalPersonel): array
     {
-        $nilai = array_map(static fn (array $item) => (int) $item['value'], $titik);
+        $nilai = array_map(static fn(array $item) => (int) $item['value'], $titik);
         $tertinggi = $nilai === [] ? 0 : max($nilai);
         $skala = max(1, $tertinggi);
         // Hanya satu batang yang diberi badge puncak, meski ada nilai yang seri.
