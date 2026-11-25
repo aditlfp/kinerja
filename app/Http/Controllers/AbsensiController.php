@@ -145,8 +145,8 @@ class AbsensiController extends Controller
             ->get(['id', 'client_id']));
 
         if ($isRegionalAttendanceUser) {
-            $lokLok = $lokLok->filter(fn ($lokasi) => $this->sameClientArea($user->kerjasama?->client, $lokasi->client))->values();
-            $penempatan = $penempatan->filter(fn ($mitra) => $this->sameClientArea($user->kerjasama?->client, $mitra->client))->values();
+            $lokLok = $lokLok->filter(fn($lokasi) => $this->sameClientArea($user->kerjasama?->client, $lokasi->client))->values();
+            $penempatan = $penempatan->filter(fn($mitra) => $this->sameClientArea($user->kerjasama?->client, $mitra->client))->values();
             $harLok = $lokLok->first() ?? $harLok;
         }
 
@@ -301,7 +301,7 @@ class AbsensiController extends Controller
         $selectedShift = Shift::query()
             ->whereKey($request->shift_id)
             ->where('is_active', true)
-            ->when(!$isRegionalAttendanceUser, fn ($query) => $query->where('client_id', $selectedKerjasama?->client_id))
+            ->when(!$isRegionalAttendanceUser, fn($query) => $query->where('client_id', $selectedKerjasama?->client_id))
             ->exists();
 
         if (!$selectedKerjasama || !$selectedShift || ($isRegionalAttendanceUser && !$this->sameClientArea($authUser->kerjasama?->client, $selectedKerjasama->client))) {
@@ -1184,9 +1184,9 @@ class AbsensiController extends Controller
         $targetName = Str::lower($target->kabupaten);
 
         foreach (config('client_area', []) as $kabupatenList) {
-            $matchesOrigin = collect($kabupatenList)->contains(fn ($term) => Str::contains($originName, Str::lower($term)));
+            $matchesOrigin = collect($kabupatenList)->contains(fn($term) => Str::contains($originName, Str::lower($term)));
 
-            if ($matchesOrigin && collect($kabupatenList)->contains(fn ($term) => Str::contains($targetName, Str::lower($term)))) {
+            if ($matchesOrigin && collect($kabupatenList)->contains(fn($term) => Str::contains($targetName, Str::lower($term)))) {
                 return true;
             }
         }
@@ -1199,7 +1199,7 @@ class AbsensiController extends Controller
         return Lokasi::with('client:id,name,kabupaten')
             ->whereHas('client')
             ->get()
-            ->filter(fn ($lokasi) => $this->sameClientArea($user->kerjasama?->client, $lokasi->client));
+            ->filter(fn($lokasi) => $this->sameClientArea($user->kerjasama?->client, $lokasi->client));
     }
 
     public function distance($lat1, $lon1, $lat2, $lon2)

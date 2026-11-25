@@ -101,7 +101,7 @@
                     <i class="ri-information-line text-lg"></i>
                     <span>Kamu belum melakukan presensi hari ini</span>
                 </span>
-            @elseif ($absenP?->absensi_type_pulang == null)
+            @elseif ($absenP && is_null($absenP->absensi_type_pulang))
                 <span
                     class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-xs">
                     <i class="ri-time-line text-lg"></i>
