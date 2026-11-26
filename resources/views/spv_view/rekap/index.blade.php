@@ -337,16 +337,20 @@
             }
         </style>
     @endpush
-    <x-main-div>
-        <div class="p-4 mx-auto max-w-7xl sm:p-6 lg:p-8">
-
-            <!-- Header Section -->
+    <div class="min-h-screen px-4 py-5 text-slate-800 sm:-mx-10 bg-transparent ring-0 shadow-none">
+        <div class="mx-auto w-full max-w-7xl">
+            {{-- Header Section --}}
             <div class="mb-6">
-                <div class="flex flex-col gap-4">
-                    <div>
-                        <h1 class="mb-2 text-2xl font-bold text-white sm:text-3xl">Rekap Data Bulanan</h1>
-                        <p class="flex items-center gap-2 text-sm text-white/80">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                    {{-- Title & Description --}}
+                    <div class="min-w-0">
+                        <h1 class="mb-2 border-l-4 border-sky-500 pl-3 text-xl font-black uppercase text-slate-900 sm:text-2xl">
+                            Rekap Data Bulanan
+                        </h1>
+
+                        <p class="flex items-center gap-2 text-sm text-slate-500">
+                            <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                                 </path>
@@ -355,43 +359,24 @@
                         </p>
                     </div>
 
-                    <!-- Search Section -->
-                    <form action="{{ route('manajemen_rekap') }}" method="GET" class="w-full">
-                        <div class="flex gap-2">
-                            <div class="relative flex-1">
-                                <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                    placeholder="Cari mitra..."
-                                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
-                                <svg class="absolute w-5 h-5 text-gray-400 pointer-events-none left-3 top-3"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
+                    {{-- Actions --}}
+                    <div class="flex w-full sm:w-auto">
+                        <a href="{{ route('dashboard.index') }}"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-200 active:scale-[0.98] sm:w-auto">
 
-                            <!-- Search Button (visible on mobile) -->
-                            <button type="submit"
-                                class="sm:hidden px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </button>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7M8 12h13">
+                                </path>
+                            </svg>
 
-                            <!-- Clear Button -->
-                            @if (request('search'))
-                                <a href="{{ route('manajemen_rekap') }}"
-                                    class="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </a>
-                            @endif
-                        </div>
-                    </form>
+                            Kembali
+                        </a>
+                    </div>
+
                 </div>
             </div>
+
 
             <!-- Stats Summary -->
             <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
@@ -450,47 +435,126 @@
 
             <!-- Global Export Section -->
             <div class="my-6">
-                <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-xs">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="mb-1 text-lg font-semibold text-gray-900">Export Data Keseluruhan</h3>
-                            <p class="text-sm text-gray-600">Export seluruh data rekap bulanan dari semua mitra dalam
-                                format Excel atau PDF</p>
+
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5 lg:p-6">
+                    <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+
+                        {{-- Information --}}
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                            d="M9 17v-2a4 4 0 018 0v2m-4-12a3 3 0 110 6 3 3 0 010-6zM4 21v-2a4 4 0 014-4" />
+                                    </svg>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-800 sm:text-lg">
+                                        Export Data Keseluruhan
+                                    </h3>
+                                    <p class="text-xs text-slate-500 sm:text-sm">
+                                        Rekap bulanan seluruh mitra dalam format Excel atau PDF
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex flex-col justify-center gap-1 items-center">
-                                <label for="bulanRekap" class="label label-text pb-0">Bulan tgl(26-25)</label>
-                                <input id="bulanRekap" type="month" name="bulanRekap" value="{{ \Carbon\Carbon::now()->format('Y-m') }}" onchange="bulanRekap = this.value" class="input input-sm input-bordered"/>
+
+                        {{-- Export Controls --}}
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:flex xl:flex-wrap xl:items-end">
+
+                            {{-- Bulan --}}
+                            <div class="col-span-2 flex min-w-0 flex-col gap-1.5 sm:col-span-1 xl:w-40">
+                                <label for="bulanRekap" class="text-xs font-semibold text-slate-600">
+                                    Bulan Rekap (26-25)
+                                </label>
+                                <input id="bulanRekap" type="month" name="bulanRekap"
+                                    value="{{ \Carbon\Carbon::now()->format('Y-m') }}"
+                                    onchange="bulanRekap = this.value"
+                                    class="input input-sm input-bordered h-10 w-full min-w-0 rounded-lg text-sm" />
                             </div>
-                            <div class="flex flex-col justify-center gap-1 items-center">
-                                <label for="tanggalDariRekap" class="label label-text pb-0">Dari</label>
-                                <input id="tanggalDariRekap" type="date" value="{{ now()->subMonth()->format('Y-m-d') }}" class="input input-sm input-bordered"/>
+
+                            {{-- Dari --}}
+                            <div class="flex min-w-0 flex-col gap-1.5 xl:w-36">
+                                <label for="tanggalDariRekap" class="text-xs font-semibold text-slate-600">
+                                    Dari Tanggal
+                                </label>
+                                <input id="tanggalDariRekap" type="date"
+                                    value="{{ now()->subMonth()->format('Y-m-d') }}"
+                                    class="input input-sm input-bordered h-10 w-full min-w-0 rounded-lg text-sm" />
                             </div>
-                            <div class="flex flex-col justify-center gap-1 items-center">
-                                <label for="tanggalSampaiRekap" class="label label-text pb-0">Sampai</label>
-                                <input id="tanggalSampaiRekap" type="date" value="{{ now()->format('Y-m-d') }}" class="input input-sm input-bordered"/>
+
+                            {{-- Sampai --}}
+                            <div class="flex min-w-0 flex-col gap-1.5 xl:w-36">
+                                <label for="tanggalSampaiRekap" class="text-xs font-semibold text-slate-600">
+                                    Sampai Tanggal
+                                </label>
+                                <input id="tanggalSampaiRekap" type="date" value="{{ now()->format('Y-m-d') }}"
+                                    class="input input-sm input-bordered h-10 w-full min-w-0 rounded-lg text-sm" />
                             </div>
-                            <button onclick="exportGlobalToExcel()"
-                                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors flex items-center gap-2 whitespace-nowrap">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                    </path>
-                                </svg>
-                                <span>Excel</span>
-                            </button>
-                            <button onclick="exportGlobalToPDF()"
-                                class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-sm transition-colors flex items-center gap-2 whitespace-nowrap">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                                <span>PDF</span>
-                            </button>
+
+                            {{-- Buttons --}}
+                            <div class="col-span-2 grid grid-cols-2 gap-2 sm:col-span-3 xl:col-span-1 xl:flex">
+                                <button onclick="exportGlobalToExcel()"
+                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-[0.98]">
+                                    <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Excel
+                                </button>
+
+                                <button onclick="exportGlobalToPDF()"
+                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700 active:scale-[0.98]">
+                                    <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    PDF
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Search Section -->
+                <form action="{{ route('manajemen_rekap') }}" method="GET" class="w-full mt-2">
+                    <div class="flex gap-2">
+                        <div class="relative flex-1">
+                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                                placeholder="Cari mitra..."
+                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-sky-200 focus:border-sky-500 transition-all">
+                            <svg class="absolute w-5 h-5 text-gray-400 pointer-events-none left-3 top-3"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+
+                        <!-- Search Button (visible on mobile) -->
+                        <button type="submit"
+                            class="sm:hidden px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Clear Button -->
+                        @if (request('search'))
+                            <a href="{{ route('manajemen_rekap') }}"
+                                class="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
+                </form>
             </div>
 
             <!-- Search Info -->
@@ -535,7 +599,8 @@
 
                                 <!-- Client Info -->
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 wrap-break-word">
+                                    <h3
+                                        class="text-gray-900 font-semibold text-base sm:text-lg mb-1.5 wrap-break-word">
                                         {{ $mitra->client->name ?? 'Nama Mitra' }}
                                     </h3>
                                     <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
@@ -667,7 +732,7 @@
                             <!-- Action Button -->
                             <button
                                 onclick="openModal({{ $mitra->id }}, '{{ addslashes($mitra->client->name ?? 'Nama Mitra') }}')"
-                                class="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
+                                class="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
                                 <span>Lihat Detail</span>
                                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -722,8 +787,8 @@
             @endif
 
             <!-- Modal Overlay -->
-            <div id="detailModal" class="fixed inset-0 z-999999 hidden" aria-labelledby="modal-title"
-                role="dialog" aria-modal="true">
+            <div id="detailModal" class="fixed inset-0 z-999999 hidden" aria-labelledby="modal-title" role="dialog"
+                aria-modal="true">
                 <!-- Background overlay -->
                 <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeModal()"></div>
 
@@ -762,11 +827,13 @@
                                     <div class="flex flex-wrap items-end gap-2">
                                         <label class="flex flex-col gap-1 text-xs text-gray-600">
                                             Dari
-                                            <input id="modalTanggalDariRekap" type="date" class="px-2 py-2 text-sm border border-gray-300 rounded-lg">
+                                            <input id="modalTanggalDariRekap" type="date"
+                                                class="px-2 py-2 text-sm border border-gray-300 rounded-lg">
                                         </label>
                                         <label class="flex flex-col gap-1 text-xs text-gray-600">
                                             Sampai
-                                            <input id="modalTanggalSampaiRekap" type="date" class="px-2 py-2 text-sm border border-gray-300 rounded-lg">
+                                            <input id="modalTanggalSampaiRekap" type="date"
+                                                class="px-2 py-2 text-sm border border-gray-300 rounded-lg">
                                         </label>
                                         <button onclick="exportToExcel()"
                                             class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors flex items-center gap-1.5">
@@ -949,7 +1016,8 @@
                     </div>
                 </div>
             </div>
-    </x-main-div>
+        </div>
+    </div>
 
     <script>
         function openNotif(id) {
@@ -1145,7 +1213,9 @@
                 return;
             }
 
-            const exporter = new RekapExporter(currentKerjasamaId, bulanRekap, '/Management/api/v1/all-rekap-export', document.getElementById('modalTanggalDariRekap')?.value, document.getElementById('modalTanggalSampaiRekap')?.value);
+            const exporter = new RekapExporter(currentKerjasamaId, bulanRekap, '/Management/api/v1/all-rekap-export',
+                document.getElementById('modalTanggalDariRekap')?.value, document.getElementById(
+                    'modalTanggalSampaiRekap')?.value);
             exporter.exportToExcel();
         }
 
@@ -1156,13 +1226,17 @@
                 return;
             }
 
-            const exporter = new RekapExporter(currentKerjasamaId, bulanRekap, '/Management/api/v1/all-rekap-export', document.getElementById('modalTanggalDariRekap')?.value, document.getElementById('modalTanggalSampaiRekap')?.value);
+            const exporter = new RekapExporter(currentKerjasamaId, bulanRekap, '/Management/api/v1/all-rekap-export',
+                document.getElementById('modalTanggalDariRekap')?.value, document.getElementById(
+                    'modalTanggalSampaiRekap')?.value);
             exporter.exportToPDF();
         }
 
         // Global Export - All Data
         function globalExportParams() {
-            const params = new URLSearchParams({ month: bulanRekap });
+            const params = new URLSearchParams({
+                month: bulanRekap
+            });
             const startDate = document.getElementById('tanggalDariRekap')?.value;
             const endDate = document.getElementById('tanggalSampaiRekap')?.value;
             if (startDate && endDate) {

@@ -1,48 +1,152 @@
 <x-app-layout>
-    <x-main-div>
-        <div class="px-3 py-6 sm:px-8 lg:px-10">
             @php
                 $jabatan = Auth::user()->divisi->jabatan->code_jabatan ?? Auth::user()->divisi->code_jabatan;
                 $isMcs = (Auth::user()->jabatan->code_jabatan ?? null) === 'MCS';
                 $penempatan = auth()->id() == 175 || $isMcs ? 'Semua Mitra' : (Auth::user()->kerjasama->client->name ?? '-');
             @endphp
+            <div class="pt-5 bg-transparent ring-0 shadow-none"></div>
+                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5 lg:p-6 mb-5">
+                    <div class="mx-auto w-full max-w-7xl">
 
-            <div class="mx-auto w-full max-w-7xl space-y-5">
-                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                        <div>
-                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600">Data Karyawan</p>
-                            <h1 class="mt-1 text-2xl font-extrabold text-slate-900">List Karyawan</h1>
-                            <p class="mt-1 text-sm text-slate-500">{{ $penempatan }}</p>
+                        {{-- Header Logo --}}
+                        <div class="flex items-center justify-between gap-3">
+                            <a href="{{ route('dashboard.index') }}" class="shrink-0">
+                                <img
+                                    src="{{ URL::asset('logo/logo_kinerja.png') }}"
+                                    alt="Logo"
+                                    class="h-auto w-28 sm:w-32 lg:w-36"
+                                >
+                            </a>
+
+                            <span class="text-xs font-semibold text-slate-400 sm:text-sm">
+                                Data Karyawan
+                            </span>
                         </div>
-                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                            <a href="{{
-                                $jabatan === 'CO-CS' ? route('leaderView') :
-                                ($jabatan === 'CO-SCR' ? route('danruView') : route('dashboard.index'))
-                            }}" class="btn btn-error btn-sm sm:btn-md">Kembali</a>
-                            <div class="min-w-[240px]">
-                                <x-search />
+
+                        {{-- Content Header --}}
+                        <div class="mt-6 flex flex-col gap-4 pt-5
+                                    lg:mt-8 lg:flex-row lg:items-center lg:justify-between">
+
+                            {{-- Title --}}
+                            <div class="min-w-0">
+                                <p class="border-l-4 border-sky-500 pl-3 text-lg font-black uppercase
+                                        text-slate-800 sm:text-xl">
+                                    Data Karyawan
+                                </p>
+                            </div>
+
+                            {{-- Actions --}}
+                            <div class="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+
+                                <a href="{{
+                                    $jabatan === 'CO-CS' ? route('leaderView') :
+                                    ($jabatan === 'CO-SCR' ? route('danruView') : route('dashboard.index'))
+                                }}"
+                                class="inline-flex w-full items-center justify-center rounded-lg
+                                        bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700
+                                        transition hover:bg-slate-200
+                                        sm:w-auto">
+                                    Kembali
+                                </a>
+
+                                <div class="w-full sm:min-w-[260px] sm:max-w-sm lg:w-72">
+                                    <x-search />
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
                 </section>
 
-                <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
-                    <div class="mb-3 flex items-center justify-between gap-3">
-                        <h2 class="text-sm font-bold text-slate-800">Total User per Jabatan</h2>
-                        <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{{ $jabatanCounts->sum() }} User</span>
-                    </div>
-                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        @forelse ($jabatanCounts as $jabatanName => $total)
-                            <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
-                                <p class="text-xs font-semibold text-slate-500">{{ $jabatanName }}</p>
-                                <p class="mt-1 text-2xl font-extrabold text-slate-900">{{ $total }}</p>
+
+                <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs mb-5">
+                <details class="group">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-5">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-800">
+                                    Total user per jabatan
+                                </h2>
+                                <p class="mt-0.5 text-xs text-slate-500">
+                                    Klik untuk melihat rincian user
+                                </p>
                             </div>
-                        @empty
-                            <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm text-slate-500 sm:col-span-2 lg:col-span-4">~ Data Kosong ~</div>
-                        @endforelse
+
+                            <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700">
+                                {{ $jabatanCounts->sum() }} User
+                            </span>
+                        </div>
+
+                        <svg
+                            class="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 group-open:rotate-180"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
+                        </svg>
+                    </summary>
+
+                    
+                    <div class="border-t border-slate-100 p-4 sm:p-5">
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                            @forelse ($jabatanCounts as $jabatanName => $total)
+                                <div class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-md">
+
+                                    {{-- Accent --}}
+                                    <div class="absolute left-0 top-0 h-full w-1 bg-sky-500"></div>
+
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div class="min-w-0">
+                                            <p class="truncate text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                                {{ $jabatanName }}
+                                            </p>
+
+                                            <p class="mt-2 text-3xl font-black tracking-tight text-slate-800">
+                                                {{ $total }}
+                                            </p>
+
+                                            <p class="mt-1 text-xs font-medium text-slate-400">
+                                                Total pengguna
+                                            </p>
+                                        </div>
+
+                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 transition group-hover:bg-sky-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                stroke-width="1.8">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m12-13a4 4 0 11-8 0 4 4 0 018 0zm5 13v-2a4 4 0 00-3-3.87M17 3.13a4 4 0 010 7.75" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 h-1 w-full overflow-hidden rounded-full bg-slate-100">
+                                        <div
+                                            class="h-full rounded-full bg-sky-500"
+                                            style="width: {{ $jabatanCounts->sum() > 0 ? ($total / $jabatanCounts->sum()) * 100 : 0 }}%">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            @empty
+                                <div class="col-span-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                                    <p class="text-sm font-medium text-slate-500">
+                                        Belum ada data karyawan
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
-                </section>
+
+                </details>
+            </section>
 
                 {{-- Mobile Cards --}}
                 <section id="userCards" class="space-y-3 md:hidden">
@@ -66,7 +170,7 @@
                                     </div>
                                     <p class="mt-0.5 text-xs font-semibold text-slate-500">{{ $i->name }}</p>
                                     <div class="mt-2 flex flex-wrap gap-1.5">
-                                        <span class="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700">{{ $i->divisi->jabatan->code_jabatan ?? 'Jabatan Kosong ?' }}</span>
+                                        <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-bold text-indigo-700">{{ $i->divisi->jabatan->code_jabatan ?? 'Jabatan Kosong ?' }}</span>
                                         <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
                                             @php
                                                 $name = $i->kerjasama->client->name ?? null;
@@ -91,11 +195,11 @@
                 </section>
 
                 {{-- Desktop Table --}}
-                <section class="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs md:block">
+                <section class="hidden overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm ring-1 ring-slate-900/[0.02] md:block">
                     <div class="overflow-x-auto">
-                    <table id="searchTable" class="table min-w-[820px] text-xs font-semibold table-zebra bg-white sm:text-sm">
+                    <table id="searchTable" class="w-full min-w-[820px] divide-y divide-slate-200 text-sm">
                         <thead>
-                            <tr class="text-left text-slate-600">
+                            <tr class="bg-slate-100 text-left text-xs font-bold uppercase tracking-wide text-slate-600">
                                 <th class="bg-slate-50 px-4 py-3">#</th>
                                 <th class="bg-slate-50 px-4 py-3">Profil</th>
                                 <th class="bg-slate-50 px-4 py-3">Username</th>
@@ -165,6 +269,4 @@
                     });
                 </script>
             </div>
-        </div>
-    </x-main-div>
 </x-app-layout>

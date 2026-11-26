@@ -1,5 +1,4 @@
-<x-admin-layout :fullWidth="true">
-    @section('title', 'Dashboard Rekap')
+<x-app-layout>
     @push('scripts')
         <script src="{{ URL::asset('js/rekap-export.js') }}?v={{ time() }}"></script>
     @endpush
@@ -356,13 +355,14 @@
             }
         </style>
     @endpush
-    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="min-h-screen bg-slate-50 px-4 py-5 text-slate-800 sm:-mx-10">
+        <div class="mx-auto w-full max-w-7xl">
 
         <!-- Header Section -->
         <div class="mb-6">
             <div class="flex flex-col gap-4">
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Rekap Data Bulanan</h1>
+                    <h1 class="border-l-4 border-sky-500 pl-3 text-xl font-black uppercase text-slate-900 sm:text-2xl">Rekap data bulanan</h1>
                     <p class="text-gray-800/80 text-sm flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -379,7 +379,7 @@
                         <div class="relative flex-1">
                             <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                                 placeholder="Cari mitra..."
-                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                                class="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-slate-900 placeholder-slate-400 transition-all focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-200">
                             <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3 pointer-events-none" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -389,7 +389,7 @@
 
                         <!-- Search Button (visible on mobile) -->
                         <button type="submit"
-                            class="sm:hidden px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
+                            class="flex items-center justify-center rounded-lg bg-sky-500 px-4 py-2.5 font-medium text-white transition-colors hover:bg-sky-600 sm:hidden">
                             <i class="ri-search-line"></i>
                         </button>
 
@@ -406,19 +406,19 @@
         </div>
 
         <!-- Global Export Section -->
-        <div class="my-6 overflow-hidden bg-white border border-gray-200 shadow-xs rounded-2xl">
-            <div class="p-5 bg-linear-to-r from-indigo-600 via-blue-600 to-cyan-600 sm:p-6">
+        <div class="my-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+            <div class="border-b border-slate-200 bg-white p-5 sm:p-6">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex items-center justify-center shrink-0 w-12 h-12 bg-white/15 rounded-xl ring-1 ring-white/25">
-                            <i class="text-2xl text-white ri-file-download-line"></i>
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-50 ring-1 ring-sky-100">
+                            <i class="text-2xl text-sky-600 ri-file-download-line"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">Export Semua Rekap</h3>
-                            <p class="mt-1 text-sm text-white/80">Semua mitra, periode 26-25, format Excel atau PDF.</p>
+                            <h3 class="text-xl font-bold text-slate-900">Export semua rekap</h3>
+                            <p class="mt-1 text-sm text-slate-500">Semua mitra, periode 26–25, format Excel atau PDF.</p>
                         </div>
                     </div>
-                    <div class="px-3 py-1 text-xs font-semibold text-white rounded-full bg-white/15 ring-1 ring-white/20 w-max">
+                    <div class="w-max rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 ring-1 ring-sky-100">
                         {{ $client->total() }} Mitra
                     </div>
                 </div>
@@ -681,7 +681,7 @@
                         <!-- Action Button -->
                         <button
                             onclick="openModal({{ $mitra->id }}, '{{ addslashes($mitra->client->name ?? 'Nama Mitra') }}')"
-                            class="w-full sm:w-auto shrink-0 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 group">
+                            class="group flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-sky-500 px-5 py-2.5 font-medium text-white transition-colors duration-200 hover:bg-sky-600 sm:w-auto">
                             <i class="ri-eye-line"></i>
                             <span>Lihat Detail</span>
                         </button>
@@ -1108,5 +1108,7 @@
             }
         });
     </script>
-</x-admin-layout>
+        </div>
+    </div>
+</x-app-layout>
 

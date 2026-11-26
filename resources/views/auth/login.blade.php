@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Masuk - {{ config('app.name', 'Kinerja PT. SAC') }}</title>
-    <style>html[data-no-debugbar] .phpdebugbar,html[data-no-debugbar] #phpdebugbar,html[data-no-debugbar] .phpdebugbar-openhandler{display:none !important}</style>
+    <style>
+        html[data-no-debugbar] .phpdebugbar,
+        html[data-no-debugbar] #phpdebugbar,
+        html[data-no-debugbar] .phpdebugbar-openhandler {
+            display: none !important
+        }
+    </style>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet">
@@ -19,11 +25,21 @@
             --text: #10131C;
             --muted: #6D7383;
             --line: #E8E9EE;
+            --lime: #c8ff57;
             --brand: #2B59FF;
             --brand-dark: #1B45E0;
             --cyan: #67D6FF;
             --paper: #FAFAF8;
             --ease: cubic-bezier(.32, .72, 0, 1);
+            --radius: 14px;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f0eef9;
+            --muted: #8884a0;
+            ~
         }
 
         * {
@@ -129,6 +145,7 @@
             font-size: 12.5px;
             font-weight: 700;
             letter-spacing: .02em;
+            color:rgba(0, 0, 0, .8);
         }
 
         .brand-text span {
@@ -239,32 +256,83 @@
         /* ---------- Hero mobile ---------- */
         .hero-mobile {
             position: relative;
-            overflow: hidden;
+            isolation: isolate;
+
+            /* PENTING: jangan hidden */
+            overflow: visible;
+
             padding: 34px 22px 66px;
-            background: linear-gradient(162deg, #F6F6F1 0%, #E8EEFA 100%);
+
+            background: transparent;
             color: var(--text);
             text-align: left;
         }
 
+        /* Background utama */
         .hero-mobile::before {
             content: "";
             position: absolute;
-            inset: 0;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            /* Perpanjang background ke bawah */
+            bottom: -160px;
+
+            z-index: -1;
+
             background:
-                radial-gradient(460px 320px at 18% -20%, rgba(43, 89, 255, .16), transparent 62%),
-                radial-gradient(380px 300px at 96% 110%, rgba(38, 168, 214, .12), transparent 58%);
+                radial-gradient(460px 320px at 18% -20%,
+                    rgba(43, 89, 255, .16),
+                    transparent 62%),
+                radial-gradient(380px 300px at 96% 110%,
+                    rgba(38, 168, 214, .12),
+                    transparent 58%),
+                linear-gradient(162deg,
+                    #F6F6F1 0%,
+                    #E8EEFA 100%);
+
+            /* Fade ke background halaman */
+            -webkit-mask-image: linear-gradient(to bottom,
+                    #000 0%,
+                    #000 45%,
+                    rgba(0, 0, 0, .8) 65%,
+                    rgba(0, 0, 0, .35) 82%,
+                    transparent 100%);
+
+            mask-image: linear-gradient(to bottom,
+                    #000 0%,
+                    #000 45%,
+                    rgba(0, 0, 0, .8) 65%,
+                    rgba(0, 0, 0, .35) 82%,
+                    transparent 100%);
+
+            pointer-events: none;
         }
 
+        /* Grid pattern */
         .hero-mobile::after {
             content: "";
             position: absolute;
             inset: 0;
+            z-index: -1;
+
             background-image:
                 linear-gradient(to right, rgba(12, 16, 23, .05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(12, 16, 23, .05) 1px, transparent 1px);
+
             background-size: 64px 64px;
-            -webkit-mask-image: radial-gradient(80% 70% at 20% 0%, #000 0%, transparent 80%);
-            mask-image: radial-gradient(80% 70% at 20% 0%, #000 0%, transparent 80%);
+
+            -webkit-mask-image: radial-gradient(80% 70% at 20% 0%,
+                    #000 0%,
+                    transparent 80%);
+
+            mask-image: radial-gradient(80% 70% at 20% 0%,
+                    #000 0%,
+                    transparent 80%);
+
+            pointer-events: none;
         }
 
         .hero-mobile>* {
@@ -316,19 +384,14 @@
 
         /* Double-bezel card */
         .card-shell {
-            padding: 10px;
-            border-radius: 36px;
-            background: rgba(9, 13, 25, .04);
-            box-shadow: inset 0 0 0 1px rgba(9, 13, 25, .05);
+            border-radius: 27px;
+            box-shadow: 2.5px 2.5px 7px #0000003f;
         }
 
         .card {
             border-radius: 27px;
             background: #fff;
             padding: 28px 24px 26px;
-            box-shadow:
-                0 56px 90px -58px rgba(9, 13, 25, .55),
-                0 2px 8px rgba(9, 13, 25, .04);
         }
 
         .card-head {
@@ -495,39 +558,56 @@
         }
 
         .btn {
-            position: relative;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            width: 100%;
-            height: 54px;
-            margin-top: 22px;
-            border: 0;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #3F6BFF 0%, #2B59FF 100%);
-            color: #fff;
-            font-family: inherit;
-            font-size: 13.5px;
-            font-weight: 700;
-            letter-spacing: .01em;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: -0.01em;
+            border: none;
             cursor: pointer;
-            box-shadow:
-                0 18px 34px -20px rgba(43, 89, 255, .95),
-                inset 0 1px 0 rgba(255, 255, 255, .28);
-            transition: transform .55s var(--ease), box-shadow .55s var(--ease), filter .55s var(--ease);
-        }
-
-        .btn:hover {
-            transform: translateY(-1.5px);
-            filter: brightness(1.03);
-            box-shadow:
-                0 26px 46px -22px rgba(43, 89, 255, 1),
-                inset 0 1px 0 rgba(255, 255, 255, .34);
+            text-decoration: none;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
         .btn:active {
-            transform: scale(.985);
+            transform: scale(0.97) !important;
+        }
+
+        .btn-primary {
+            background: var(--brand);
+            color: var(--ink);
+            padding: 15px 32px;
+            border-radius: var(--radius);
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 0 0 rgba(200, 255, 87, 0);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(200, 255, 87, 0.38);
+            filter: brightness(1.06);
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
         }
 
         .btn:disabled {
@@ -674,30 +754,218 @@
             }
         }
 
-        #login-splash { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; overflow: hidden; background: #FAFAF7; transition: opacity .55s var(--ease), visibility .55s; }
-        #login-splash::before, #login-splash::after { content: ''; position: absolute; width: 70vw; height: 70vw; max-width: 680px; max-height: 680px; border-radius: 50%; filter: blur(8px); pointer-events: none; }
-        #login-splash::before { top: -38%; left: 18%; background: radial-gradient(circle, rgba(43,89,255,.16), transparent 68%); }
-        #login-splash::after { right: -34%; bottom: -42%; background: radial-gradient(circle, rgba(38,168,214,.15), transparent 68%); }
-        #login-splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
-        #login-splash .splash-inner { position: relative; z-index: 1; width: min(370px, 84vw); text-align: center; }
-        #login-splash .logo-orbit { position: relative; width: 132px; height: 132px; margin: 0 auto 30px; display: grid; place-items: center; }
-        #login-splash .logo-orbit::before, #login-splash .logo-orbit::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(43,89,255,.18); border-radius: 38%; transform: rotate(45deg); animation: orbit 4s var(--ease) infinite; }
-        #login-splash .logo-orbit::after { inset: 12px; border-color: rgba(38,168,214,.22); transform: rotate(-45deg); animation-duration: 3.2s; animation-direction: reverse; }
-        #login-splash img { position: relative; z-index: 1; width: 96px; height: 96px; object-fit: contain; border-radius: 29px; background: rgba(255,255,255,.92); padding: 16px; box-shadow: 0 18px 45px -24px rgba(43,89,255,.55), inset 0 1px 1px #fff; animation: logo-in .8s var(--ease) both; }
-        #login-splash h1 { margin: 0; font-size: clamp(27px, 7.4vw, 38px); font-weight: 800; letter-spacing: -.045em; animation: rise .8s var(--ease) .1s both; }
-        #login-splash h1 span { background: linear-gradient(92deg,#2B59FF,#26A8D6); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        #login-splash p { margin: 11px 0 26px; color: #7A8090; font-size: 11.5px; animation: rise .8s var(--ease) .18s both; }
-        #login-splash .loader-meta { display: flex; justify-content: space-between; margin-bottom: 9px; color: #7A8090; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-        #login-splash .pct { color: #10131C; font-variant-numeric: tabular-nums; }
-        #login-splash .track { height: 7px; overflow: hidden; border-radius: 999px; background: rgba(12,16,23,.07); box-shadow: inset 0 0 0 1px rgba(12,16,23,.035); }
-        #login-splash .fill { position: relative; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; border-radius: inherit; background: linear-gradient(90deg,#2B59FF,#6E8CFF,#26A8D6); transition: transform 1.6s var(--ease); box-shadow: 0 0 18px rgba(43,89,255,.3); }
-        #login-splash .fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); transform: translateX(-100%); animation: sweep 1.3s var(--ease) infinite; }
-        #login-splash .splash-note { margin-top: 25px; color: #A0A5B0; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; animation: rise .8s var(--ease) .25s both; }
-        @keyframes orbit { to { transform: rotate(405deg); } }
-        @keyframes logo-in { from { opacity: 0; transform: scale(.72) rotate(-8deg); } to { opacity: 1; transform: none; } }
-        @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-        @keyframes sweep { to { transform: translateX(100%); } }
-        @media (prefers-reduced-motion: reduce) { #login-splash *, #login-splash::before, #login-splash::after { animation: none !important; transition: none !important; } }
+        #login-splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: #FAFAF7;
+            transition: opacity .55s var(--ease), visibility .55s;
+        }
+
+        #login-splash::before,
+        #login-splash::after {
+            content: '';
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            max-width: 680px;
+            max-height: 680px;
+            border-radius: 50%;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        #login-splash::before {
+            top: -38%;
+            left: 18%;
+            background: radial-gradient(circle, rgba(43, 89, 255, .16), transparent 68%);
+        }
+
+        #login-splash::after {
+            right: -34%;
+            bottom: -42%;
+            background: radial-gradient(circle, rgba(38, 168, 214, .15), transparent 68%);
+        }
+
+        #login-splash.is-leaving {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #login-splash .splash-inner {
+            position: relative;
+            z-index: 1;
+            width: min(370px, 84vw);
+            text-align: center;
+        }
+
+        #login-splash .logo-orbit {
+            position: relative;
+            width: 132px;
+            height: 132px;
+            margin: 0 auto 30px;
+            display: grid;
+            place-items: center;
+        }
+
+        #login-splash .logo-orbit::before,
+        #login-splash .logo-orbit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(43, 89, 255, .18);
+            border-radius: 38%;
+            transform: rotate(45deg);
+            animation: orbit 4s var(--ease) infinite;
+        }
+
+        #login-splash .logo-orbit::after {
+            inset: 12px;
+            border-color: rgba(38, 168, 214, .22);
+            transform: rotate(-45deg);
+            animation-duration: 3.2s;
+            animation-direction: reverse;
+        }
+
+        #login-splash img {
+            position: relative;
+            z-index: 1;
+            width: 96px;
+            height: 96px;
+            object-fit: contain;
+            border-radius: 29px;
+            background: rgba(255, 255, 255, .92);
+            padding: 16px;
+            box-shadow: 0 18px 45px -24px rgba(43, 89, 255, .55), inset 0 1px 1px #fff;
+            animation: logo-in .8s var(--ease) both;
+        }
+
+        #login-splash h1 {
+            margin: 0;
+            font-size: clamp(27px, 7.4vw, 38px);
+            font-weight: 800;
+            letter-spacing: -.045em;
+            animation: rise .8s var(--ease) .1s both;
+        }
+
+        #login-splash h1 span {
+            background: linear-gradient(92deg, #2B59FF, #26A8D6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        #login-splash p {
+            margin: 11px 0 26px;
+            color: #7A8090;
+            font-size: 11.5px;
+            animation: rise .8s var(--ease) .18s both;
+        }
+
+        #login-splash .loader-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+            color: #7A8090;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        #login-splash .pct {
+            color: #10131C;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #login-splash .track {
+            height: 7px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(12, 16, 23, .07);
+            box-shadow: inset 0 0 0 1px rgba(12, 16, 23, .035);
+        }
+
+        #login-splash .fill {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #2B59FF, #6E8CFF, #26A8D6);
+            transition: transform 1.6s var(--ease);
+            box-shadow: 0 0 18px rgba(43, 89, 255, .3);
+        }
+
+        #login-splash .fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .7), transparent);
+            transform: translateX(-100%);
+            animation: sweep 1.3s var(--ease) infinite;
+        }
+
+        #login-splash .splash-note {
+            margin-top: 25px;
+            color: #A0A5B0;
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            animation: rise .8s var(--ease) .25s both;
+        }
+
+        @keyframes orbit {
+            to {
+                transform: rotate(405deg);
+            }
+        }
+
+        @keyframes logo-in {
+            from {
+                opacity: 0;
+                transform: scale(.72) rotate(-8deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes sweep {
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            #login-splash *,
+            #login-splash::before,
+            #login-splash::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
         @media (hover: none) and (pointer: coarse) {
             .field {
                 font-size: 16px;
@@ -710,11 +978,15 @@
     @if (!request()->boolean('show'))
         <div id="login-splash" role="status" aria-label="Memuat aplikasi">
             <div class="splash-inner">
-                <div class="logo-orbit"><img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO"></div>
+                <div class="logo-orbit"><img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja SAC-PO">
+                </div>
                 <h1>KINERJA <span>SAC-PO</span></h1>
                 <p>Menyiapkan ruang kerja Anda</p>
-                <div class="loader-meta"><span id="splash-status">Menghubungkan sistem</span><span class="pct" id="splash-pct">0%</span></div>
-                <div class="track"><div class="fill"></div></div>
+                <div class="loader-meta"><span id="splash-status">Menghubungkan sistem</span><span class="pct"
+                        id="splash-pct">0%</span></div>
+                <div class="track">
+                    <div class="fill"></div>
+                </div>
                 <div class="splash-note">Sistem Kinerja &amp; Absensi</div>
             </div>
         </div>
@@ -725,14 +997,10 @@
         <aside class="panel">
             <div class="panel-inner">
                 <div class="brand">
-                    <div class="brand-shell">
-                        <div class="brand-core">
-                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja PT. SAC">
+                    <div>
+                        <div class="w-1/2">
+                            <img src="{{ asset('logo/logo_full.png') }}" alt="Logo Kinerja PT. SAC">
                         </div>
-                    </div>
-                    <div class="brand-text">
-                        Kinerja PT. SAC
-                        <span>Sistem Kinerja</span>
                     </div>
                 </div>
 
@@ -761,14 +1029,10 @@
             {{-- Hero: mobile --}}
             <header class="hero-mobile">
                 <div class="brand">
-                    <div class="brand-shell">
-                        <div class="brand-core">
-                            <img src="{{ asset('logo/logo_admin_splash.png') }}" alt="Logo Kinerja PT. SAC">
+                    <div>
+                        <div class="max-w-screen">
+                            <img src="{{ asset('logo/logo_full.png') }}" alt="Logo Kinerja PT. SAC">
                         </div>
-                    </div>
-                    <div class="brand-text">
-                        Kinerja PT. SAC
-                        <span>Sistem Kinerja</span>
                     </div>
                 </div>
 
@@ -786,8 +1050,7 @@
                     <div class="card-shell r r2">
                         <div class="card">
                             <div class="card-head">
-                                <span class="tag">Akun Internal</span>
-                                <h2>Masuk</h2>
+                                <h2 class="text-black! mt-0!">Masuk</h2>
                                 <p>Gunakan akun yang diberikan administrator.</p>
                             </div>
 
@@ -795,35 +1058,39 @@
                                 @csrf
 
                                 <div class="r r3">
-                                    <label for="name" class="label">Nama Pengguna</label>
-                                    <input id="name" name="name" type="text" required autofocus autocomplete="username"
-                                        value="{{ old('name') }}" placeholder="Masukkan nama pengguna"
-                                        class="field @error('name') is-invalid @enderror">
+                                    <label for="name" class="label required">Nama Pengguna</label>
+                                    <input id="name" name="name" type="text" required autofocus
+                                        autocomplete="username" value="{{ old('name') }}"
+                                        placeholder="Masukkan nama pengguna"
+                                        class="field text-black! @error('name') is-invalid @enderror">
                                     @error('name')
                                         <p class="err">{{ $message }}</p>
                                     @enderror
                                 </div>
 
                                 <div class="r r4" style="margin-top:16px" x-data="{ show: false }">
-                                    <label for="password" class="label">Kata Sandi</label>
+                                    <label for="password" class="label required">Kata Sandi</label>
                                     <div class="field-group">
-                                        <input id="password" name="password" :type="show ? 'text' : 'password'" required
-                                            autocomplete="current-password" placeholder="Masukkan kata sandi"
-                                            class="field @error('password') is-invalid @enderror">
+                                        <input id="password" name="password" :type="show ? 'text' : 'password'"
+                                            required autocomplete="current-password" placeholder="Masukkan kata sandi"
+                                            class="field text-black! @error('password') is-invalid @enderror">
                                         <button type="button" class="eye" @click="show = !show"
                                             :aria-label="show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'">
                                             <svg x-show="!show" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
                                                 aria-hidden="true">
-                                                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                                                <path
+                                                    d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
                                                 <circle cx="12" cy="12" r="3" />
                                             </svg>
                                             <svg x-show="show" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
                                                 aria-hidden="true" style="display:none">
                                                 <path d="M3 3l18 18" />
-                                                <path d="M10.6 6.7A9.9 9.9 0 0 1 12 6.5c6 0 9.5 5.5 9.5 5.5a17 17 0 0 1-2.7 3.2" />
-                                                <path d="M6.2 8.3A17 17 0 0 0 2.5 12S6 17.5 12 17.5c1.2 0 2.3-.2 3.3-.6" />
+                                                <path
+                                                    d="M10.6 6.7A9.9 9.9 0 0 1 12 6.5c6 0 9.5 5.5 9.5 5.5a17 17 0 0 1-2.7 3.2" />
+                                                <path
+                                                    d="M6.2 8.3A17 17 0 0 0 2.5 12S6 17.5 12 17.5c1.2 0 2.3-.2 3.3-.6" />
                                                 <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
                                             </svg>
                                         </button>
@@ -842,11 +1109,11 @@
                                     <a href="{{ route('password.request') }}" class="link">Lupa kata sandi?</a>
                                 </div>
 
-                                <button type="submit" id="btnLogin" class="btn r r6">
+                                <button type="submit" id="btnLogin" class="btn btn-primary w-full mt-4">
                                     <span class="btn-label">Masuk</span>
                                     <span class="btn-ico" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                                            stroke-linecap="round" stroke-linejoin="round">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M7 17 17 7" />
                                             <path d="M9 7h8v8" />
                                         </svg>
@@ -877,16 +1144,17 @@
         if (!splash) {
             // Splash already shown on /.
         } else {
-        const fill = splash.querySelector('.fill');
-        const pct = document.getElementById('splash-pct');
-        const status = document.getElementById('splash-status');
-        requestAnimationFrame(() => fill.style.transform = 'scaleX(1)');
-        [25, 55, 82, 100].forEach((value, index) => setTimeout(() => {
-            pct.textContent = `${value}%`;
-            status.textContent = ['Menghubungkan sistem', 'Memuat profil', 'Menyiapkan ruang kerja', 'Siap'][index];
-        }, [350, 750, 1150, 1600][index]));
-        setTimeout(() => splash.classList.add('is-leaving'), 1600);
-        setTimeout(() => splash.remove(), 2000);
+            const fill = splash.querySelector('.fill');
+            const pct = document.getElementById('splash-pct');
+            const status = document.getElementById('splash-status');
+            requestAnimationFrame(() => fill.style.transform = 'scaleX(1)');
+            [25, 55, 82, 100].forEach((value, index) => setTimeout(() => {
+                pct.textContent = `${value}%`;
+                status.textContent = ['Menghubungkan sistem', 'Memuat profil', 'Menyiapkan ruang kerja', 'Siap']
+                    [index];
+            }, [350, 750, 1150, 1600][index]));
+            setTimeout(() => splash.classList.add('is-leaving'), 1600);
+            setTimeout(() => splash.remove(), 2000);
         }
     </script>
 

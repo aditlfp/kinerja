@@ -36,7 +36,7 @@ class DashboardRekapController extends Controller
 
         $client = $query->paginate(15);
 
-        return view('admin.rekap.index', [
+        return view('management.rekap.index', [
             'client' => $client,
             'notifications' => $notifications,
         ]);
